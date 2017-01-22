@@ -1,0 +1,36 @@
+﻿UserControl "DataGridSample.UsersPanel" {
+  Visibility: bind ActualWidth from $this
+              convert (double width) => width > 600 ? Visibility.Visible : Visibility.Hidden
+              
+  ItemsControl { 
+    HorizontalAlignment: Center
+    ItemsSource: bind Guests
+
+    ItemsPanel: ItemsPanelTemplate {
+      @StackPanelHorizontal() { }
+    }
+
+    ItemTemplate: DataTemplate {
+      Border { 
+        Width: 50
+        Height: 50
+        Margin: 2
+        Background: bind Gender
+                    convert (Gender gender) => gender == Gender.Male ? Brushes.LightBlue : Brushes.Pink
+        ToolTip: bind
+                 convert (Guest guest) => guest.FirstName + " " + guest.LastName
+
+        TextBlock { 
+          HorizontalAlignment: Center
+          VerticalAlignment: Center
+          FontSize: 16
+          FontWeight: Bold
+          Foreground: "#4f4f4f"
+
+          Text: bind
+                convert (Guest guest) => guest.FirstName[0] + "" + guest.LastName[0]
+        }
+      }
+    }
+  }
+}

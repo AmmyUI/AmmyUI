@@ -1,0 +1,34 @@
+<UserControl x:Class="DataGridSample.UsersPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/DataGridSample;component/UsersPanel.g.xaml">
+  <UserControl.Visibility>
+    <Binding Path="ActualWidth" RelativeSource="{x:Static RelativeSource.Self}" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;0&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;binary op=&quot;Greater&quot;&gt;&lt;parameter name=&quot;width&quot; type=&quot;System.Double&quot; /&gt;&lt;cast&gt;&lt;typeinfo typename=&quot;System.Double&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;prim val=&quot;600&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Int32&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/cast&gt;&lt;/binary&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Hidden&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;width&quot; type=&quot;System.Double&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+  </UserControl.Visibility>
+  <ItemsControl HorizontalAlignment="Center">
+    <ItemsControl.ItemsSource>
+      <Binding Path="Guests"/>
+    </ItemsControl.ItemsSource>
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <StackPanel Orientation="Horizontal"/>
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+      <DataTemplate>
+        <Border Width="50" Height="50" Margin="2">
+          <Border.Background>
+            <Binding Path="Gender" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;1&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;binary op=&quot;Equal&quot;&gt;&lt;parameter name=&quot;gender&quot; type=&quot;DataGridSample.Gender&quot; /&gt;&lt;prim val=&quot;DataGridSample.Gender.Male&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;DataGridSample.Gender&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/binary&gt;&lt;staticproperty property=&quot;LightBlue&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Media.Brushes&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/staticproperty&gt;&lt;staticproperty property=&quot;Pink&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Media.Brushes&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/staticproperty&gt;&lt;/ternary&gt;&lt;parameter name=&quot;gender&quot; type=&quot;DataGridSample.Gender&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+          </Border.Background>
+          <Border.ToolTip>
+            <Binding Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;2&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;binary op=&quot;Sum&quot;&gt;&lt;binary op=&quot;Sum&quot;&gt;&lt;prop name=&quot;FirstName&quot;&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/prop&gt;&lt;prim val=&quot; &quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.String&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/binary&gt;&lt;prop name=&quot;LastName&quot;&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/prop&gt;&lt;/binary&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+          </Border.ToolTip>
+          <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#4f4f4f">
+            <TextBlock.Text>
+              <Binding Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;6&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;staticcall method=&quot;Concat&quot;&gt;&lt;typeinfo typename=&quot;System.String&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;staticcall method=&quot;Concat&quot;&gt;&lt;typeinfo typename=&quot;System.String&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;arrayaccess&gt;&lt;prop name=&quot;FirstName&quot;&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/prop&gt;&lt;prim val=&quot;0&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Int32&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/arrayaccess&gt;
+&lt;prim val=&quot;&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.String&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/staticcall&gt;
+&lt;arrayaccess&gt;&lt;prop name=&quot;LastName&quot;&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/prop&gt;&lt;prim val=&quot;0&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Int32&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/arrayaccess&gt;&lt;/staticcall&gt;&lt;parameter name=&quot;guest&quot; type=&quot;DataGridSample.Guest&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+            </TextBlock.Text>
+          </TextBlock>
+        </Border>
+      </DataTemplate>
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
+</UserControl>

@@ -1,0 +1,26 @@
+<Window x:Class="AmmySEA.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" xmlns:ns1="clr-namespace:AmmySEA.Views" Title="Ammy's StackExchange aggregator" ns0:Ammy.Register="/AmmySEA;component/MainWindow.g.xaml">
+  <Grid>
+    <TabControl Margin="0, 12, 0, 0">
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Text="Questions" FontSize="16" Foreground="#606060"/>
+        </TabItem.Header>
+        <ns1:QuestionBlockListView>
+          <FrameworkElement.DataContext>
+            <Binding Path="QuestionBlockList"/>
+          </FrameworkElement.DataContext>
+        </ns1:QuestionBlockListView>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock Text="Settings" FontSize="16" Foreground="#606060"/>
+        </TabItem.Header>
+        <ns1:OptionsView>
+          <FrameworkElement.DataContext>
+            <Binding Path="Options"/>
+          </FrameworkElement.DataContext>
+        </ns1:OptionsView>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</Window>

@@ -1,0 +1,117 @@
+﻿using System;
+
+UserControl "AmmySEA.Views.OptionsView" {
+  Padding: 3
+
+  Grid {
+    #ThreeRows(75, 50, "*")
+    
+    StackPanel {
+      alias settingsTextBlock() {
+        TextBlock {
+          Foreground: $normalFontColor
+          FontSize: 14
+          VerticalAlignment: Center
+          Margin: "15, 0"
+          Width: 160
+          TextAlignment: Right
+        }
+      }
+
+      Margin: "0, 10, 0, 0"
+
+      @StackPanelHorizontal() {
+        Margin: "0, 3"
+
+        @settingsTextBlock() { "Question update interval" }
+
+        ComboBox {
+          SelectedItem: bind UpdateInterval
+          Items: [
+            Int32 { "3" },
+            Int32 { "5" },
+            Int32 { "15" },
+            Int32 { "30" }
+          ]
+        }
+
+        @settingsTextBlock() { 
+          Text: "minutes" 
+          TextAlignment: Left
+        }
+      }
+
+      @StackPanelHorizontal() {
+        Margin: "0, 3"
+
+        @settingsTextBlock() { "Questions per site" }
+        ComboBox {
+          SelectedItem: bind QuestionsPerBlock
+          Items: [
+            Int32 { "3" },
+            Int32 { "5" },
+            Int32 { "10" }
+          ]
+        }
+      }
+    }
+
+    @Header("Select sites you are interested in") {
+      #Cell(1, 0)
+    }
+        
+    DockPanel {
+      #Cell(2, 0)
+      VerticalAlignment: Stretch
+      Height: "Auto"
+
+      // Site list container
+      ScrollViewer {
+        DockPanel.Dock: Top
+
+        @GridItemsControl() {
+          ItemsSource: bind Sites
+          ItemTemplate: DataTemplate {
+            ToggleButton "ItemContainer" {
+              Width: 302
+              Margin: "3 3"
+              BorderThickness: 0
+              Background: White
+              IsChecked: bind IsSelected
+              HorizontalContentAlignment: Left
+
+              Grid {
+                #TwoColumns(50)
+                @ImageCached(bind favicon_url) { Margin: 7 }
+
+                TextBlock {
+                  #Cell(0, 1)
+                  Text: bind name
+                  Margin: [5, 0, 0, 0]
+                  FontSize: 14
+                  Foreground: $normalFontColor
+                  VerticalAlignment: Center
+                  TextWrapping: Wrap
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      TextBlock "ErrorBlock" {
+        DockPanel.Dock: Top
+        
+        Style: Style {
+          TargetType: TextBlock
+          Triggers: @CollapsedIf_DataTrigger(bind LatestException, null) {}
+          #Setter("Visibility", "Visible")
+        }
+
+        Text: bind LatestException.Message
+        Padding: "10, 5"
+        Background: Red
+      }
+    }
+  }
+}

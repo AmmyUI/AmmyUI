@@ -1,0 +1,69 @@
+<UserControl x:Class="AmmySEA.Views.QuestionBlockView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/AmmySEA;component/Views/QuestionBlockView.g.xaml">
+  <Grid>
+    <Grid.Margin>
+0
+5
+    </Grid.Margin>
+    <Border Grid.RowSpan="2" Height="40" Background="#5fba7d">
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock.Text>
+            <Binding Path="answer_count"/>
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock.Text>
+            <Binding Path="AnswerCountText"/>
+          </TextBlock.Text>
+        </TextBlock>
+      </StackPanel>
+    </Border>
+    <TextBlock Grid.Column="1" Margin="3, 0">
+      <Hyperlink RequestNavigate="Navigate">
+        <Hyperlink.NavigateUri>
+          <Binding Path="link"/>
+        </Hyperlink.NavigateUri>
+        <TextBlock>
+          <TextBlock.Text>
+            <Binding Path="title"/>
+          </TextBlock.Text>
+        </TextBlock>
+      </Hyperlink>
+    </TextBlock>
+    <ItemsControl ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Grid.Column="1">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemsSource>
+        <Binding Path="Tags"/>
+      </ItemsControl.ItemsSource>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Foreground="#363636" Background="LightGray">
+            <TextBlock.Text>
+              <Binding/>
+            </TextBlock.Text>
+            <TextBlock.Margin>
+3
+0
+            </TextBlock.Margin>
+            <TextBlock.Padding>
+3
+2
+            </TextBlock.Padding>
+          </TextBlock>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="50"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+  </Grid>
+</UserControl>
