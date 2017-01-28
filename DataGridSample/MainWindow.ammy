@@ -1,67 +1,67 @@
 ﻿Window "DataGridSample.MainWindow" {
-	#MainWindow
+  #MainWindow
 
-	Grid "MainGrid" { 
-		#MainGrid
+  Grid "MainGrid" { 
+    #MainGrid
 
-		Grid "DataGridLayer" { 
-			#DataGridLayer
-			#ThreeRows(60, "*", 60)
-		
-			UsersPanel "UsersPanel" { 
-				#Cell()
-			}
+    Grid "DataGridLayer" { 
+      #DataGridLayer
+      #ThreeRows(60, "*", 60)
+    
+      UsersPanel "UsersPanel" { 
+        #Cell()
+      }
 
-			DataGrid { 
-				#DataGrid
-				#Cell(row: 1)
+      DataGrid { 
+        #DataGrid
+        #Cell(row: 1)
 
-				ItemsSource: bind Guests
-			}
+        ItemsSource: bind Guests
+      }
 
-			Button "ShowDialogButton" { 
-				#Button
-				#Cell(row: 2)
-				"Add guest"
-			}
-		}
+      Button "ShowDialogButton" { 
+        #Button
+        #Cell(row: 2)
+        "Add guest"
+      }
+    }
 
-		Grid "DialogLayer" { 
-			#DialogLayer
+    Grid "DialogLayer" { 
+      #DialogLayer
 
-			Border "Dialog" {
-				#Dialog
+      Border "Dialog" {
+        #Dialog
 
-				StackPanel { 
-					TextBlock { #FormLabel, "First name" }
-					TextBox { #FormInput, Text: bind NewGuestFirstName }
-					TextBlock { #FormLabel, "Last name" }
-					TextBox { #FormInput, Text: bind NewGuestLastName }
+        StackPanel { 
+          TextBlock { #FormLabel, "First name" }
+          TextBox { #FormInput, Text: bind NewGuestFirstName }
+          TextBlock { #FormLabel, "Last name" }
+          TextBox { #FormInput, Text: bind NewGuestLastName }
 
-					RadioButton { 
-						#FormRadio 
-						"Male" 
-						IsChecked: bind NewGuestIsMale
-					}
-					RadioButton { 
-						#FormRadio
-						"Female"
-						Margin: "0,0,0,15" 
-					}
+          RadioButton { 
+            #FormRadio 
+            "Male" 
+            IsChecked: bind NewGuestIsMale
+          }
+          RadioButton { 
+            #FormRadio
+            "Female"
+            Margin: "0,0,0,15" 
+          }
 
-					Button "AddGuestButton" { 
-						#Button 
-						"Add guest"
-						Command: bind AddGuest
-					}
+          Button "AddGuestButton" { 
+            #Button 
+            "Add guest"
+            Command: bind AddGuest
+          }
 
-					Button "CancelButton" { 
-						#Button 
-						"Cancel"
-						Background: $accentColor1
-					}
-				}
-			}
-		}
-	}
+          Button "CancelButton" { 
+            #Button 
+            "Cancel"
+            Background: $accentColor1
+          }
+        }
+      }
+    }
+  }
 }
