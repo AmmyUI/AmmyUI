@@ -1,0 +1,16 @@
+﻿UserControl "XamlToAmmy.SettingsView" {
+  alias label(text) {
+    TextBlock { 
+      Text: $text
+    }
+  }
+
+  Grid { 
+    Width: 100
+    #ThreeColumns()
+
+    TextBlock { "Brace: " }
+    RadioButton { "same line" }
+    RadioButton { "next line" }
+  }
+}

@@ -1,0 +1,12 @@
+<UserControl x:Class="XamlToAmmy.SettingsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/XamlToAmmy;component/SettingsView.g.xaml">
+  <Grid Width="100">
+    <TextBlock>Brace: </TextBlock>
+    <RadioButton>same line</RadioButton>
+    <RadioButton>next line</RadioButton>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+  </Grid>
+</UserControl>

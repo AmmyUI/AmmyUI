@@ -1,0 +1,19 @@
+﻿Window "XamlToAmmy.MainWindow" {
+  TabControl { 
+    TabItem { 
+      Header: "Convert File"
+
+      ConvertFileView {  }
+    }
+    TabItem { 
+      Header: "Convert Project"
+
+      ConvertProjectView {  }
+    }
+    TabItem { 
+      Header: "Settings"
+
+      SettingsView {  }
+    }
+  }
+}

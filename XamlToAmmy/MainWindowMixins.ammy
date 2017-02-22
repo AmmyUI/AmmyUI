@@ -1,0 +1,36 @@
+﻿mixin XamlWatermark() for TextBox {
+  Style: Style {
+    TargetType: TextBox
+    Triggers: [
+      DataTrigger {
+        Binding: bind Xaml convert (string xaml) => string.IsNullOrEmpty(xaml)
+        Value: true
+                
+        #Setter("Text", "Insert xaml here")
+        #Setter("Opacity", 0.5)
+      }
+
+      MultiDataTrigger {
+        Conditions: [
+          Condition {
+            Binding: bind Xaml convert (string xaml) => string.IsNullOrEmpty(xaml)
+            Value: true
+          }
+          Condition {
+            Binding: bind IsFocused from $this
+            Value: true
+          }
+        ]
+              
+        #Setter("Opacity", 1)
+        #Setter("Text", bind Xaml)
+      }
+
+      DataTrigger {
+        Binding: bind Xaml convert (string xaml) => !string.IsNullOrEmpty(xaml)
+        Value: true 
+        #Setter("Text", bind Xaml)
+      }
+    ]
+  }
+}

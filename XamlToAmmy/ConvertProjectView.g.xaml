@@ -1,0 +1,10 @@
+<UserControl x:Class="XamlToAmmy.ConvertProjectView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/XamlToAmmy;component/ConvertProjectView.g.xaml">
+  <Grid>
+    <Button HorizontalAlignment="Center" VerticalAlignment="Center">Browse (.csproj)
+      <Button.Padding>
+10
+8
+      </Button.Padding>
+    </Button>
+  </Grid>
+</UserControl>

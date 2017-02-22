@@ -7,11 +7,11 @@ using System.Xml.Linq;
 
 namespace XamlToAmmy
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow2 : Window
     {
         readonly XamlToAmmyConverter _converter = new XamlToAmmyConverter();
 
-        public MainWindow()
+        public MainWindow2()
         {
             InitializeComponent();
 

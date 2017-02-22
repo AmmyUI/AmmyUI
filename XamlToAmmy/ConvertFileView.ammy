@@ -1,0 +1,15 @@
+﻿UserControl "XamlToAmmy.ConvertFileView" {
+  Grid { 
+    #TwoColumns
+
+    TextBox {
+      #XamlWatermark
+    }
+
+    TextBox { 
+      #Cell(0, 1)
+      IsReadOnly: true
+      Text: bind Ammy
+    }
+  }
+}
