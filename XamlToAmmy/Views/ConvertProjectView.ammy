@@ -1,0 +1,92 @@
+﻿UserControl "XamlToAmmy.Views.ConvertProjectView" {
+  Grid { 
+    Margin: 20
+    #TwoRows("*", "Auto")
+    Button { 
+      "Browse (.csproj)" 
+
+      Padding: [10, 8]
+      HorizontalAlignment: Center
+      VerticalAlignment: Center
+      Command: bind LoadCsproj
+      Visibility: bind ProjectLoaded convert (bool loaded) => !loaded ? Visibility.Visible : Visibility.Collapsed
+    }
+
+    DataGrid {
+      BorderThickness: 1
+      BorderBrush: LightGray
+      ItemsSource: bind Pages
+      Visibility: bind ProjectLoaded convert (bool loaded) => loaded ? Visibility.Visible : Visibility.Collapsed
+      AutoGenerateColumns: false
+      
+      Columns: [
+        DataGridCheckBoxColumn {
+          Binding: bind NeedToConvert
+        }
+
+        DataGridTextColumn {
+          Header: "Filename"
+          Binding: bind Filename
+          IsReadOnly: true          
+        }
+
+        DataGridTextColumn {
+          Header: "Status"
+          ElementStyle: Style {
+            TargetType: TextBlock
+            Triggers: [
+              DataTrigger {
+                Binding: bind ConversionStatus 
+                Value: "OK"
+                #Setter("Foreground", "Green")
+              }
+              DataTrigger {
+                Binding: bind ConversionStatus convert (string status) => status == "OK"
+                Value: false
+                #Setter("Foreground", "OrangeRed")
+              }
+            ]
+            
+          }
+          Binding: bind ConversionStatus
+          Width: "*"
+        }
+
+        DataGridTemplateColumn {
+          CellTemplate: DataTemplate {
+            TextBlock { 
+              Margin: "10, 5"
+              Hyperlink {
+                "Preview"
+                Command: bind DataContext.PreviewPage from $ancestor<DataGrid>
+                CommandParameter: bind 
+              }
+            }            
+          }
+        }
+      ]
+    }
+
+    Grid { 
+      #Cell(1)
+      Visibility: bind ProjectLoaded convert (bool loaded) => loaded ? Visibility.Visible : Visibility.Collapsed
+
+      CheckBox { 
+        IsChecked: bind CopyToBak
+        "Copy original content to .bak files"
+      }
+
+      Button { 
+        HorizontalAlignment: Center
+        Margin: "10, 20, 0, 0"
+        Padding: "15, 5"
+        BorderThickness: 0
+        FontSize: 18
+        Style: resource "AccentedSquareButtonStyle"
+        Command: bind Convert
+
+        "Convert" 
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+﻿using MahApps.Metro.Controls
+
+UserControl "XamlToAmmy.SettingsView" {
+  alias label(text) {
+    TextBlock { 
+      Text: $text
+    }
+  }
+
+  StackPanel { 
+    $elementMargin = "0,0,0,30"
+
+    Margin: 20
+    HorizontalAlignment: Left
+    
+
+    TextBlock { 
+      FontSize: 16
+      FontFamily: "Segoe UI Semibold" 
+
+      "Opening brace"
+    }
+
+    RadioButton { 
+      FontSize: 14
+      Margin: 6
+      Content: "New line"
+      IsChecked: bind OpeningBraceOnNewLine
+    }
+    RadioButton { 
+      FontSize: 14
+      Margin: "6,0,6,30"
+      Content: "Same line"
+      IsChecked: true
+    }
+
+    TextBlock { 
+      FontSize: 16
+      FontFamily: "Segoe UI Semibold" 
+
+      "Indent size"
+    }
+    NumericUpDown { 
+      Value: bind IndentSize
+      Margin: $elementMargin
+    }
+
+    TextBlock { 
+      FontSize: 16
+      FontFamily: "Segoe UI Semibold"
+
+      "Properties on same line"
+    }
+    NumericUpDown { 
+      Value: bind CollapsedNodeMaxSize
+      Margin: $elementMargin
+    }
+  }
+}

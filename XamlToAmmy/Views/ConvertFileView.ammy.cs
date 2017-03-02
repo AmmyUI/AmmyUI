@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XamlToAmmy
+namespace XamlToAmmy.Views
 {
-    public partial class ConvertProjectView
+    public partial class ConvertFileView
     {
-        public ConvertProjectView()
+        public ConvertFileView()
         {
             InitializeComponent();
         }

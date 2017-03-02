@@ -1,13 +1,29 @@
-<Window x:Class="XamlToAmmy.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" xmlns:ns1="clr-namespace:XamlToAmmy" ns0:Ammy.Register="/XamlToAmmy;component/MainWindow.g.xaml">
+<ns2:MetroWindow x:Class="XamlToAmmy.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:XamlToAmmy.Views" xmlns:ns1="clr-namespace:XamlToAmmy" xmlns:ns2="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" xmlns:ns3="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns3:Ammy.Register="/XamlToAmmy;component/MainWindow.g.xaml">
   <TabControl>
-    <TabItem Header="Convert File">
-      <ns1:ConvertFileView/>
-    </TabItem>
     <TabItem Header="Convert Project">
-      <ns1:ConvertProjectView/>
+      <ns0:ConvertProjectView>
+        <FrameworkElement.DataContext>
+          <Binding Path="Project"/>
+        </FrameworkElement.DataContext>
+      </ns0:ConvertProjectView>
+    </TabItem>
+    <TabItem Header="Convert File">
+      <TabItem.IsSelected>
+        <Binding Path="IsConvertFileSelected"/>
+      </TabItem.IsSelected>
+      <ns0:ConvertFileView>
+        <FrameworkElement.DataContext>
+          <Binding Path="File"/>
+        </FrameworkElement.DataContext>
+      </ns0:ConvertFileView>
     </TabItem>
     <TabItem Header="Settings">
-      <ns1:SettingsView/>
+      <ns1:SettingsView>
+        <FrameworkElement.DataContext>
+          <Binding Path="Settings"/>
+        </FrameworkElement.DataContext>
+      </ns1:SettingsView>
     </TabItem>
+    <TabItem Header="Extras"/>
   </TabControl>
-</Window>
+</ns2:MetroWindow>

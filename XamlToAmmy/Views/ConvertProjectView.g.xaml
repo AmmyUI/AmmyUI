@@ -1,0 +1,94 @@
+<UserControl x:Class="XamlToAmmy.Views.ConvertProjectView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns0:Ammy.Register="/XamlToAmmy;component/Views/ConvertProjectView.g.xaml">
+  <Grid Margin="20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Button HorizontalAlignment="Center" VerticalAlignment="Center">Browse (.csproj)
+      <Button.Padding>
+10
+8
+      </Button.Padding>
+      <Button.Command>
+        <Binding Path="LoadCsproj"/>
+      </Button.Command>
+      <Button.Visibility>
+        <Binding Path="ProjectLoaded" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;3&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;unary op=&quot;LogicalNegate&quot;&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/unary&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Collapsed&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+      </Button.Visibility>
+    </Button>
+    <DataGrid BorderThickness="1" BorderBrush="LightGray" AutoGenerateColumns="False">
+      <DataGrid.ItemsSource>
+        <Binding Path="Pages"/>
+      </DataGrid.ItemsSource>
+      <DataGrid.Visibility>
+        <Binding Path="ProjectLoaded" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;4&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Collapsed&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+      </DataGrid.Visibility>
+      <DataGrid.Columns>
+        <DataGridCheckBoxColumn>
+          <DataGridCheckBoxColumn.Binding>
+            <Binding Path="NeedToConvert"/>
+          </DataGridCheckBoxColumn.Binding>
+        </DataGridCheckBoxColumn>
+        <DataGridTextColumn Header="Filename" IsReadOnly="True">
+          <DataGridTextColumn.Binding>
+            <Binding Path="Filename"/>
+          </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTextColumn Header="Status" Width="*">
+          <DataGridTextColumn.ElementStyle>
+            <Style TargetType="{x:Type TextBlock}">
+              <Style.Triggers>
+                <DataTrigger Value="OK">
+                  <DataTrigger.Binding>
+                    <Binding Path="ConversionStatus"/>
+                  </DataTrigger.Binding>
+                  <Setter Property="Foreground" Value="Green"/>
+                </DataTrigger>
+                <DataTrigger Value="False">
+                  <DataTrigger.Binding>
+                    <Binding Path="ConversionStatus" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;5&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;binary op=&quot;Equal&quot;&gt;&lt;parameter name=&quot;status&quot; type=&quot;System.String&quot; /&gt;&lt;prim val=&quot;OK&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.String&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/binary&gt;&lt;parameter name=&quot;status&quot; type=&quot;System.String&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+                  </DataTrigger.Binding>
+                  <Setter Property="Foreground" Value="OrangeRed"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </DataGridTextColumn.ElementStyle>
+          <DataGridTextColumn.Binding>
+            <Binding Path="ConversionStatus"/>
+          </DataGridTextColumn.Binding>
+        </DataGridTextColumn>
+        <DataGridTemplateColumn>
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Margin="10, 5">
+                <Hyperlink>Preview
+                  <Hyperlink.Command>
+                    <Binding Path="DataContext.PreviewPage" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}"/>
+                  </Hyperlink.Command>
+                  <Hyperlink.CommandParameter>
+                    <Binding/>
+                  </Hyperlink.CommandParameter>
+                </Hyperlink>
+              </TextBlock>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+    <Grid Grid.Row="1">
+      <Grid.Visibility>
+        <Binding Path="ProjectLoaded" Converter="{x:Static ns0:ExpressionConverter.Instance}" ConverterParameter="&lt;expr id=&quot;4&quot;&gt;&lt;lambda isaction=&quot;False&quot;&gt;&lt;ternary&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;prim val=&quot;System.Windows.Visibility.Visible&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;prim val=&quot;System.Windows.Visibility.Collapsed&quot; isnull=&quot;False&quot;&gt;&lt;typeinfo typename=&quot;System.Windows.Visibility&quot; isarray=&quot;False&quot;&gt;&lt;/typeinfo&gt;&lt;/prim&gt;&lt;/ternary&gt;&lt;parameter name=&quot;loaded&quot; type=&quot;System.Boolean&quot; /&gt;&lt;/lambda&gt;&lt;/expr&gt;"/>
+      </Grid.Visibility>
+      <CheckBox>
+        <CheckBox.IsChecked>
+          <Binding Path="CopyToBak"/>
+        </CheckBox.IsChecked>Copy original content to .bak files
+      </CheckBox>
+      <Button HorizontalAlignment="Center" Margin="10, 20, 0, 0" Padding="15, 5" BorderThickness="0" FontSize="18" Style="{StaticResource AccentedSquareButtonStyle}">
+        <Button.Command>
+          <Binding Path="Convert"/>
+        </Button.Command>Convert
+      </Button>
+    </Grid>
+  </Grid>
+</UserControl>

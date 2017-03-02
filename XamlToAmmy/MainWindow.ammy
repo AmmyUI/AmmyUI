@@ -1,19 +1,32 @@
-﻿Window "XamlToAmmy.MainWindow" {
-  TabControl { 
-    TabItem { 
-      Header: "Convert File"
+﻿using XamlToAmmy.Views
+using MahApps.Metro.Controls
 
-      ConvertFileView {  }
-    }
+MetroWindow "XamlToAmmy.MainWindow" {
+  TabControl { 
     TabItem { 
       Header: "Convert Project"
 
-      ConvertProjectView {  }
+      ConvertProjectView { 
+        DataContext: bind Project
+      }
+    }
+    TabItem { 
+      Header: "Convert File"
+      IsSelected: bind IsConvertFileSelected
+
+      ConvertFileView { 
+        DataContext: bind File
+      }
     }
     TabItem { 
       Header: "Settings"
 
-      SettingsView {  }
+      SettingsView { 
+        DataContext: bind Settings
+      }
+    }
+    TabItem { 
+      Header: "Extras"
     }
   }
 }

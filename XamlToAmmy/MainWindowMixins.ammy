@@ -1,35 +1,41 @@
-﻿mixin XamlWatermark() for TextBox {
-  Style: Style {
+﻿mixin Watermark(bindingPath, watermarkText) for TextBox {
+  Style: combine Style {
     TargetType: TextBox
     Triggers: [
       DataTrigger {
-        Binding: bind Xaml convert (string xaml) => string.IsNullOrEmpty(xaml)
+        Binding: bind $bindingPath convert (string str) => string.IsNullOrEmpty(str)
+
         Value: true
                 
-        #Setter("Text", "Insert xaml here")
-        #Setter("Opacity", 0.5)
-      }
-
-      MultiDataTrigger {
-        Conditions: [
-          Condition {
-            Binding: bind Xaml convert (string xaml) => string.IsNullOrEmpty(xaml)
-            Value: true
-          }
-          Condition {
-            Binding: bind IsFocused from $this
-            Value: true
-          }
-        ]
-              
-        #Setter("Opacity", 1)
-        #Setter("Text", bind Xaml)
+        Setter { Property: "Text", Value: $watermarkText}
+        Setter { Property: "FontSize", Value: 24}
+        Setter { Property: "Opacity", Value: 0.3}
       }
 
       DataTrigger {
-        Binding: bind Xaml convert (string xaml) => !string.IsNullOrEmpty(xaml)
+        Binding: bind IsFocused from $this
+        Value: true
+              
+        Setter { Property: "Opacity", Value: 1}
+        Setter { 
+          Property: "Text"
+          Value: bind $bindingPath 
+                 set [
+                   UpdateSourceTrigger: PropertyChanged
+                 ]
+        }
+      }
+
+      DataTrigger {
+        Binding: bind $bindingPath convert (string str) => !string.IsNullOrEmpty(str)
         Value: true 
-        #Setter("Text", bind Xaml)
+        Setter { 
+          Property: "Text"
+          Value: bind $bindingPath 
+                 set [
+                   UpdateSourceTrigger: PropertyChanged
+                 ]
+        }
       }
     ]
   }

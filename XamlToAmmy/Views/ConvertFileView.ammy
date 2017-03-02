@@ -1,0 +1,30 @@
+﻿UserControl "XamlToAmmy.Views.ConvertFileView" {
+  Grid { 
+    #TwoColumns
+    #TwoRows("*", "Auto")
+
+    TextBox {
+      #Watermark("Xaml", "Paste XAML here")
+
+      TextWrapping: Wrap
+      AcceptsReturn: true
+    }
+
+    TextBox { 
+      #Cell(0, 1)
+      IsReadOnly: true
+      Text: bind Ammy
+    }
+
+    TextBlock { 
+      #Cell(1, columnSpan: 2)
+
+      Background: Yellow
+      Text: bind Warnings
+      Visibility: bind Warnings
+                  convert (string warnings) => string.IsNullOrEmpty(warnings) 
+                                               ? Visibility.Collapsed 
+                                               : Visibility.Visible
+    }
+  }
+}
