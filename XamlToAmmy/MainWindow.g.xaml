@@ -24,6 +24,19 @@
         </FrameworkElement.DataContext>
       </ns1:SettingsView>
     </TabItem>
-    <TabItem Header="Extras"/>
+    <TabItem Header="Extras">
+      <StackPanel Margin="20">
+        <TextBlock FontSize="18" Margin="0,0,0,20">Thanks to creators of following packages that have been used in this app:</TextBlock>
+        <TextBlock Margin="3" FontSize="14">
+          <Run Text="MahApps.Metro" FontWeight="Bold"/> - great set of controls and themes
+        </TextBlock>
+        <TextBlock Margin="3" FontSize="14">
+          <Run Text="PropertyChanged.Fody" FontWeight="Bold"/> - automatically generated INotifyPropertyChanged code
+        </TextBlock>
+        <TextBlock Margin="3" FontSize="14">
+          <Run Text="ReactiveUI" FontWeight="Bold"/> - great way to create reactive cross-platform UI applications
+        </TextBlock>
+      </StackPanel>
+    </TabItem>
   </TabControl>
 </ns2:MetroWindow>

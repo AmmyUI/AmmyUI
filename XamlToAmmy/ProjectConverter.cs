@@ -27,8 +27,14 @@ namespace XamlToAmmy
             if (_doc.Root == null)
                 return new PageViewModel[0];
 
+
             _rootNs = _doc.Root.Name.Namespace;
+
+            // Need to add Main method for App.ammy to work
+            //var app = _doc.Root.Descendants(_rootNs + "ApplicationDefinition");
+
             _pages = _doc.Root.Descendants(_rootNs + "Page")
+                  //            .Concat(app)
                               .SelectMany(GetXamlPage)
                               .ToList();
 
@@ -48,21 +54,29 @@ namespace XamlToAmmy
 
         public void SaveProject(bool saveBakFile)
         {
-            foreach (var page in _pages.Where(p => p.NeedToConvert)) {
-                page.Element.RemoveNodes();
-                page.Element.Name = _rootNs + "None";
-                page.IncludeAttribute.Value = Path.ChangeExtension(page.IncludeAttribute.Value, ".ammy");
-            }
-
             foreach (var dependentUpon in _doc.Root.Descendants(_rootNs + "DependentUpon")) {
                 var nodes = dependentUpon.Nodes().ToList();
                 if (nodes.Count == 1 && nodes[0].NodeType == XmlNodeType.Text) {
                     var value = dependentUpon.Value;
-                    var pageExists = _pages.FirstOrDefault(p => p.NeedToConvert && p.Filename == value) != null;
+                    var page = _pages.FirstOrDefault(p => p.NeedToConvert && Path.GetFileName(p.Filename) == value);
+                    var pageExists = page != null;
 
                     if (pageExists && Path.GetExtension(value) == ".xaml")
                         dependentUpon.Value = Path.ChangeExtension(value, ".ammy");
                 }
+            }
+
+            foreach (var page in _pages.Where(p => p.NeedToConvert)) {
+                var ammyFilename = Path.ChangeExtension(page.IncludeAttribute.Value, ".ammy");
+
+                page.Element.RemoveNodes();
+                page.Element.Name = _rootNs + "None";
+                page.IncludeAttribute.Value = ammyFilename;
+
+                var filenameWithoutFolder = Path.GetFileName(ammyFilename);
+                var includeAttribute = new XAttribute("Include", Path.ChangeExtension(page.IncludeAttribute.Value, ".g.xaml"));
+                var dependentUpon = new XElement(_rootNs + "DependentUpon", new XText(filenameWithoutFolder));
+                page.Element.AddAfterSelf(new XElement(_rootNs + "None", includeAttribute, dependentUpon));
             }
 
             if (saveBakFile)

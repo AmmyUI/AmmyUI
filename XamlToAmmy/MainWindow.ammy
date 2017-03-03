@@ -27,6 +27,22 @@ MetroWindow "XamlToAmmy.MainWindow" {
     }
     TabItem { 
       Header: "Extras"
+
+      StackPanel { 
+        alias li() { TextBlock { Margin: "3", FontSize: 14 } }
+        alias li_header(text) { Run { Text: $text, FontWeight: Bold } }
+         
+        Margin: 20
+        TextBlock { 
+          FontSize: 18
+          Margin: "0,0,0,20"
+          "Thanks to creators of following packages that have been used in this app:"
+        }
+        
+        @li() { @li_header("MahApps.Metro") {}, " - great set of controls and themes" }
+        @li() { @li_header("PropertyChanged.Fody") {}, " - automatically generated INotifyPropertyChanged code" }
+        @li() { @li_header("ReactiveUI") {}, " - great way to create reactive cross-platform UI applications" }        
+      }
     }
   }
 }

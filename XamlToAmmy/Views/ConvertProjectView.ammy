@@ -1,7 +1,16 @@
 ﻿UserControl "XamlToAmmy.Views.ConvertProjectView" {
   Grid { 
     Margin: 20
-    #TwoRows("*", "Auto")
+    #ThreeRows("Auto", "*", "Auto")
+
+    StackPanel { 
+      Margin: [0,0,0,10]
+      TextBlock { "1. Select files to convert" }
+      TextBlock { "2. Avoid converting large generated Resource Dictionaries. It will make your compilation slower without giving any benefits" }
+      TextBlock { "3. App.xaml will not be converted. You will have to change path to your MainWindow manually (MainWindow.xaml -> MainWindow.g.xaml)" }
+      TextBlock { "4. Paths to local Resource Dictionaries will be converted automatically, apart from App.xaml" }
+    }    
+
     Button { 
       "Browse (.csproj)" 
 
@@ -13,6 +22,7 @@
     }
 
     DataGrid {
+      #Cell(1)
       BorderThickness: 1
       BorderBrush: LightGray
       ItemsSource: bind Pages
@@ -68,7 +78,7 @@
     }
 
     Grid { 
-      #Cell(1)
+      #Cell(2)
       Visibility: bind ProjectLoaded convert (bool loaded) => loaded ? Visibility.Visible : Visibility.Collapsed
 
       CheckBox { 

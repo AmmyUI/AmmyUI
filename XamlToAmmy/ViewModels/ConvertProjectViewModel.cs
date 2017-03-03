@@ -82,7 +82,10 @@ namespace XamlToAmmy.ViewModels
 
             _projectConverter.SaveProject(CopyToBak);
 
-            MessageBox.Show("Conversion finished!" + Environment.NewLine + "Don't forget to `install-package Ammy.WPF` (or other platform).", "Success");
+            MessageBox.Show("Conversion finished!" + 
+                            Environment.NewLine + 
+                            Environment.NewLine + 
+                            "Execute `install-package Ammy.<WPF/XamarinForms/...>` after opening converted project.", "Success");
 
             Process.Start(_projectConverter.ProjectDir);
         }
