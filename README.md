@@ -11,6 +11,7 @@ You can either build it from this repository or download compiled binaries from 
 **Standard library**
 
 Standard Library repository is located at https://github.com/AmmyUI/AmmyStandardLib
+
 Standard Library discussion thread https://github.com/AmmyUI/AmmyStandardLib/issues/1
 
 Comments and pull requests are really appreciated!
