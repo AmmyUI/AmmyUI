@@ -3,8 +3,8 @@
     TargetType: TextBox
     Triggers: [
       DataTrigger {
-        Binding: bind $bindingPath convert (string str) => string.IsNullOrEmpty(str)
-
+        Binding: bind $bindingPath 
+                 convert (string str) => string.IsNullOrEmpty(str)
         Value: true
                 
         Setter { Property: "Text", Value: $watermarkText}
@@ -20,21 +20,18 @@
         Setter { 
           Property: "Text"
           Value: bind $bindingPath 
-                 set [
-                   UpdateSourceTrigger: PropertyChanged
-                 ]
+                 set [ UpdateSourceTrigger: PropertyChanged ]
         }
       }
 
       DataTrigger {
-        Binding: bind $bindingPath convert (string str) => !string.IsNullOrEmpty(str)
+        Binding: bind $bindingPath 
+                 convert (string str) => !string.IsNullOrEmpty(str)
         Value: true 
         Setter { 
           Property: "Text"
           Value: bind $bindingPath 
-                 set [
-                   UpdateSourceTrigger: PropertyChanged
-                 ]
+                 set [ UpdateSourceTrigger: PropertyChanged ]
         }
       }
     ]
