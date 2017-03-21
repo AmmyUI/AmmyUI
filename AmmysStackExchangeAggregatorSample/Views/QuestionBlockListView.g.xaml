@@ -12,6 +12,10 @@
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <Grid Width="420">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30"/>
+              <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.Margin>
 15
 10
@@ -49,10 +53,6 @@
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="30"/>
-              <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
           </Grid>
         </DataTemplate>
       </ItemsControl.ItemTemplate>

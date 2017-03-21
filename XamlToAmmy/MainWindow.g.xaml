@@ -25,7 +25,7 @@
       </ns1:SettingsView>
     </TabItem>
     <TabItem Header="Extras">
-      <StackPanel Margin="20">
+      <StackPanel TextBlock.Foreground="#333333" Margin="20">
         <TextBlock FontSize="18" Margin="0,0,0,20">Thanks to creators of following packages that have been used in this app:</TextBlock>
         <TextBlock Margin="3" FontSize="14">
           <Run Text="MahApps.Metro" FontWeight="Bold"/> - great set of controls and themes

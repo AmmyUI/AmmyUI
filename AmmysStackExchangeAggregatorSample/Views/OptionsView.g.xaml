@@ -1,5 +1,10 @@
 <UserControl x:Class="AmmySEA.Views.OptionsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:System;assembly=mscorlib" xmlns:ns1="clr-namespace:AmmySidekick;assembly=AmmySidekick" Padding="3" ns1:Ammy.Register="/AmmySEA;component/Views/OptionsView.g.xaml">
   <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="75"/>
+      <RowDefinition Height="50"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
     <StackPanel Margin="0, 10, 0, 0">
       <StackPanel Orientation="Horizontal" Margin="0, 3">
         <TextBlock Foreground="#363636" FontSize="14" VerticalAlignment="Center" Margin="15, 0" Width="160" TextAlignment="Right">Question update interval</TextBlock>
@@ -49,6 +54,10 @@
                   <Binding Path="IsSelected"/>
                 </ToggleButton.IsChecked>
                 <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
                   <Image Margin="7">
                     <Image.Source>
                       <BitmapImage UriCachePolicy="Revalidate">
@@ -69,10 +78,6 @@
 0
                     </TextBlock.Margin>
                   </TextBlock>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                  </Grid.ColumnDefinitions>
                 </Grid>
               </ToggleButton>
             </DataTemplate>
@@ -98,10 +103,5 @@
         </TextBlock.Text>
       </TextBlock>
     </DockPanel>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="75"/>
-      <RowDefinition Height="50"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
   </Grid>
 </UserControl>

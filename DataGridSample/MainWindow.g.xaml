@@ -42,6 +42,11 @@
       <Grid.Effect>
         <BlurEffect x:Name="MainGridBlur" Radius="0"/>
       </Grid.Effect>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="60"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="60"/>
+      </Grid.RowDefinitions>
       <ns0:UsersPanel x:Name="UsersPanel"/>
       <DataGrid HorizontalAlignment="Center" VerticalAlignment="Center" RowHeaderWidth="0" GridLinesVisibility="None" BorderThickness="0" AlternationCount="2" Grid.Row="1">
         <DataGrid.Effect>
@@ -88,16 +93,11 @@
           <Binding Path="Guests"/>
         </DataGrid.ItemsSource>
       </DataGrid>
-      <Button x:Name="ShowDialogButton" Background="#2980b9" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">Add guest
+      <Button x:Name="ShowDialogButton" Background="#2980b9" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
         <Button.Effect>
           <DropShadowEffect Opacity="0.05"/>
-        </Button.Effect>
+        </Button.Effect>Add guest
       </Button>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="60"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="60"/>
-      </Grid.RowDefinitions>
     </Grid>
     <Grid x:Name="DialogLayer" Opacity="0">
       <Grid.Style>
@@ -129,18 +129,18 @@
             </RadioButton.IsChecked>
           </RadioButton>
           <RadioButton Margin="0,0,0,15" FontSize="16">Female</RadioButton>
-          <Button x:Name="AddGuestButton" Background="#2980b9" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center">Add guest
+          <Button x:Name="AddGuestButton" Background="#2980b9" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button.Effect>
               <DropShadowEffect Opacity="0.05"/>
-            </Button.Effect>
+            </Button.Effect>Add guest
             <Button.Command>
               <Binding Path="AddGuest"/>
             </Button.Command>
           </Button>
-          <Button x:Name="CancelButton" Background="#ea6153" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center">Cancel
+          <Button x:Name="CancelButton" Background="#ea6153" Foreground="White" BorderThickness="0" FontSize="16" Padding="15, 5" Margin="0,0,0,15" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button.Effect>
               <DropShadowEffect Opacity="0.05"/>
-            </Button.Effect>
+            </Button.Effect>Cancel
           </Button>
         </StackPanel>
       </Border>
