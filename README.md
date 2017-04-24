@@ -18,6 +18,18 @@ Ammy is a modern UI language that either replaces or compliments XAML in your pr
 ### How Ammy code looks
 
 ```
+Window "MyApp.MainWindow" {
+    Title: "My first Application"
+
+    Grid {
+        TextBlock { "Hello, World!" }
+    }
+}
+```
+
+### More complicated example
+
+```
 // Define alias for form field (label + textbox)
 // Alias takes parameters and returns an element
 alias FormField (labelText, binding)
