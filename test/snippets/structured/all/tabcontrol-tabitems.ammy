@@ -1,0 +1,18 @@
+TabControl "TabControlTabItems" {
+    TabItem { 
+        "Content for Tab 1."
+        Header: "Tab 1"
+    }
+    TabItem { 
+        "Content for Tab 2." 
+        Header: "Tab 2"
+    }
+    TabItem { 
+        "Content for Tab 3." 
+        Header: "Tab 3"
+    }
+    TabItem { 
+        "Content for Tab 4" 
+        Header: "Tab 4"
+    }
+}

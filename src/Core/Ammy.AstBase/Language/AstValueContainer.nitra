@@ -1,0 +1,33 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.InitAst;
+using Nitra;
+
+namespace Ammy.Language
+{ 
+  abstract ast AstValueContainer {
+    out AstValue : BuildResult;
+
+    //when (AstValue is BuildResult.Error)
+    //  Error (context, AstValue.ToString());
+
+    //when (AstValue.HasWarning)
+    //  Warning (context, AstValue.GetWarning());
+
+  stage 4:
+
+    //out Dummy : object = object();
+
+    //when (Dummy != null && !this.IsAstValueEvaluated)
+     // Error(context, "AstValue notevaluated");
+     
+    //SetAstValueAsIgnore();
+  }
+}

@@ -1,0 +1,95 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+using Nemerle.Extensions;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using DotNet;
+using Nitra;
+using Nitra.Declarations;
+
+using Ammy.Symbols;
+using Ammy.Backend;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  public module AstParsingContextExtensions
+  {
+    public GetTargetTypeScope(this _ : TargetTypeContext, symbols : List[MemberSymbol * DeclarationSymbol], context : DependentPropertyEvalContext) : Scope
+    {      
+      def context = context.ToAmmyContext();
+      
+      foreach ((prop is Member.PropertySymbol, val is TypeSymbol) in symbols)
+        when (prop.Type.IsDescendant(context.Types.Type) && prop.Name == "TargetType")
+          return val.Scope.FilterWith(s => s is DependencyPropertySymbol);
+      
+      EmptyScope.Instance;
+    }
+    
+    public GetRelativeSourceScope(this _ : RelativeSourceContext, _ : List[MemberSymbol * DeclarationSymbol], _ : DependentPropertyEvalContext) : Scope
+    {
+      EmptyScope.Instance;
+    }
+    
+    public NewTargetTypeIfNeeded(this instance : ParsingContext, breadcrumbs : ImmutableList[Breadcrumb], nodeType : TypeSymbol, context : DependentPropertyEvalContext) : ParsingContext
+    {
+      def ctx = context.ToAmmyContext();
+      def ancestors = breadcrumbs.Reverse().NToList();
+      
+      def newContext = match (ancestors) {
+        | Property(_, parentProp is Member.PropertySymbol) :: 
+          Node(_, parentNodeType is TypeSymbol)  :: 
+          _ 
+          when parentProp.Name == "Style" && parentProp.Type.IsDescendant(ctx.Types.Style) => 
+          
+          def newContext = ctx.CreateParsingContext() <- (
+            TargetType = TargetTypeContext(Helpers.NoLocation) <- (
+              Scope = parentNodeType.Scope.FilterWith(s => s is DependencyPropertySymbol)
+            )
+          );
+          
+          when (instance.IsRelativeSourceEvaluated)
+            newContext.RelativeSource = instance.RelativeSource;
+          
+          newContext
+          
+        | _ when nodeType.IsDescendant(ctx.Types.Style) =>
+          def newContext = ctx.CreateParsingContext() <- (
+            TargetType = TargetTypeContext(Helpers.NoLocation)
+          );
+          
+          when (instance.IsRelativeSourceEvaluated)
+            newContext.RelativeSource = instance.RelativeSource;
+          
+          newContext
+        | _ => instance
+      }
+          
+      context.EvalParsingContexts();
+      
+      newContext
+    }
+    
+    public NewRelativeSource(this instance : ParsingContext, parentNodeType : option[TypeSymbol], context : DependentPropertyEvalContext) : ParsingContext
+    {
+      def newContext = context.CreateParsingContext();
+                    
+      when (instance.IsTargetTypeEvaluated)
+        newContext.TargetType = instance.TargetType;
+      
+      newContext.RelativeSource = RelativeSourceContext(Helpers.NoLocation);
+      newContext.RelativeSource.ParentNodeType = parentNodeType;
+        
+      context.EvalParsingContexts();      
+      
+      newContext
+    }
+  }
+}

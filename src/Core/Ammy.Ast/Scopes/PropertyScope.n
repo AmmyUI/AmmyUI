@@ -1,0 +1,165 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Nitra.Serialization2;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.Backend;
+using Ammy.Symbols;
+using Ammy.Platforms;
+
+namespace Ammy.Scopes
+{
+  public class PropertyScope : Scope
+  {
+    public override AllSymbols : Seq[DeclarationSymbol]  { get { _scope.AllSymbols } }
+    
+    private _scope : Scope;
+    private _isForgivingScope : bool;
+    private _context : AmmyDependentPropertyEvalContext;
+    
+    public this(context : DependentPropertyEvalContext, isFogivingScope : bool, scope : Scope)
+    {
+      _scope = scope;
+      _context = context.ToAmmyContext();
+      _isForgivingScope = isFogivingScope;
+    }
+    
+    public this(scope : Scope)
+    {
+      _scope = scope;
+      _context = null;
+      _isForgivingScope = false;
+    }
+
+    private Filter(symbol : DeclarationSymbol) : bool
+    {
+      | EnumSymbol 
+      | DelegateSymbol => false
+      | Member.EventSymbol
+      | NamespaceSymbol
+      | TypeSymbol
+      // Xamarin Forms doesn't require public setters 
+      | Member.PropertySymbol when _context.Platform is XamarinFormsPlatform
+      | _ when symbol.IsAccessiblePropertyOrType(_context) => true
+      | _ => false
+    }
+    
+    private GetSymbolPriority(symbol : DeclarationSymbol) : int
+    {
+      | DependencyPropertySymbol
+      | RoutedEventSymbol => 100 + GetLengthPriority(symbol)
+      | Member.PropertySymbol
+      | Member.EventSymbol => 70 + GetLengthPriority(symbol)
+      | _ => 50 + GetLengthPriority(symbol)
+    }
+    
+    private GetLengthPriority(symbol : DeclarationSymbol) : int 
+    {
+      20 - symbol.Name.Length
+    }
+    
+    public override FindMany[TSymbol](predicate : Predicate[TSymbol], results : ref LightList[TSymbol]) : void
+    {
+      _scope.FindMany(fun(symbol : TSymbol) { Filter(symbol) && predicate(symbol) }, ref results)
+    }
+    
+    public override BindMany[TSymbol](reference : Reference, results : ref LightList[TSymbol]) : void
+    {
+      mutable notFiltered = LightList();
+      _scope.BindMany(reference, ref notFiltered);
+      
+      def lst = notFiltered.ToNList();
+      def res = lst.Where(Filter)
+                   .OrderByDescending(GetSymbolPriority)
+                   .OfType.[TSymbol]();
+
+      foreach (s in res) {
+        results.Add(s);
+        
+        when (s is Member.PropertySymbol || s is DependencyPropertySymbol)
+          return;
+          
+        when (s is Member.EventSymbol || s is RoutedEventSymbol)
+          return;
+      }
+      
+      when (results.Count == 0 && 
+          _isForgivingScope && 
+          _context != null) {
+        results.Add(Helpers.DefaultPropertySymbol(reference, _context) :> TSymbol)
+      }
+    }
+
+    public override MakeCompletionList(_prefix : string) : Seq[DeclarationSymbol]
+    {
+      _scope.MakeCompletionList("")
+            .Where(Filter)
+            //.Where(s => ContainsAllSymbols(prefix, s.Name))
+            .OrderByDescending(GetSymbolPriority)
+            .Distinct(GenericComparer(s => s.Name));
+    }
+    
+    private _ContainsAllSymbols(searchTerm : string, text : string) : bool
+    { 
+      def a = searchTerm.ToUpper();
+      def b = text.ToUpper();
+      foreach (s in a)
+        when (b.IndexOf(s) == -1)
+          return false;
+      true
+    }
+    
+    private _FuzzySearch(searchTerm : string, text : string) : int
+    {
+      when (String.IsNullOrEmpty(searchTerm) || String.IsNullOrEmpty(text))
+        return 0;
+      
+      def  distances = array(searchTerm.Length + 1, text.Length + 1);
+      
+      for (mutable i = 0; i <= searchTerm.Length; i++)
+        distances[i, 0] = i;
+        
+      for (mutable j = 0; j <= text.Length; j++)
+        distances[0, j] = j;
+
+      for (mutable i = 1; i <= searchTerm.Length; i++) {
+        for (mutable j = 1; j <= text.Length; j++) {
+          def cost = if (text[j - 1] == searchTerm[i - 1]) 0 else 1;
+          def a = Math.Min(distances[i - 1, j] + 1, distances[i, j - 1] + 1);
+          def b = distances[i - 1, j - 1] + cost;
+          
+          distances[i, j] = Math.Min(a, b);
+        }
+      }
+      
+      distances[searchTerm.Length, text.Length];
+    }
+
+    public override ToString() : string
+    {
+      "PropertyScope " + _scope
+    }
+
+    public override Serialize(writer : BinaryWriter, metadataWriter : MetadataWriter) : void
+    {
+      metadataWriter.WriteObject(_scope, writer);
+    }
+
+    public static Deserialize(reader : BinaryReader, metadataReader : MetadataReader) : this
+    {
+      def scope = metadataReader.ReadObject(reader);
+      PropertyScope(scope)
+    }
+  }
+}

@@ -1,0 +1,294 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.Language;
+using Ammy.Symbols;
+using Ammy.Backend;
+using Ammy.Scopes;
+
+namespace Ammy.Infrastructure
+{
+  public module SymbolExtensions
+  {
+    public IsAccessiblePropertyOrType(this sym : DeclarationSymbol, context : AmmyDependentPropertyEvalContext) : bool
+    {
+      (sym is Member.PropertySymbol && sym.IsAccessibleProperty(context)) || 
+       sym is SupportsInheritanceTypeSymbol
+    }
+    
+    public IsAbstract(this sym : DeclarationSymbol) : bool
+    {
+      !sym.NotAbstract();
+    }
+    
+    public IsFrameworkElement(this sym : DeclarationSymbol, context : DependentPropertyEvalContext) : bool
+    {
+      if (sym is TypeSymbol as ts)
+        ts.IsDescendant(context.ToAmmyContext().Types.FrameworkElement)
+      else 
+        false
+    }
+    
+    public NotAbstract(this sym : DeclarationSymbol) : bool
+    {
+      | s is ModifierHostSymbol when s.IsFlagsEvaluated => !s.Flags.Contains(Modifiers.Abstract)
+      | _ => true
+    }
+    
+    public IsAccessibleProperty(this sym : DeclarationSymbol, context : AmmyDependentPropertyEvalContext) : bool
+    {
+      match (sym) {
+        | DependencyPropertySymbol 
+        | DefaultPropertySymbol    => true
+        // CSharp parser doesn't assign Setters/Getters yet, so just pass it through
+        | prop is Member.PropertySymbol when prop.FirstDeclarationOrDefault is Member.Property => true
+        | prop is Member.PropertySymbol =>
+          def hasPublicSetter = if (prop.Setter is Some(setter)) 
+                                  setter.Flags.Contains(Modifiers.Public)
+                                else false;
+          hasPublicSetter || IsCollectionOrList(prop.Type, context)
+        | _ => false
+      }
+    }
+    
+    public IsCollectionOrList(this sym : TypeSymbol, context : AmmyDependentPropertyEvalContext) : bool
+    {
+      match (sym) {
+        | type is SupportsInheritanceTypeSymbol => 
+          type.IsDescendant(context.Types.IEnumerable) ||
+          type.IsDescendant(context.Types.IList) ||
+          type.IsDescendant(context.Types.Collection)
+        | type is TopConstructedTypeSymbol => 
+          IsCollectionOrList(type.TypeInfo, context)
+        | _ => false
+      }
+    }
+    
+    public IsAssignableFrom(this from : TypeSymbol, to : TypeSymbol) : bool 
+    {
+      if (to.IsDescendant(from)) true
+      else if (NumericTypes.TypeIsNumeric(to.FullName) && NumericTypes.TypeIsNumeric(from.FullName)) true
+      else false;
+    }
+    
+    public IsSealed(this type : TypeSymbol) : bool
+    {
+      | m is ModifierHostSymbol => m.Flags.Contains(Modifiers.Sealed)
+      | _ => false
+    }
+    
+    public GetAttributes(this type : TypeSymbol, attrName : string) : IEnumerable[CustomAttributeData]
+    {
+      def decl = type.FirstDeclarationOrDefault :> IExternalTypeDeclaration;
+      def reflectionType = decl.Type;
+      CustomAttributeData.GetCustomAttributes(reflectionType)
+                         .Where(a => a.AttributeType.Name == attrName);
+    }
+    
+    public GetAttribute(this type : TypeSymbol, attrName : string) : option[CustomAttributeData]
+    {
+      def attr = GetAttributes(type, attrName).FirstOrDefault();
+      if (attr != null) Some(attr)
+      else None()
+    }
+    
+    public GetAttributeTypeValue(this attr : CustomAttributeData) : string
+    {
+      if (attr.ConstructorArguments.Count >= 1) {
+        def arg = attr.ConstructorArguments[0];
+        (arg.Value :> System.Type).FullName;
+      } else {
+        assert2(false);
+        null
+      }   
+    }
+    
+    public GetAttributeStringValue(this type : TypeSymbol, attrName : string) : option[string]
+    {
+      def attr = GetAttribute(type, attrName);
+      if (attr is Some(a)) {
+          if (a.ConstructorArguments.Count >= 1) {
+            def arg = a.ConstructorArguments[0];
+            Some(arg.Value.ToString());
+          } else {
+            None()
+          }          
+      } else None()
+    }
+      
+    public IsDependencyObject(this type : DeclarationSymbol, context : AmmyDependentPropertyEvalContext) : bool 
+    {
+      | x is SupportsInheritanceTypeSymbol => x.IsDependencyObject(context)
+      | _ => false
+    }
+    
+    public IsDependencyObject(this type : SupportsInheritanceTypeSymbol, context : AmmyDependentPropertyEvalContext) : bool 
+    {
+      type.IsDescendant(context.Types.DependencyObject)
+    }
+    
+    public GetFullMemberScope(this type : SupportsInheritanceTypeSymbol) : Scope
+    {
+      type.BaseTypeSet
+          .AncestorsFullScope
+          .HideWith(type.MemberTable)
+    }
+    
+    public GetPropertyType(this prop : MemberSymbol) : TypeSymbol
+    {
+      | x is Member.PropertySymbol => x.Type.ResolveAlias()
+      | x is Member.EventSymbol => x.Type.ResolveAlias()
+      | _ => throw InvalidOperationException("Properties can either be of type Property or Event")
+    }
+    
+    public ResolveAlias(this type : TypeSymbol) : TypeSymbol
+    {
+      | alias is TypeAliasSymbol => alias.Replacement.Symbol :> TypeSymbol
+      | _ => type
+    }
+    
+    public ResolveOrDefault[TSymbol, TConcreteSymbol](this rf : Ref[TSymbol], defaultSymbol : TConcreteSymbol) : Ref[TConcreteSymbol]
+      where TConcreteSymbol : DeclarationSymbol
+      where TSymbol : DeclarationSymbol
+    {
+      if (rf.IsUnresolved)
+        Ref.Some(rf.Location, defaultSymbol)
+      else
+        rf.Resolve.[TConcreteSymbol]();
+    }
+    
+    public IsStatic(this member : DeclarationSymbol) : bool
+    {
+      | host is ModifierHostSymbol when host.IsFlagsEvaluated => host.Flags.Contains(Modifiers.Static)
+      | _ => false
+    }
+    
+    public IsPublic(this symbol : DeclarationSymbol) : bool
+    {
+      | host is ModifierHostSymbol when host.IsFlagsEvaluated => host.Flags.Contains(Modifiers.Public)
+      | _ => false
+    }
+    
+    public GetEnumValue(this enumType : TypeSymbol, valueName : string) : EnumMemberSymbol
+    {
+      match (enumType) {
+        | enm is EnumSymbol => 
+          mutable lst;
+          enm.Scope.FindMany.[EnumMemberSymbol](s => s.Name == valueName, ref lst);
+          if (lst.Count > 0)
+            lst[0];
+          else
+            throw ArgumentException("Invalid enum value name");
+        | _ => throw ArgumentException("Invalid enum value name");
+      }
+    }
+    
+    public GetConstructors(this type : TypeSymbol) : IReadOnlyList[Member.ConstructorSymbol]
+    {
+      mutable res = LightList();
+      type.Scope.FindMany((s : Member.ConstructorSymbol) => s.Name == ".ctor", ref res);
+      res.ToList();
+    }
+    
+    public HasMethod(this type : TypeSymbol, methodName : string, parms : array[TypeSymbol], hasToBePublic = true : bool) : bool
+    {
+      mutable methods = LightList();
+      type.Scope.FindMany((s : Member.MethodSymbol) => s.Name == methodName, ref methods);
+      
+      foreach (method when !hasToBePublic || method.IsPublic() in methods)
+        when (method.ParameterScope.HasSignature(parms))
+          return true;
+      
+      false
+    }
+    
+    public HasSignature(this parameterScope : TableScope, parms : array[TypeSymbol]) : bool
+    {      
+      def formalParms = parameterScope.GetParameterList();
+                            
+      formalParms.Count == parms.Length 
+      &&
+      formalParms.Zip(parms, (ctorParm, parm) => parm.IsDescendant(ctorParm.Type))
+                 .All(b => b)
+    }
+        
+    public GetParameterList(this parameterScope : TableScope) : IReadOnlyList[FormalParameterSymbol]
+    {
+      parameterScope.Symbols
+                    .SelectMany(s => s)
+                    .OfType.[FormalParameterSymbol]()
+                    .OrderBy(fp => fp.Index)
+                    .ToList()
+    }
+    
+    public IsNumeric(this type : TypeSymbol) : bool
+    {
+      NumericTypes.TypeIsNumeric(type.FullName);
+    }
+    
+    
+    public HasImplicitConversion(this type : TypeSymbol, convertTo : TypeSymbol, context : DependentPropertyEvalContext) : bool 
+    {
+      def context = context.ToAmmyContext();
+      def types = context.Types;
+      def char = types.Char.GetFullName();
+      def byte = types.Byte.GetFullName();
+      def sbyte = types.SByte.GetFullName();
+      def short = types.Int16.GetFullName();
+      def ushort = types.UInt16.GetFullName();
+      def int = types.Int32.GetFullName();
+      def uint = types.UInt32.GetFullName();
+      def long = types.Int64.GetFullName();
+      def ulong = types.UInt64.GetFullName();
+      def float = types.Single.GetFullName();
+      def double = types.Double.GetFullName();
+      def decimal = types.Decimal.GetFullName();
+      
+      match(type.GetFullName()) {
+        | name when name == sbyte => [short, int, long, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == byte => [short, ushort, int, uint, long, ulong, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == short => [int, long, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == ushort => [int, uint, long, ulong, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == int => [long, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == uint => [long, ulong, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == long => [float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == ulong => [float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == char => [ushort, int, uint, long, ulong, float, double, decimal].Any(s => s == convertTo.GetFullName())
+        | name when name == float => [double].Any(s => s == convertTo.GetFullName())
+        | _ => false
+      }
+    }
+    
+    public IsDescendant(this sym : TypeSymbol, context : DependentPropertyEvalContext, typeGetter : Func[AmmyDependentPropertyEvalContext, TypeSymbol]) : bool 
+    {
+      sym.IsDescendant(typeGetter(context.ToAmmyContext()))
+    }
+    
+    public GetMemberReturnType(this member : DeclarationSymbol, context : DependentPropertyEvalContext) : TypeSymbol
+    {
+      match (member) {
+        | x is Member.PropertySymbol => x.Type
+        | x is Member.MethodSymbol => x.ReturnType
+        | x is Member.FieldSymbol => x.Type
+        | x is Member.ConstantSymbol => x.Type
+        | x is LambdaParameterSymbol => x.Type
+        | x is EnumMemberSymbol => x.DeclaredIn
+        | TypeSymbol => context.ToAmmyContext().Types.Type
+        | _ => context.ToAmmyContext().Types.Void
+      }
+    }
+  }
+}

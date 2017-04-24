@@ -1,0 +1,37 @@
+using System;
+using System.Collections;
+
+Window "ChildrenOfObjects" {
+    StackPanel {
+        Button {
+          "OK"
+        }
+
+        ListBox {
+          Items: [
+              ListBoxItem { Content: "Item 1" }
+              ListBoxItem { Content: "Item 2" }
+          ]
+        }
+
+        ListBox {
+          Items: [
+              ListBoxItem { "Item 3" }
+              ListBoxItem { "Item 4" }
+          ]
+        }
+    }
+
+  Resources: ResourceDictionary {
+    // If key is not valid identifier it cannot be used as Name
+    Color Key="1" { A: "255", R: "255", G: "255", B: "255" }
+    Color Key="2" { A: "0", R: "0", G: "0", B: "0" }
+
+    Hashtable Key="Table" {
+        Int32 Key="key1" { "7" }
+        Int32 Key="key2" { "23" }
+    }
+  }
+
+  Background: SolidColorBrush { "Red" }
+}

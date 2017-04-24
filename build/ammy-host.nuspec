@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Ammy.Host</id>
+    <version>1.2.49</version>
+    <authors>Ion OÜ</authors>
+    <owners>Ion OÜ</owners>
+    <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
+    <projectUrl>https://www.ammyui.com</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Ammy UI Language for XAML platforms. Please install Ammy Visual Studio Extension for full support.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>xaml wpf</tags>
+    <dependencies>
+    </dependencies>
+    <references>
+      <reference file="Ammy.Host.dll" />
+      <reference file="Ammy.Platforms.dll" />
+    </references>
+  </metadata>
+  <files>
+    <file src="..\packages\Ammy.Host.1.0.0\lib\net40\*.dll" target="lib\net40" />
+    <file src="..\release-notes.txt" target="readme.txt" />
+  </files>
+</package>

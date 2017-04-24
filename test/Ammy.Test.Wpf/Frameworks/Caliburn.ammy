@@ -1,0 +1,80 @@
+﻿using MahApps.Metro.Controls
+
+alias ButtonBarButtonContainerStyle() {
+  Style { 
+    Setter { Property: Caliburn.Micro.Message.Attach, Value: "[Click]=[ExecuteAction($dataContext)]" }
+    Setter { Property: Caliburn.Micro.Action.TargetWithoutContext, Value: "{Binding Source={StaticResource DataContextSpy}, Path=DataContext}" }
+  }
+}
+
+alias ButtonBarButton() {
+  DropDownButton { 
+    Background: Transparent
+    DisplayMemberPath: "Label"
+    BorderThickness: 0
+    ItemsSource: bind Actions
+    Visibility: bind Actions set [ Converter: resource "CollapsedWhenEmpty"]
+    ItemContainerStyle: @ButtonBarButtonContainerStyle() {}
+    Content : ContentControl{
+      Width: 20
+      Height: 20
+      Style: resource "icon_hamburger"
+    }
+  }
+}
+
+alias MailPanelEntry(label, value){
+  Grid {
+    Grid.ColumnDefinitions:[ 
+      ColumnDefinition{ Width: 100} 
+      ColumnDefinition{}
+    ] 
+    TextBlock { 
+      Style: resource "FormLabel"
+      FontWeight: SemiBold
+    }
+    TextBlock { 
+      Grid.Column: 1
+      Style: resource "FormValue"
+      Text: $value
+    }
+  }
+}
+
+UserControl "Ammy.WpfTest.Frameworks.Caliburn" {
+  Grid { 
+    Background: resource "ThemeColorBackground" 
+    RowDefinitions: [
+      RowDefinition { Height: bind AppBar.Height}
+      RowDefinition {  }
+    ]
+
+    Grid {
+      Background: resource "ThemeColor1"
+      ColumnDefinitions: [
+        ColumnDefinition{}
+        ColumnDefinition{}
+        ColumnDefinition{ Width: "Auto"}
+      ]
+
+      StackPanel { 
+        Grid.Column: 2
+        Orientation: Horizontal
+        @ButtonBarButton() {
+          Foreground: White
+        }
+        @ButtonBarButton(){}
+      }
+    }
+
+    StackPanel { 
+      Grid.Row:  1
+      Margin: 10
+      @MailPanelEntry("From", bind Metadata.From) {}
+      @MailPanelEntry("To", bind To) {}
+      @MailPanelEntry("Cc", bind Cc) {}
+      @MailPanelEntry("Subject", bind Metadata.Subject) {}
+      @MailPanelEntry("Date", bind Metadata.Date) {}
+    }
+  }
+}

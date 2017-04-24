@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Ammy Window</Name>
+    <Description>Creates Ammy file with empty Window</Description>
+    <Icon>icon.png</Icon>
+    <TemplateID>3e546ccb-f877-4e0a-b738-261193aaade2</TemplateID>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Window.ammy</DefaultName>
+    <AppliesTo>CSharp</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+    </References>
+    <ProjectItem ReplaceParameters="true" OpenInEditor="true" TargetFileName="$safeitemname$.ammy">Window.ammy_</ProjectItem>
+    <ProjectItem ReplaceParameters="true" ItemType="Compile" SubType="Code" TargetFileName="$safeitemname$.ammy\$safeitemname$.ammy.cs">Window.ammy.cs_</ProjectItem>
+    <ProjectItem ReplaceParameters="true" ItemType="None" SubType="Designer" TargetFileName="$safeitemname$.ammy\$safeitemname$.g.xaml">Empty.g.xaml_</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

@@ -1,0 +1,8 @@
+﻿// http://stackoverflow.com/questions/359699/passing-an-enum-value-as-command-parameter-from-xaml
+using ShowTest.Common;
+
+Button "uxSearchButton" {
+    Command: bind SearchMembersCommand
+    CommandParameter: SearchPageType.First
+    Content: "Search"
+}

@@ -1,0 +1,20 @@
+using ShowTest.Common.ViewModels;
+
+Window "Commands" {
+    CommandBindings: [
+        CommandBinding {
+            Command: "Help"
+            CanExecute: TestViewModel.HelpCanExecute
+            Executed: TestViewModel.HelpExecuted 
+        }
+    ]
+
+    InputBindings: [
+        KeyBinding { Command: "Help", Key: "F1" }        
+    ]
+
+    Button {
+        Command: "Help"
+        Content: bind Command.Text from $this
+    }
+}

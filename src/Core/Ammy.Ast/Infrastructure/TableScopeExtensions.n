@@ -1,0 +1,51 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+namespace Ammy.Infrastructure
+{
+  public module TableScopeExtensions
+  {
+    public GetSymbols(this instance : TableScope) : IEnumerable[DeclarationSymbol]
+    {
+      instance.Symbols
+              .SelectMany(s => s)
+    }
+
+    public GetSymbols[T](this instance : TableScope) : IEnumerable[T]
+    {
+      instance.Symbols
+              .SelectMany(s => s)
+              .OfType.[T]()
+    }
+    
+    public GetSymbols(this container : ContainerSymbol) : IEnumerable[DeclarationSymbol]
+    {
+      container.MemberTable.GetSymbols()
+    }
+    
+    public GetSymbols[T](this container : ContainerSymbol) : IEnumerable[T]
+    {
+      container.MemberTable.GetSymbols.[T]()
+    }
+    
+    public AddSymbols(this instance : TableScope, symbols : IEnumerable[DeclarationSymbol]) : void 
+    {
+      foreach (sym in symbols)
+        when (sym.FirstDeclarationOrDefault != null)
+          _ = instance.Define(sym.FirstDeclarationOrDefault, null, null);
+    }
+    
+    public AddSymbols(this instance : ContainerSymbol, symbols : IEnumerable[DeclarationSymbol]) : void 
+    {
+      instance.MemberTable.AddSymbols(symbols)
+    }
+  }
+}

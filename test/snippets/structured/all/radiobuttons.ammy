@@ -1,0 +1,6 @@
+StackPanel "RadioButtons" {
+    RadioButton { "Option1", GroupName: "A" }
+    RadioButton { "Option2", GroupName: "A" }
+    RadioButton { "OptionA", GroupName: "B" }
+    RadioButton { "OptionB", GroupName: "B" }
+}

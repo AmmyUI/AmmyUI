@@ -1,0 +1,57 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Serialization2;
+using Nitra.Declarations;
+using Nitra.Staging;
+using DotNet;
+
+namespace Ammy.Language
+{
+  public class ReferenceValueCollector : ICollector
+  {
+    public CreatedOnStage           : int  { get; }
+    public CreatedOnPass            : int  { get; }
+    public IsEmpty                  : bool { get { _symbols.Count == 0 } }
+    
+    private mutable _symbols : List[(MemberSymbol * DeclarationSymbol)] = List();
+
+    public this(context : DependentPropertyEvalContext)
+    {
+      context.NotifyCollectorCreated(out CreatedOnStage, out CreatedOnPass);
+    }
+    
+    [Collect]
+    public Add(propertyValue : MemberSymbol * DeclarationSymbol) : void
+    {
+      _symbols.Add(propertyValue);
+    }
+
+    public GetSymbols() : List[(MemberSymbol * DeclarationSymbol)]
+    {
+      _symbols
+    }
+
+    public override ToString() : string
+    {
+      $"$CreatedOnStage($CreatedOnPass): ..$(_symbols; \", \"; (p, v) => p.Name + \": \" + v.Name)"
+    }
+    
+    public Serialize(_writer : IO.BinaryWriter, _metadataWriter : MetadataWriter) : void
+    {
+      throw NotImplementedException()
+    }
+/*
+    public static Deserialize(_reader : IO.BinaryReader, _metadataReader : MetadataReader) : this
+    {
+      throw NotImplementedException();
+    }
+    */
+  }
+}

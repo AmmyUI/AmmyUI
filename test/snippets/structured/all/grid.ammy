@@ -1,0 +1,40 @@
+Grid "Grid" {
+    IsSharedSizeScope: true
+
+    RowDefinitions: [
+        RowDefinition { Height: "Auto", SharedSizeGroup: "group1" }
+        RowDefinition {}
+        RowDefinition { SharedSizeGroup: "group1" }
+    ]
+
+    ColumnDefinitions: [
+        ColumnDefinition { Width: "Auto" }
+        ColumnDefinition {}
+        ColumnDefinition {}
+        ColumnDefinition {}
+    ]
+
+    Label {
+        "Label 1"
+
+        Grid.Row: 1
+        Grid.Column: 1
+        Grid.RowSpan: 2
+        Grid.ColumnSpan: 3
+    }
+
+    Label {
+        "Label 2"
+
+        Grid.Row: 2
+        Grid.Column: 3
+        Grid.RowSpan: 2
+        Grid.ColumnSpan: 3
+    }
+
+    GridSplitter {
+        Grid.Column: 0
+        Grid.RowSpan: 4
+        Width: 5
+    }
+}

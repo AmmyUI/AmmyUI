@@ -1,0 +1,8 @@
+Expander "Expander" {
+    Header: "Grammar"
+    StackPanel {
+        CheckBox { "Check grammar as you type" }
+        CheckBox { "Hide grammatical errors in this document" }
+        CheckBox { "Check grammar with spelling" }
+    }
+}

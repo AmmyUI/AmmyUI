@@ -1,0 +1,7 @@
+﻿UserControl "Ammy.WpfTest.Binding.InlineConverters" {
+  TextBlock {
+    Width: 100
+    Text: bind Width from $this
+          convert (double width) => width.ToString() + "" 
+  } 
+}

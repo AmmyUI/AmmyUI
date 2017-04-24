@@ -1,0 +1,10 @@
+ListBox "ListBoxScrolling" {
+    "Item 1"
+    "Item 2" 
+    "Item 3" 
+
+    ScrollViewer.HorizontalScrollBarVisibility: Disabled
+    ScrollViewer.VerticalScrollBarVisibility: Disabled
+    ScrollViewer.CanContentScroll: false
+    ScrollViewer.IsDeferredScrollingEnabled: true
+}

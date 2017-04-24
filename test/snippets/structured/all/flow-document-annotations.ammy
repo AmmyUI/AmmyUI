@@ -1,0 +1,212 @@
+using System.Windows.Annotations;
+
+StackPanel "FlowDocumentAnnotations" {
+    StackPanel {
+        Orientation: Horizontal
+        Button {
+            "Create Text Note"
+            Command: AnnotationService.CreateTextStickyNoteCommand
+            CommandTarget: bind from "reader"
+        }
+
+        Button {
+            "Create Ink Note"
+            Command: AnnotationService.CreateInkStickyNoteCommand
+            CommandTarget: bind from "reader"
+        }
+
+        Button {
+            "Remove Note"
+            Command: AnnotationService.DeleteStickyNotesCommand
+            CommandTarget: bind from "reader"
+        }
+
+        Button {
+            "Create Yellow Highlight"
+            Command: AnnotationService.CreateHighlightCommand
+            CommandTarget: bind from "reader"
+        }
+
+        Button {
+            "Remove Highlight"
+            Command: AnnotationService.ClearHighlightsCommand
+            CommandTarget: bind from "reader"
+        }
+    }
+    
+    FlowDocumentReader "reader" {
+        FlowDocument {
+            Section {
+                LineHeight: 2
+                Foreground: "White"
+                Background: "Black"
+
+                Paragraph {
+                    "WPF 4 Unleashed"
+                    FontSize: 18
+                }
+
+                Paragraph {
+                    "Notes from Chapter 1"
+                    FontSize: 30
+                    FontWeight: Bold
+                }
+            }
+
+            Paragraph {
+                "Here are some highlights of WPF:"
+            }
+
+            List {
+                ListItem { Paragraph { "Broad integration" } }
+                ListItem { Paragraph { "Resolution independence" } }
+                ListItem { Paragraph { "Hardware acceleration" } }
+                ListItem { Paragraph { "Declarative programming" } }
+                ListItem { Paragraph { "Rich composition and customization" } }
+            }
+
+            BlockUIContainer {
+                Viewbox {
+                    StackPanel {
+                        Orientation: Horizontal
+                        Image { Source: "Images/diagram.png", Margin: 5 }
+                        TextBlock {
+                            "The technologies in the .NET Framework" 
+
+                            VerticalAlignment: Center
+                            Width: 100
+                            TextWrapping: Wrap
+                        }
+                    }
+                }
+            }
+
+            Paragraph {
+                "Here’s another version of the diagram, as a Table:"
+            }
+
+            Table {
+                CellSpacing: 5
+                Padding: 15
+                FontFamily: "Segoe UI"
+                Background: LinearGradientBrush {
+                    GradientStop { Color: "Yellow", Offset: 0 }
+                    GradientStop { Color: "Orange", Offset: 1 }
+                }
+                Columns: [
+                    TableColumn {}
+                    TableColumn {}
+                    TableColumn {}
+                    TableColumn {}
+                ]
+
+                TableRowGroup {
+                    TableRow {
+                        TableCell {
+                            ColumnSpan: 4
+                            TextAlignment: Center
+                            Paragraph {
+                                ".NET Framework"
+                                FontWeight: Bold
+                            }
+                        }
+                    }
+
+                    TableRow {
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "WPF"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "WCF"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "WF"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "WCS"
+                                FontWeight: Bold
+                            }
+                        }
+                    }
+
+                    TableRow {
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "ADO.NET"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "ASP.NET"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "Windows Forms"
+                                FontWeight: Bold
+                            }
+                        }
+                        TableCell {
+                            BorderBrush: "Black"
+                            BorderThickness: 2
+                            Background: "LightGray"
+                            TextAlignment: Center
+                            LineHeight: 70
+                            Paragraph {
+                                "..."
+                                FontWeight: Bold
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

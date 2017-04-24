@@ -1,0 +1,7 @@
+﻿// http://stackoverflow.com/questions/936304/binding-to-static-property
+using ShowTest.Common.ViewModels;
+
+TextBox "BindingToStaticProperty" {
+    Text: bind FilterString
+          from VersionManager.Instance
+}

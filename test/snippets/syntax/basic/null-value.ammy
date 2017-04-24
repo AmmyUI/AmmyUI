@@ -1,0 +1,3 @@
+Button "NullValue" {
+    Background: null
+}

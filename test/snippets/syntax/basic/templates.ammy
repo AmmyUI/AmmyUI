@@ -1,0 +1,6 @@
+template A : Panel {
+  TextBlock {
+    Text: "Hello, world!",
+    Width: 100
+  }
+}

@@ -1,0 +1,214 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Platforms;
+
+namespace Ammy.Infrastructure
+{
+  public class PlatformTypes
+  {
+    public Ammy                     : TypeSymbol { get; set; }
+    public ExpressionConverter      : TypeSymbol { get; set; }
+    public Void                     : TypeSymbol { get; set; }
+    public Type                     : TypeSymbol { get; set; }
+    public String                   : TypeSymbol { get; set; }
+    public Char                     : TypeSymbol { get; set; }
+    public Byte                     : TypeSymbol { get; set; }
+    public SByte                    : TypeSymbol { get; set; }
+    public Int16                    : TypeSymbol { get; set; }
+    public Int32                    : TypeSymbol { get; set; }
+    public Int64                    : TypeSymbol { get; set; }
+    public UInt16                   : TypeSymbol { get; set; }
+    public UInt32                   : TypeSymbol { get; set; }
+    public UInt64                   : TypeSymbol { get; set; }
+    public Single                   : TypeSymbol { get; set; }
+    public Double                   : TypeSymbol { get; set; }
+    public Decimal                  : TypeSymbol { get; set; }
+    public Boolean                  : TypeSymbol { get; set; }
+    public Binding                  : TypeSymbol { get; set; }
+    public BindingBase              : TypeSymbol { get; set; }
+    public Object                   : TypeSymbol { get; set; } 
+    public SetterBase               : TypeSymbol { get; set; }
+    public Style                    : TypeSymbol { get; set; }
+    //public ResourceDictionary       : TypeSymbol { get; set; }
+    public FrameworkElement         : TypeSymbol { get; set; }
+    public DependencyProperty       : TypeSymbol { get; set; }
+    public Collection               : TypeSymbol { get; set; }
+    public List                     : TypeSymbol { get; set; }
+    public IEnumerable              : TypeSymbol { get; set; }
+    public IList                    : TypeSymbol { get; set; }
+    public IDictionary              : TypeSymbol { get; set; }
+    public Thickness                : TypeSymbol { get; set; }
+    public Action                   : TypeSymbol { get; set; }
+    public DependencyObject         : TypeSymbol { get; set; }
+    public UIElement                : TypeSymbol { get; set; }
+    public ICommand                 : TypeSymbol { get; set; }
+    
+    public Collect(root : NamespaceSymbol, typeNames : PlatformTypeNames) : void 
+    { 
+      def typesToLoad : IEnumerable[SymbolInfo] = 
+      [
+        SymbolInfo("AmmySidekick.Ammy", x => Ammy = x),
+        SymbolInfo("AmmySidekick.ExpressionConverter", x => ExpressionConverter = x),
+        SymbolInfo(typeNames.Void, x => Void = x),
+        SymbolInfo(typeNames.Type, x => Type = x),
+        SymbolInfo(typeNames.String, x => String = x),
+        SymbolInfo(typeNames.Char, x => Char = x),
+        SymbolInfo(typeNames.Byte, x => Byte = x),
+        SymbolInfo(typeNames.SByte, x => SByte = x),
+        SymbolInfo(typeNames.Int16, x => Int16 = x),
+        SymbolInfo(typeNames.Int32, x => Int32 = x),
+        SymbolInfo(typeNames.Int64, x => Int64 = x),
+        SymbolInfo(typeNames.UInt16, x => UInt16 = x),
+        SymbolInfo(typeNames.UInt32, x => UInt32 = x),
+        SymbolInfo(typeNames.UInt64, x => UInt64 = x),
+        SymbolInfo(typeNames.Single, x => Single = x),
+        SymbolInfo(typeNames.Double, x => Double = x),
+        SymbolInfo(typeNames.Decimal, x => Decimal = x),
+        SymbolInfo(typeNames.Boolean, x => Boolean = x),
+        SymbolInfo(typeNames.Object, x => Object = x),
+        SymbolInfo(typeNames.Action, x => Action = x),
+        SymbolInfo(typeNames.IEnumerable, x => IEnumerable = x),
+        SymbolInfo(typeNames.Collection, x => Collection = x),
+        SymbolInfo(typeNames.List, x => List = x),
+        SymbolInfo(typeNames.IList, x => IList = x),
+        SymbolInfo(typeNames.IDictionary, x => IDictionary = x),
+        SymbolInfo(typeNames.Binding, x => Binding = x),
+        SymbolInfo(typeNames.BindingBase, x => BindingBase = x),
+        SymbolInfo(typeNames.ICommand, x => ICommand = x),
+        SymbolInfo(typeNames.SetterBase, x => SetterBase = x),
+        SymbolInfo(typeNames.Style, x => Style = x),
+        SymbolInfo(typeNames.Thickness, x => Thickness = x),
+        SymbolInfo(typeNames.UIElement, x => UIElement = x),
+        //SymbolInfo(typeNames.ResourceDictionary, x => ResourceDictionary = x),
+        SymbolInfo(typeNames.FrameworkElement, x => FrameworkElement = x),
+        SymbolInfo(typeNames.DependencyProperty, x => DependencyProperty = x),
+        SymbolInfo(typeNames.DependencyObject, x => DependencyObject = x)
+      ];
+      
+      def loadTypes(ns, types) {
+        def childNss = ConcurrentDictionary();
+        def childTypes = List();
+        
+        foreach (symbolInfo in types) {
+          def split = symbolInfo.Path.Split(array['.'], 2);
+          
+          if (split.Length == 2) {
+            symbolInfo.Path = split[1];
+            childNss.GetOrAdd(split[0], _ => List()).Add(symbolInfo);
+          } else {
+            childTypes.Add(symbolInfo);
+          }
+        }
+        
+        foreach (slist in (ns.Scope :> TableScope).Symbols) 
+          foreach (sym in slist) {
+            when (sym is TypeSymbol as ts)
+              foreach (symbolInfo when symbolInfo.FullName == sym.FullName in childTypes)
+                symbolInfo.Setter.Invoke(ts);
+              
+            when (sym is NamespaceSymbol as n) {
+              mutable children;
+              when (childNss.TryGetValue(sym.Name, out children)) 
+                loadTypes(n, children);
+            }
+          }
+      }
+      
+      loadTypes(root, typesToLoad);
+      
+      MakeSureTypesAreRegistered();
+    }
+    
+    public static LoadTypes(rootNs : NamespaceSymbol, types : IEnumerable[SymbolInfo]) : void {
+      def childNss = ConcurrentDictionary();
+        def childTypes = List();
+        
+        foreach (symbolInfo in types) {
+          def split = symbolInfo.Path.Split(array['.'], 2);
+          
+          if (split.Length == 2) {
+            symbolInfo.Path = split[1];
+            childNss.GetOrAdd(split[0], _ => List()).Add(symbolInfo);
+          } else {
+            childTypes.Add(symbolInfo);
+          }
+        }
+        
+        foreach (slist in (rootNs.Scope :> TableScope).Symbols) 
+          foreach (sym in slist) {
+            when (sym is TypeSymbol as ts)
+              foreach (symbolInfo when symbolInfo.FullName == sym.FullName in childTypes)
+                symbolInfo.Setter.Invoke(ts);
+              
+            when (sym is NamespaceSymbol as n) {
+              mutable children;
+              when (childNss.TryGetValue(sym.Name, out children)) 
+                LoadTypes(n, children);
+            }
+          }      
+    }
+    
+    private MakeSureTypesAreRegistered() : void 
+    {
+      when(this.Void == null) throw Exception("Type Void could not be registered. Are you sure you provided all required references and types?");
+      when(this.Type == null) throw Exception("Type Type could not be registered. Are you sure you provided all required references and types?");
+      when(this.String == null) throw Exception("Type String could not be registered. Are you sure you provided all required references and types?");
+      when(this.Char == null) throw Exception("Type Char could not be registered. Are you sure you provided all required references and types?");
+      when(this.Byte == null) throw Exception("Type Byte could not be registered. Are you sure you provided all required references and types?");
+      when(this.SByte == null) throw Exception("Type SByte could not be registered. Are you sure you provided all required references and types?");
+      when(this.Int16 == null) throw Exception("Type Int16 could not be registered. Are you sure you provided all required references and types?");
+      when(this.Int32 == null) throw Exception("Type Int32 could not be registered. Are you sure you provided all required references and types?");
+      when(this.Int64 == null) throw Exception("Type Int64 could not be registered. Are you sure you provided all required references and types?");
+      when(this.UInt16 == null) throw Exception("Type UInt16 could not be registered. Are you sure you provided all required references and types?");
+      when(this.UInt32 == null) throw Exception("Type UInt32 could not be registered. Are you sure you provided all required references and types?");
+      when(this.UInt64 == null) throw Exception("Type UInt64 could not be registered. Are you sure you provided all required references and types?");
+      when(this.Single == null) throw Exception("Type Single could not be registered. Are you sure you provided all required references and types?");
+      when(this.Double == null) throw Exception("Type Double could not be registered. Are you sure you provided all required references and types?");
+      when(this.Decimal == null) throw Exception("Type Decimal could not be registered. Are you sure you provided all required references and types?");
+      when(this.Boolean == null) throw Exception("Type Boolean could not be registered. Are you sure you provided all required references and types?");
+      when(this.Binding == null) throw Exception("Type Binding could not be registered. Are you sure you provided all required references and types?");
+      when(this.BindingBase == null) throw Exception("Type BindingBase could not be registered. Are you sure you provided all required references and types?");
+      when(this.Object == null) throw Exception("Type Object could not be registered. Are you sure you provided all required references and types?");
+      when(this.SetterBase == null) throw Exception("Type SetterBase could not be registered. Are you sure you provided all required references and types?");
+      when(this.Style == null) throw Exception("Type Style could not be registered. Are you sure you provided all required references and types?");
+      //when(this.ResourceDictionary == null) throw Exception("Type ResourceDictionary could not be registered. Are you sure you provided all required references and types?");
+      when(this.FrameworkElement == null) throw Exception("Type FrameworkElement could not be registered. Are you sure you provided all required references and types?");
+      when(this.DependencyProperty == null) throw Exception("Type DependencyProperty could not be registered. Are you sure you provided all required references and types?");
+      when(this.Collection == null) throw Exception("Type Collection could not be registered. Are you sure you provided all required references and types?");
+      when(this.List == null) throw Exception("Type List could not be registered. Are you sure you provided all required references and types?");
+      when(this.IList == null) throw Exception("Type IList could not be registered. Are you sure you provided all required references and types?");
+      when(this.IDictionary == null) throw Exception("Type IDictionary could not be registered. Are you sure you provided all required references and types?");
+      when(this.Thickness == null) throw Exception("Type Thickness could not be registered. Are you sure you provided all required references and types?");
+      when(this.Action == null) throw Exception("Type Action could not be registered. Are you sure you provided all required references and types?");
+      when(this.DependencyObject == null) throw Exception("Type DependencyObject could not be registered. Are you sure you provided all required references and types?");
+      when(this.UIElement == null) throw Exception("Type UIElement could not be registered. Are you sure you provided all required references and types?");
+      when(this.ICommand == null) throw Exception("Type ICommand could not be registered. Are you sure you provided all required references and types?");
+    }
+  }
+    
+  public class SymbolInfo
+  {
+    public FullName : string { get; set; }
+    public Setter : Action[TypeSymbol] { get; set; }
+    public Path : string { get; set; }
+      
+    public this(fullName : string, setter : Action[TypeSymbol]) 
+    {
+      FullName = fullName;
+      Setter = setter;
+      Path = fullName;
+    }
+  }
+}

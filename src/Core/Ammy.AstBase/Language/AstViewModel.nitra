@@ -1,0 +1,30 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+using Ammy.InitAst;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  ast ViewModel : NodeMember 
+  {
+    Key : QualifiedReference;
+    Key.Scope = TypeScope;
+
+    //AstValue = BuildResult.Ignore();
+    Xaml = XamlEmpty();
+
+  stage 1:
+  
+    out Type : Ref[TypeSymbol];
+    Type = Key.Ref.Resolve();
+  }
+}

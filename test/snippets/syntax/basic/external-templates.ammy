@@ -1,0 +1,6 @@
+﻿using ShowTest.Common.ViewModels;
+
+StackPanel "ExternalTemplate" (A) { 
+    //MouseDown: TestViewModel.OnClick
+}
+  

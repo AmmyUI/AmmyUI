@@ -1,0 +1,35 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+using Nitra.Declarations;
+
+namespace Ammy.Infrastructure
+{
+  public module ScopeExtensions
+  {
+    public ReplaceIfNotEmpty(this originalScope : Scope, replacement : Scope) : Scope
+    {
+      if (replacement : object  != EmptyScope.Instance)
+        replacement
+      else originalScope
+    }
+    
+    public NoAbstractTypes(this originalScope : Scope) : Scope
+    {
+      originalScope.FilterWith(s => s.NotAbstract())
+    }
+    
+    
+    public NoDelegates(this originalScope : Scope) : Scope
+    {
+      originalScope.FilterWith(s => !(s is TopDelegateSymbol))
+    }    
+  }
+}

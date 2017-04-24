@@ -1,0 +1,9 @@
+using ShowTest.Common.ViewModels;
+
+Window "Events" {
+    Width: 200
+    Height: 200
+    Background: "Red"
+    MouseRightButtonDown: TestViewModel.MouseRightButtonDown
+    Button.Click: TestViewModel.OnClick
+}

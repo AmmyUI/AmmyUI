@@ -1,0 +1,321 @@
+﻿using System.Text;
+using Ammy.Util;
+using Nemerle.Collections;
+using Nitra;
+
+namespace Ammy
+{
+  syntax module AmmySyntax
+  {
+    using Nitra.Core;
+    using Nitra.CStyleComments;
+    using DotNet;
+
+    [StartRule]
+    [ExplicitSpaces]
+    syntax Start = Top;
+
+    [ExplicitSpaces]
+    syntax Top  
+    {
+      | WithoutNode      = s Using* GlobalDeclarations;
+      | WithNode         = s Using* GlobalDeclarations TopNode;
+    }
+
+    [ExplicitSpaces]
+    syntax TopNode
+    {
+      | WithName = Key=QualifiedReference s GenericArgs? Name=StringLiteral s "{" s nl GlobalDeclarations (!"set" NodeMember; ContentDelimiter)* s nl "}" s;
+      | WithoutName = Key=QualifiedReference s GenericArgs? "{" s nl GlobalDeclarations (!"set" NodeMember; ContentDelimiter)* s nl "}" s;
+    }
+
+    [ExplicitSpaces]
+    syntax Using
+    {
+      | UsingOpen  = "using" s NamespaceOrType=QualifiedReference ";"? s 
+    }
+    
+    [ExplicitSpaces]
+    syntax Variable = "$" Name s "=" s Value=StringLiteral ";"?;
+
+    [ExplicitSpaces]
+    syntax Node         = Key=QualifiedReference s GenericArgs? NodeName? NodeKey? "{" s nl GlobalDeclarations (!"set" NodeMember; ContentDelimiter)* s nl "}";
+
+    [ExplicitSpaces]
+    syntax TypeFunctionRef = "@" Key=QualifiedReference s FunctionArguments? NodeName? NodeKey? Body=TypeFunctionRefBody?;
+    [ExplicitSpaces]
+    syntax TypeFunctionRefBody = "{" s nl GlobalDeclarations (!"set" NodeMember; ContentDelimiter)* s nl "}";
+
+    syntax NodeName = sm Name=StringLiteral;
+    syntax NodeKey = "Key" "=" Key=StringLiteral;
+    syntax GenericArgs = "<" (QualifiedReference; ",")+ ">";
+    
+    [ExplicitSpaces]
+    syntax ContentDelimiter 
+    {
+      | Comma = s ',' s
+      | Empty = Whitespace* NewLine s
+    }
+
+    [ExplicitSpaces]
+    syntax NodeMember 
+    {
+      | IncompleteProperty = Key=QualifiedReference Whitespace* NewLine !(s "{")
+      | Property           = PropertyMember
+      | TypelessPropertyMember = PropertyName=StringLiteral s ":" s PropertyValue=StringLiteral;
+      | StringLiteral
+      | Node
+      | StyleSetters       = "set" s "[" s PropertyMember* s "]"
+    precedence SpecialSyntax:
+      | ContentFunctionRef = "#" Key=QualifiedReference FunctionArguments?; 
+      | TypeFunctionRef    = Function=TypeFunctionRef
+      | ViewModel          = "viewmodel" s Key=QualifiedReference
+    }    
+    
+    [ExplicitSpaces]
+    syntax GlobalDeclarations = GlobalDeclaration*;
+
+    [ExplicitSpaces]
+    syntax GlobalDeclaration {
+      | Variable        = Variable s
+      | ContentFunction = ContentFunction s
+      | TypeFunction    = TypeFunction s
+    }
+    
+    [ExplicitSpaces]
+    syntax ContentFunction = "mixin" s Name s FunctionParameters s FunctionTargetType s "{" s (!"set" NodeMember; ContentDelimiter)* s "}" s;
+    
+    [ExplicitSpaces]
+    syntax TypeFunction = "alias" s Name s FunctionParameters s "{" s TypeFunctionContent s "}" s;
+
+    [ExplicitSpaces]
+    syntax TypeFunctionContent {
+      | Node
+      | TypeFunctionRef
+    }
+
+    syntax FunctionTargetType = "for" sm Type=QualifiedReference;
+    syntax FunctionParameters = "(" (FunctionParameter; "," sm)* ")";
+    syntax FunctionParameter = Name=IdentifierBody ("=" ArgumentValue)?;
+
+    [ExplicitSpaces]
+    syntax PropertyMember = Combine=("combine" s)? Key=QualifiedReference s ":" s Value;
+    
+    syntax FunctionArguments = "(" (FunctionArgument; "," sm)* ")";
+    syntax FunctionArgument {
+      | Simple = ArgumentValue
+      | Named  = Name=Reference ":" ArgumentValue
+    }
+
+    syntax ArgumentValue 
+    {
+      | None  = "none"
+      | Value = !"none" Value
+    }
+
+    [ExplicitSpaces]
+    syntax Value
+    {
+      | StringLiteral
+      | Number
+      | True  = "true"
+      | False = "false"
+      | Null  = "null"
+      | Reference = !Keyword Key=QualifiedReference s !"{"
+      | ValueList = "[" s (Value; ContentDelimiter)* s "]"
+      | Parameter = "$" Key=Reference
+      | NodeValue = Combine=("combine" s)? Node
+      | TypeFunctionRef = TypeFunction=TypeFunctionRef
+
+    precedence Keywords:
+      | ResourceWithRef  = "resource" s IsDynamic="dyn"? s Key=QualifiedReference
+      | ResourceWithName = "resource" s IsDynamic="dyn"? s StringLiteral
+      | Binding
+    }
+
+    [ExplicitSpaces]
+    syntax Binding = "bind" s Path=BindingPath? Source=("from" s BindingSource)? Converter=("convert" s LambdaExpr s)? ConverterBack=("convertback" s LambdaExpr s)? Settings=("set" s "[" s (!"set" NodeMember; ContentDelimiter)* s  "]")?;
+
+    syntax BindingPath
+    {
+      | StringLiteral
+      | Parameter = "$" Key=Reference
+      | QRef = Key=QualifiedReference
+    }
+    
+    syntax BindingSource
+    {
+      | This      = "$this"
+      | Viewmodel = "$viewmodel"
+      | Template  = "$template"
+      | Ancestor  = "$ancestor" "<" Type=QualifiedReference ">" Level=("(" Digits ")")?
+      | PreviousData = "$previous"
+      | Name      = StringLiteral
+      | Reference = !Keyword Key=QualifiedReference
+      | Resource = "$resource" ResourceKey=Reference
+    }
+
+    regex KeywordToken = "true" | "false" | "null" | "viewmodel" | "using" | "bind" | "from" | "resource" | "dyn" | "set" | "combine";
+    token Keyword = KeywordToken !IdentifierPartCharacters;
+
+    [Name]
+    token Name = !Keyword IdentifierBody
+    {
+      Value() : string = GetText(IdentifierBody);
+    }
+
+    [Reference]
+    token Reference = !Keyword IdentifierBody {
+      Value() : string = GetText(IdentifierBody);
+    }
+
+    [ExplicitSpaces]
+    syntax NamespaceOrTypeName = Reference {
+      Value() : string = Reference.Value();
+      missing Value = "";
+    }
+
+    [ExplicitSpaces]
+    syntax QualifiedReference = Names=(NamespaceOrTypeName; ".")+
+    {
+      Parts() : list[string] = Names.Item1.MapToList(_.Value());
+      FullName() : string = string.Join(".", Parts());
+      CalcLocations() : list[Nitra.Location] = Names.Item1.MapToList(_.Location);
+      LastReference() : NamespaceOrTypeName = Names.Item1[Names.Item1.Count - 1];
+      missing LastReference = null;
+    }
+
+    regex Digit    = ['0'..'9'];
+    regex Digits   = Digit+;
+    regex Integer  = '0' | ['1'..'9'] ['0'..'9']*;
+    regex Exponent = ("E" | "e") ("-" | "+")? Digits;
+
+    regex Fraction = "." Digits ;
+    
+    [SpanClass(Number)]
+    regex Number = "-"? Integer Fraction? Exponent?;
+       
+    [ExplicitSpaces]
+    syntax Argument = Expr;
+
+    [ExplicitSpaces]
+    syntax Expr
+    {
+      | [SpanClass(Number)] 
+        IntegerLiteral = Digits
+        {
+          regex Digits = ("+" | "-")? Digit+;
+        }
+      
+      | [SpanClass(Number)] 
+        FloatLiteral = Digits
+        {
+          regex Digits = ("+" | "-")? Digit+ "." Digit+;
+        }
+      | [SpanClass(String)]
+        String = StringLiteral
+      | Char = CharLiteral
+      | "true"
+      | "false"
+      | "null"
+      | QualifiedName   = Key=QualifiedReference;
+      | Braces          = "(" s Expr s ")"
+      | Cast = "(" s TypeName=QualifiedReference s ")" s Right=Expr
+
+      precedence Ternary:
+      | Ternary = Condition=Expr ^ Ternary s "?" s Left=Expr s ":" s Right=Expr;
+      
+      precedence Or:
+      | Or           = Expr s "||" s Expr
+  
+      precedence And:
+      | And          = Expr s "&&" s Expr
+      
+      precedence Equal:
+      | Equal        = Expr s "==" s Expr
+      | NotEqual     = Expr s "!=" s Expr
+  
+      precedence LessGreater:
+      | LessEqual    = Expr s "<=" s Expr
+      | Less         = Expr s "<"  s Expr
+      | GreaterEqual = Expr s ">=" s Expr
+      | Greater      = Expr s ">"  s Expr
+      
+      precedence Sum:
+      | Sum          = Expr s "+"  s Expr
+      | Sub          = Expr s "-"  s Expr
+      | Modulus      = Expr s "%"  s Expr
+      
+      precedence Mul:
+      | Multiply     = Expr s "*"  s Expr
+      | Divide       = Expr s "/"  s Expr
+      
+      precedence Unary:
+      | Minus         = "-" s Expr
+      | LogicalNegate = "!" s Expr
+
+      precedence Access:
+      | ArrayRef        = Left=Expr ^ Access "[" s Expr s "]"
+      | MemberAccess    = Left=Expr ^ Access "." Key=Reference
+      | Invocation      = Left=Expr ^ Access "(" s (Argument; "," s)* s ")"
+      | Constructor     = "new" s ConstructorType=QualifiedReference "(" s (Argument; "," s)* s ")"
+    }
+
+    syntax LambdaParameter = Type=LambdaParameterType? Key=Reference;
+    syntax LambdaParameterType = TypeName=QualifiedReference;
+
+    [ExplicitSpaces]
+    syntax LambdaExpr = "(" s Parameter=LambdaParameter s ")" s "=>" s Expression=Expr;
+
+    regex HexDigit = ['0'..'9', 'a'..'f', 'A'..'F'];
+    alias Char = Any;
+
+    [SpanClass(String)]
+    token StringLiteral = "\""  StringPart* "\""
+    {
+      Value() : string = FoldThrough(StringParts, StringBuilder(), _.Value(_)).ToString();
+      missing Value = "";
+
+      regex ReservedStringChar = "\"" | "\\";
+
+      token StringPart
+      {
+        Value(sb : StringBuilder) : StringBuilder;
+        missing Value = sb;
+
+        | UnicodeEscapeSequence = "\\u" HexDigit HexDigit HexDigit HexDigit { override Value = sb.Append(HexToChar(this, HexDigit1.StartPos, HexDigit4.EndPos)); }
+        | EscapeSequence        = "\\"  Char                                { override Value = sb.Append(UnescapeChar(FirstChar(Char))); }
+        | Simple                = Chars=(!ReservedStringChar !NewLine Any)+ { override Value = sb.Append(this.GetText()); }
+      }
+    }
+
+    [SpanClass(Char)]
+    token CharLiteral = "\'"  CharPart "\'"
+    {
+      Value() : char = CharPart.Value();
+      missing Value = '\0';
+
+      regex ReservedCharChar = "\'" | "\\";
+
+      token CharPart
+      {
+        Value() : char;
+        missing Value = '\0';
+
+        | Simple                = !ReservedCharChar Char                    { override Value = FirstChar(this.Char); }
+        | UnicodeEscapeSequence = "\\u" HexDigit HexDigit HexDigit HexDigit { override Value = HexToChar(this, HexDigit1.StartPos, HexDigit4.EndPos); }
+        | EscapeSequence        = "\\" Char                                 { override Value = UnescapeChar(FirstChar(this.Char)); }
+      }
+    }
+    /*
+    [SpanClass(Number)]
+    token Number = Digits
+    {
+      Value() : int = DecToInt(this, Digits.StartPos, Digits.EndPos);
+      missing Value = 0;
+
+      regex Digits = ['0'..'9']+;
+    }
+    */
+  }
+}

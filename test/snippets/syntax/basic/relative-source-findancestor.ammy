@@ -1,0 +1,14 @@
+Border "RelativeSourceFindAncestor" {
+    Canvas {
+        TextBlock {
+            Text: bind Left 
+                  set [
+                    RelativeSource: RelativeSource {
+                        Mode: FindAncestor
+                        AncestorType: Canvas
+                        AncestorLevel: 2
+                    }
+                  ]
+        }
+    }
+}

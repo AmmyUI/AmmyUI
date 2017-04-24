@@ -1,0 +1,19 @@
+﻿// http://stackoverflow.com/questions/356194/datatrigger-where-value-is-not-null
+using ShowTest.Common.ViewModels;
+
+TextBlock "DataTriggerNotNull" {
+    viewmodel TestViewModel
+    
+    Style: Style {
+             Triggers: [
+               DataTrigger {
+                 Binding: bind FirstName
+                          convert val => val == null
+                 Value: false
+                 set [
+                     Background: "#FF80C983"
+                 ]
+               }
+             ]
+           }
+}

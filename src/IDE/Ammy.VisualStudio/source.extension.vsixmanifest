@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="Ammy.VisualStudio.3f67c783-4db2-4c64-8bf3-d672ebf15b62" Version="1.1.5" Language="en-US" Publisher="Mihhail Maslakov" />
+    <DisplayName>Ammy</DisplayName>
+    <Description xml:space="preserve">Ammy language extension</Description>
+    <Icon>logo_64_desaturated.png</Icon>
+    <Tags>xaml wpf</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[12.0,15.0]" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" Path="ItemTemplates" d:Source="Project" d:ProjectName="%CurrentProject%.ItemTemplates" d:TargetPath="|Ammy.VisualStudio.ItemTemplates;TemplateProjectOutputGroup|" d:VsixSubPath="ItemTemplates" />
+  </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.25904.2,16.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+</PackageManifest>

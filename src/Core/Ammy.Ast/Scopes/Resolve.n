@@ -1,0 +1,28 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Symbols;
+
+namespace Ammy.Scopes
+{
+  public module Resolvers
+  {    
+    public static Property : ResolutionAlgorithm[DeclarationSymbol, MemberSymbol] = PropertyImpl;
+
+    private static PropertyImpl(candidate : DeclarationSymbol) : ValueOption[MemberSymbol]
+    {
+      | symbol is Member.PropertySymbol => VSome(symbol)
+      | symbol is Member.EventSymbol => VSome(symbol)
+      | _ => VNone()
+    }
+  }
+}

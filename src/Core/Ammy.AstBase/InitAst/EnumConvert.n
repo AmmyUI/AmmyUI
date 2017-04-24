@@ -1,0 +1,43 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+
+namespace Ammy.Converters
+{
+  public module EnumConvert
+  {
+    _values : Dictionary[string, array[EnumMemberSymbol]] = Dictionary();
+    
+    public Register(enm : EnumSymbol) : void
+    {
+      def symbols = enm?.MemberTable?.Symbols;
+      
+      _values[enm.FullName] = symbols.SelectMany(syms => syms)
+                                     .OfType.[EnumMemberSymbol]()
+                                     .Where(s => s.Name != "value__")
+                                     .ToArray();
+    }
+    
+    public SymbolsFor(enm : EnumSymbol) : array[EnumMemberSymbol]
+    {
+      mutable symbols;
+      if (_values.TryGetValue(enm.FullName, out symbols)) 
+        symbols
+      else {
+        assert(false, "Enum not registered " + enm.FullName);        
+      }
+    }
+    
+    public ValuesFor(enm : EnumSymbol) : array[string]
+    {
+      SymbolsFor(enm).Select(s => s.Name).ToArray()
+    }
+  }
+}

@@ -1,0 +1,190 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Immutable;
+﻿using Nitra;
+using Nitra.Declarations;
+
+using DotNet;
+
+using Ammy;
+using Ammy.Xaml;
+using Ammy.Scopes;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  abstract declaration GlobalDeclaration {
+    in TypeScope : Scope;
+    in GlobalDeclarationScope : Scope;
+
+    | Variable : VariableRef {
+      symbol {
+        Kind = "Variable definition";
+        SpanClass = DotNetLang.ParameterSpanClass;
+
+        in Value : ParsedValue[string];
+      }
+
+      Value : string;
+
+      Symbol.Value = Value;
+    }
+    | ContentFunction : Function {
+      symbol {
+        SpanClass = DotNetLang.PropertySpanClass;
+        Kind      = "Content function definition";
+        in TargetType : TypeSymbol;
+      }
+
+      TargetType : QualifiedReference;
+      TargetType.Scope = PriorityScope(TypeScope, PriorityAlgorithm.FrameworkElement(), context);
+
+      Members : NodeMember*;
+      Members.TypeScope = TypeScope;
+      Members.GlobalDeclarationScope = GlobalDeclarationScope.HideWith(ContainingTable);
+      Members.TemplateParameterScope = Parameters.ContainingTable;
+      Members.FunctionRefScope       = Symbol.FunctionRefs;
+      Members.Breadcrumbs            = ImmutableList.Create();
+      Members.IsInsideFrameworkTemplate = false;
+      Members.Parent                 = null;
+      Members.ParentVariableAst      = InitAst.Variable("__template_var");
+      Members.ParentPropertyScope    = PropertyScope(context, false, TypeScope.HideWith(TargetTypeRef.Symbol.Scope));
+      Members.ParentNodeType         = Some(TargetTypeRef.Symbol);
+      Members.ParsingContext         = context.CreateParsingContext();
+      Members.RootSymbolId           = Symbol.Name;
+    
+      Scope = TypeScope;
+
+    stage 1:
+      //out TargetTypeRef : Ref[TypeSymbol] = TargetType.Ref.ResolveTemplateTargetType(context :> AmmyDependentPropertyEvalContext);
+      out TargetTypeRef : Ref[TypeSymbol] = TargetType.Ref.Resolve();
+
+      Symbol.XamlTemplate = this.BuildXamlTemplate(Members.Xaml, TargetTypeRef.Symbol, Members.RootSymbolId, context);
+      Symbol.TargetType = TargetTypeRef.Symbol;
+    }
+    | TypeFunction : Function {
+      symbol {
+        SpanClass = Language.TypeSpanClass;
+        Kind      = "Type function definition";
+        in NodeType : TypeSymbol;
+      }
+      
+      Content : TypeFunctionContent;
+      Content.FunctionRefScope = Symbol.FunctionRefs;
+      Content.GlobalDeclarationScope = GlobalDeclarationScope.HideWith(ContainingTable);
+      Content.TypeScope = TypeScope;
+      Content.ParameterScope = Parameters.ContainingTable;
+      Content.RootSymbolId = Symbol.Name;
+
+      Symbol.XamlTemplate = this.BuildXamlTemplate(Content.Xaml, Content.RootSymbolId, context);
+      Symbol.NodeType     = Content.NodeType;
+
+      Scope = TypeScope;
+    }
+  }
+
+  abstract ast TypeFunctionContent {
+
+    in FunctionRefScope : TableScope;
+    in GlobalDeclarationScope : Scope;
+    in TypeScope : Scope;
+    in ParameterScope : Scope;
+    in RootSymbolId : string;
+
+  stage 1:
+    out NodeType : TypeSymbol;
+    out Xaml     : XamlElement;
+
+    | NodeContent {
+      Node : NodeBase;
+      Node.TypeScope         = TypeScope;
+      Node.FunctionRefScope  = FunctionRefScope;
+      Node.ParentNodeType    = None();
+      Node.IsTopNode         = false;
+      Node.Parent            = null;
+      Node.ParentVariableAst = null;
+      Node.ParsingContext    = context.CreateParsingContext();
+      Node.Breadcrumbs       = ImmutableList.Create();
+      Node.TemplateParameterScope = ParameterScope;
+      Node.IsInsideFrameworkTemplate = false;
+      Node.RootSymbolId      = RootSymbolId;
+      Node.GlobalDeclarationScope = GlobalDeclarationScope;
+
+      NodeType = Node.Type;
+      Xaml     = Node.Xaml;
+    }
+    | TypeFunctionRefContent {
+      TypeFunction : TypeFunctionRef;
+      TypeFunction.TypeScope         = TypeScope;
+      TypeFunction.FunctionRefScope  = FunctionRefScope;
+      TypeFunction.ParentNodeType    = None();
+      TypeFunction.IsTopNode         = false;
+      TypeFunction.Parent            = null;
+      TypeFunction.ParentVariableAst = null;
+      TypeFunction.ParsingContext    = context.CreateParsingContext();
+      TypeFunction.Breadcrumbs       = ImmutableList.Create();
+      TypeFunction.TemplateParameterScope = ParameterScope;
+      TypeFunction.IsInsideFrameworkTemplate = false;
+      TypeFunction.RootSymbolId      = RootSymbolId;
+      TypeFunction.GlobalDeclarationScope = GlobalDeclarationScope;
+
+      NodeType = TypeFunction.Type;
+      Xaml     = TypeFunction.Xaml;
+    }
+  }
+
+  abstract declaration Function {
+    symbol {
+      in XamlTemplate  : XamlNode;
+      in Parameters    : TableScope;
+      in RequiredParametersCount : int;
+
+      out FunctionRefs : TableScope = TableScope(this, "function refs");
+    }
+    
+    Parameters : FunctionParameter*;
+    Parameters.Scope           = Scope;
+    Parameters.ContainingTable = TableScope(Symbol, "template parameters");
+    Parameters.IndexIn         = 0;
+    Parameters.TypeScope  = GlobalDeclaration.TypeScope;
+    Parameters.GlobalDeclarationScope  = GlobalDeclaration.GlobalDeclarationScope;
+    
+    Symbol.Parameters = Parameters.ContainingTable;
+    Symbol.RequiredParametersCount = this.GetRequiredParameterCount(Parameters);
+    
+    in Scope : Scope;
+    in GlobalDeclaration : GlobalDeclaration;
+
+    when (this.OptionalArgumentsPrecedePositional(Parameters)) 
+      Error (context, "Optional parameters cannot precede positional");
+  }
+
+  declaration FunctionParameter : VariableRef {
+    symbol {
+      Kind      = "FunctionParameter";
+      SpanClass = DotNetLang.ParameterSpanClass;
+
+      in Index    : int;
+      in Variable : InitAst.Variable;
+    }
+
+    DefaultValue : ArgumentValue?;
+    DefaultValue.TypeScope = TypeScope;    
+    DefaultValue.GlobalDeclarationScope = GlobalDeclarationScope;
+    DefaultValue.TemplateParameterScope = EmptyScope.Instance;
+
+    in Scope     : Scope;
+    in TypeScope : Scope;
+    in GlobalDeclarationScope : Scope;
+
+    inout Index : int;
+    IndexOut = IndexIn + 1;
+    
+    Symbol.Index = IndexIn;
+    Symbol.Variable = InitAst.Variable("tmpl_par_" + IndexIn);
+  }
+
+  abstract declaration VariableRef
+  {}
+}

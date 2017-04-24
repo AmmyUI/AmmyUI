@@ -1,0 +1,75 @@
+﻿using Nemerle;
+using Nemerle.Extensions;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Nitra.ProjectSystem;
+using Nitra.Serialization2;
+using Nitra.Internal;
+using DotNet;
+
+namespace Ammy.Scopes
+{
+  public class GlobalScope : Scope
+  {
+    public Symbols : Dictionary[int, list[DeclarationSymbol]].ValueCollection { get { _symbols.Values } }
+    public override AllSymbols : Seq[DeclarationSymbol]  { get { _symbols.Values.Cast.[DeclarationSymbol]() } }
+    
+    _symbols : Dictionary.[int, list[DeclarationSymbol]] = Dictionary();
+        
+    public Add[TSymbol](symbol : TSymbol, nameId : int) : void
+      where TSymbol: DeclarationSymbol
+    { 
+      mutable list;
+      
+      if (_symbols.TryGetValue(nameId, out list))
+        _symbols[nameId] = symbol :: list;
+      else
+        _symbols[nameId] = [symbol];
+    }
+    
+    public override FindMany[TSymbol](predicate : Predicate[TSymbol], results : ref LightList[TSymbol]) : void
+    {
+      foreach (list in _symbols.Values)
+        foreach (sym is TSymbol when predicate(sym) in list)
+          results.Add(sym);
+    }
+
+    public override BindMany[TSymbol](reference : Reference, results : ref LightList[TSymbol]) : void
+    {
+      mutable list;
+      when (_symbols.TryGetValue(reference.Id, out list))
+        foreach (el is TSymbol in list)
+          results.Add(el);
+    }
+
+    public override MakeCompletionList(prefix : string) : Seq[DeclarationSymbol]
+    {
+      mutable results = List.[DeclarationSymbol]();
+      
+      foreach (list in _symbols.Values)
+        foreach (sym when sym.Name.StartsWith(prefix) in list)
+          results.Add(sym);
+      
+      results;
+    }
+    
+    public override Serialize(_writer : BinaryWriter, _metadataWriter : MetadataWriter) : void
+    {
+    
+    }
+    
+    public override ToString() : string
+    {
+      $<#[..$(_symbols.Keys; ", "; StringIndex.GetText)]#>
+    }
+  }
+}

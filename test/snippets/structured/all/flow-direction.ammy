@@ -1,0 +1,4 @@
+StackPanel "FlowDirection" {
+    Button { "Click me", FlowDirection: LeftToRight }
+    Button { "And me", FlowDirection: RightToLeft }
+}

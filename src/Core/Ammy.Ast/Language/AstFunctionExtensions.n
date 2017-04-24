@@ -1,0 +1,80 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+
+using Ammy.Xaml;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  public module AstTemplateExtensions
+  {
+    public ResolveTemplateTargetType(this targetTypeRef : ValueOption[Ref[DeclarationSymbol]], context : AmmyDependentPropertyEvalContext) : Ref[TypeSymbol]
+    {
+      match (targetTypeRef) {
+        | VSome(rf) => rf.Resolve();
+        | _ => Ref.Some(Helpers.NoLocation, context.Types.FrameworkElement)
+      } 
+    }
+    
+    public BuildXamlTemplate(this function : GlobalDeclaration.ContentFunction, membersXaml : ImmutableArray[XamlElement], targetTypeSymbol : TypeSymbol, _rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
+    {
+      def _context = context.ToAmmyContext();
+      //def nss = [XamlAttribute("xmlns", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml/presentation"), Helpers.NoLocation),
+      //           XamlAttribute("xmlns:x", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml"), Helpers.NoLocation)];
+                   
+      XamlNode (targetTypeSymbol.Name, function.Location, //context.GetOpenedNamespaces(rootSymbolId)
+                                                                 membersXaml)
+    }
+    
+    public BuildXamlTemplate(this tf : GlobalDeclaration.TypeFunction, nodeXaml : XamlElement, _rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
+    {
+      def context = context.ToAmmyContext();
+      //def nss = [XamlAttribute("xmlns", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml/presentation"), Helpers.NoLocation),
+      //           XamlAttribute("xmlns:x", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml"), Helpers.NoLocation)];
+      
+      def nodeXaml = match (nodeXaml) {
+        | XamlNode as node => node
+        | XamlList(Elements = lst) when lst.Length == 1 && lst[0] is XamlNode => lst[0] :> XamlNode
+        | _ => 
+          tf.Error(context, "Invalid TypeFunction definition");
+          XamlNode()
+      }
+      
+      XamlNode(nodeXaml.Name, nodeXaml.OriginalLocation, //context.GetOpenedNamespaces(rootSymbolId)                                                            
+                                                                nodeXaml.Attributes
+                                                                .Concat(nodeXaml.ChildNodes)
+                                                                .Concat(if (nodeXaml.Value != null) [nodeXaml.Value] else []))
+    }
+    
+    public OptionalArgumentsPrecedePositional(this _ : Function, parameters : FunctionParameter.IAstList) : bool
+    {
+      mutable optionalParamMet = false;
+      
+      for (mutable i = 0; i < parameters.Count; i++) {
+        when (parameters[i].DefaultValue.HasValue)
+          optionalParamMet = true;
+          
+        when (!parameters[i].DefaultValue.HasValue && optionalParamMet)
+          return true;
+      }
+      
+      false
+    }
+    
+    public GetRequiredParameterCount(this _ : Function, parameters : FunctionParameter.IAstList) : int
+    {
+      parameters.Count(p => !p.DefaultValue.HasValue)
+    }
+  }
+}

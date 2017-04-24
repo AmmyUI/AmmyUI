@@ -1,0 +1,48 @@
+﻿UserControl "Ammy.WpfTest.Attributes.Combine" {
+  Style: combine Style {
+    TargetType: UserControl
+    #Setter("Background", Red)
+    combine Triggers: Trigger {
+      Property: "Width"
+      Value: "50"
+    }
+  }
+  Style: combine Style {
+    TargetType: UserControl
+    #Setter("Width", 100)
+    combine Triggers: Trigger {
+      Property: "Background"
+      Value: "Green"
+    }
+  }
+  Grid "TestGrid" {
+    TextBlock { Text: "1" }
+    Button { Content: "A" }
+    TextBlock { Text: "2" }
+    Button { Content: "B" }
+    TextBlock { Text: "3" }
+    Button { Content: "C" }
+    Grid { #TwoRows(1, 2) }
+    Grid { #TwoColumns(3, 4) }
+    combine RowDefinitions: RowDefinition {
+      Height: 1
+    }
+    combine ColumnDefinitions: [
+      ColumnDefinition {
+        Width: 50
+      }
+      ColumnDefinition {
+        Width: 100
+      }
+    ]
+    combine RowDefinitions: RowDefinition {
+      Height: 2
+    }
+    combine ColumnDefinitions: ColumnDefinition {
+      Width: 150
+    }
+    combine RowDefinitions: RowDefinition {
+      Height: 3
+    }
+  }
+}

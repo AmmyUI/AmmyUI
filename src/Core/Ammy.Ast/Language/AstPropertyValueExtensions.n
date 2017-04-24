@@ -1,0 +1,366 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Backend;
+using Ammy.Frontend;
+using Ammy.Infrastructure;
+using Ammy.Symbols;
+using Ammy.Xaml;
+using Ammy.InitAst;
+
+namespace Ammy.Language
+{
+  public module AstPropertyValueExtensions
+  { 
+    public BuildXaml(this value : PropertyValue.String) : XamlValue
+    {
+      XamlValue.String(value.Val.Value, value.Location)
+    }
+    
+    public BuildXaml(this value : PropertyValue.Number) : XamlValue
+    {
+      XamlValue.String(value.Val.Value)
+    }
+    
+    public BuildXaml(this value : PropertyValue.Boolean) : XamlValue
+    {
+      XamlValue.String(if (value.Val.Value) "True" else "False", value.Location)
+    }
+    
+    public BuildXaml(this value : PropertyValue.Null) : XamlValue
+    {
+      XamlValue.String("{x:Null}", value.Location)
+    }
+    
+    public BuildXaml(this value : PropertyValue.ReferenceValue, symbol : DeclarationSymbol, parentPropertyType : TypeSymbol, isListElement : bool, rootSymbolId : string, context : DependentPropertyEvalContext) : XamlValue
+    {
+      def context = context.ToAmmyContext();
+      
+      match (symbol) {
+        | MemberSymbol as ms =>
+          if (parentPropertyType.IsDescendant(context.Types.ICommand)) {
+            def alias = context.GetNamespaceAliasFor(ms.DeclaredIn, rootSymbolId);
+            XamlValue.String($"{x:Static $alias$(ms.DeclaredIn.Name).$(symbol.Name)}", value.Location)
+          } else if (parentPropertyType is DelegateSymbol) {
+            if (ms.IsStatic()) {
+              value.Error(context, "Only instance methods are allowed as event handlers");
+              
+              XamlValue.String($"$(symbol.Name)", value.Location)
+            } else {
+              XamlValue.String($"$(symbol.Name)", value.Location)
+            }
+          } else if (symbol is DependencyPropertySymbol as dp) {
+            def declaredIn = dp.DeclaredIn;
+            def alias = context.GetNamespaceAliasFor(declaredIn, rootSymbolId);
+            XamlValue.String($"$alias$(declaredIn.Name).$(dp.Name)", value.Location)
+          } else if (ms.IsStatic()) {
+            if (value.Key is QualifiedReference.Simple) {
+              XamlValue.String($"$(symbol.Name)", value.Location)
+            } else {
+              def alias = context.GetNamespaceAliasFor(ms.DeclaredIn, rootSymbolId);
+              XamlValue.String($"{x:Static $alias$(ms.DeclaredIn.Name).$(symbol.Name)}", value.Location)
+            }
+          } else {
+            value.Error(context, "Cannot reference non-static member");
+            XamlValue.String($"{x:Static $(symbol.Name)}", value.Location)
+          }
+          
+        | EnumMemberSymbol => 
+          XamlValue.String($"$(symbol.Name)", value.Location)
+          
+        | TypeSymbol as ts => 
+          def alias = context.GetNamespaceAliasFor(ts, rootSymbolId);
+          
+          if (isListElement) {            
+            def node = XamlNode("x:Type", value.Location, [XamlAttribute("Type", XamlValue.String($"$alias$(symbol.Name)"), value.Location)]);
+            XamlValue.Node(node)
+          } else {
+            XamlValue.String($"{x:Type $alias$(symbol.Name)}", value.Location)
+          }
+          
+        | _ => 
+          value.Error(context, "Invalid value");
+          XamlValue.String($"{x:Static $(symbol.Name)}", value.Location)
+      }
+    }
+    
+    public BuildXaml(this value : PropertyValue.NodeValue, nodeXaml : XamlElement) : XamlValue
+    {
+      def node = nodeXaml :> XamlNode;
+      node.CombineChildren = value.IsCombine.HasValue && value.IsCombine.Value == true;
+      XamlValue.Node(node, value.Location)
+    }
+    
+    public BuildXaml(this value : PropertyValue.ValueList, values : ImmutableArray[XamlValue]) : XamlValue
+    {
+      XamlValue.List(values.ToArray(), value.Location)
+    }
+    
+    public BuildXaml(this value : PropertyValue.Parameter, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
+    {
+      BuildParameterXaml(value, symbol, context)
+    }
+    
+    public BuildXaml(this value : BindingPath, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : string
+    {
+      BuildParameterXaml(value, symbol, context).Build()
+    }
+    
+    private BuildParameterXaml(value : IAst, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
+    {
+      match (symbol) {
+        | FunctionParameterSymbol => XamlValue.String("{PARAMETER_" + symbol.FullName + "}", value.Location);
+        | x is GlobalDeclaration.VariableSymbol => 
+          if (x.Value.HasValue)
+            XamlValue.String(x.Value.Value, value.Location);
+          else {
+            value.Error(context, $"Invalid value for variable $(symbol.Name)");
+            XamlValue.String("ERROR", value.Location);
+          }
+        | _ => assert2(false); null
+      }
+    }
+    
+    public BuildXaml(this value : PropertyValue.ResourceWithName) : XamlValue
+    {
+      if (value.IsDynamic.Value)
+        XamlValue.String("{DynamicResource " + value.Name.Value + "}", value.Location);
+      else
+        XamlValue.String("{StaticResource " + value.Name.Value + "}", value.Location);
+    }
+    
+    public BuildXaml(this value : PropertyValue.ResourceWithRef, symbol : Member.PropertySymbol) : XamlValue
+    {
+      def res = match (symbol.DeclaredIn) {
+        | ts when ts.IsStatic() => "{x:Static " + ts.Name + "." + symbol.Name + "}"
+        | _ => symbol.Name
+      }
+      
+      if (value.IsDynamic.Value)
+        XamlValue.String("{DynamicResource " + res + "}", value.Location);
+      else
+        XamlValue.String("{StaticResource " + res + "}", value.Location);
+    }
+    
+    public BuildXaml(this value : PropertyValue.TypeFunction, xaml : XamlElement, context : DependentPropertyEvalContext) : XamlValue
+    {
+      def context = context.ToAmmyContext();
+      match (xaml) {
+        | XamlList(Elements = lst) when lst.Length == 1 && lst[0] is XamlNode => 
+          XamlValue.Node(lst[0] :> XamlNode, lst[0].OriginalLocation)
+        | _ => value.Error(context, "Only mixins returning single node supported as value");
+          XamlValue.None();
+      }
+    }
+    
+    public BuildXaml(this value : PropertyValue.Binding, pathOpt : ValueOption[string], bindingSource : ValueOption[XamlElement], settingsXaml : ImmutableArray[XamlElement], converter : IAstOption[LambdaExpr], converterAst : ValueOption[BuildResult], rootSymbolId : string, context : DependentPropertyEvalContext) : XamlValue
+    {
+      def context = context.ToAmmyContext();
+      def children = List();
+      
+      when (pathOpt.HasValue)
+        children.Add(XamlAttribute("Path", XamlValue.String(pathOpt.Value), value.Location));
+      
+      when (bindingSource.HasValue) 
+        children.Add(bindingSource.Value);
+      
+      children.AddRange(settingsXaml);
+      
+      when (converterAst.HasValue) {
+        match (converterAst.Value) {
+          | BuildResult.Result(ast) => 
+            def xml = XmlFrontend.InitAstToXml(ast);
+            def converterId = context.GetBindingConverterId(xml);
+            def wrappedXml = System.Security.SecurityElement.Escape($<#<expr id="$converterId">$xml</expr>#>);
+            def converterPrefix = context.GetNamespaceAliasFor(context.Types.ExpressionConverter, rootSymbolId);
+            
+            children.Add(XamlAttribute("Converter", XamlValue.String($"{x:Static $(converterPrefix)ExpressionConverter.Instance}"), value.Location));
+            children.Add(XamlAttribute("ConverterParameter", XamlValue.String(wrappedXml), value.Location));
+          | BuildResult.Error(error) => converter.Error(context, error)
+          | _ => {}
+        }
+      }
+      
+      XamlValue.Node(XamlNode("Binding", value.Location, children));
+    }
+    
+    public GetKeyScope(this refVal : PropertyValue.ReferenceValue, typeScope : Scope, assignee : IAst, expectedType : TypeSymbol, context : DependentPropertyEvalContext) : Scope
+    {
+      def _ctx = context.ToAmmyContext();
+      def onlyStaticMembers(p) {
+        if (p is MemberSymbol as ms when ms.IsStatic()) 
+          true
+        else
+          false
+      }
+      
+      match (assignee) {
+        | Property when expectedType is TopEnumSymbol =>
+          expectedType.Scope
+          
+        | Property when expectedType is TopDelegateSymbol => //EVENT!!
+          def scope = TableScope(null, "event handlers");
+          def symbol = ExternalDeclaration.[EventHandlerSymbol](Name(Helpers.NoLocation, refVal.Key.FullName())).DefineSymbol(scope);
+          symbol.TypeParametersCount = 0;
+          symbol.Kind = "EventHandler";
+          symbol.SpanClass = DotNetLang.PropertySpanClass;
+          symbol.FullName = symbol.Name;
+          typeScope.HideWith(scope);
+          
+        | prop is Property => 
+          def result = typeScope;
+          
+          // Is Style Setters list?
+          //def result = if (parentNodeType is Some(type) when type.IsDescendant(ctx.Types.SetterBase))
+          //               result.HideWith(targetTypeScope);
+          //             else result;
+                       
+          // Expects type?
+          //def result = if (prop.Type.IsDescendant(ctx.Types.TypeType))
+          //               typeScope.FilterWith(s => s is TypeSymbol || s is NamespaceSymbol);
+          //             else result;
+                       
+          def openedStaticProperties = prop.Type.Scope.FilterWith(onlyStaticMembers);
+          
+          result.UnionWith(openedStaticProperties)
+          
+        | _ => typeScope
+      }
+    }
+    
+    public ResolveBindingPath(this _binding : PropertyValue.Binding, path : IAstOption[DotNet.QualifiedReference], pathRef : ValueOption[Ref[Nitra.Declarations.DeclarationSymbol]], context : DependentPropertyEvalContext) : Ref[Member.PropertySymbol]
+    {
+      if(path.HasValue && pathRef.HasValue) 
+        pathRef.Value.ResolveOrDefault(Helpers.DefaultPropertySymbol(path.Value, context)) 
+      else 
+        Ref.[Member.PropertySymbol].Unresolved(Helpers.NoLocation, "", ResolutionSource.Unknown())
+    }
+    
+    public GetBindingExpectedType(this _binding : PropertyValue.Binding, propertyType : TypeSymbol, context : DependentPropertyEvalContext) : TypeSymbol
+    {
+      def context = context.ToAmmyContext();
+      
+      if (propertyType.IsDescendant(context.Types.BindingBase))
+        context.Types.Object;
+      else 
+        propertyType;
+    }
+    
+    public ResolveBindingSourceType(this _binding : PropertyValue.Binding, pathRef : ValueOption[Ref[DeclarationSymbol]], relativeSourceType : ValueOption[option[TypeSymbol]], context : DependentPropertyEvalContext) : TypeSymbol
+    {
+      def context = context.ToAmmyContext();
+      
+      if (pathRef.HasValue) {
+        def rf = pathRef.Value.Resolve.[Member.PropertySymbol]();
+        
+        if (rf is Ref[Member.PropertySymbol].Some) {
+          rf.Symbol.Type
+        } else {
+          context.Types.Object
+        }
+      } else if (relativeSourceType.HasValue && relativeSourceType.Value.HasValue) {
+          relativeSourceType.Value.Value
+      } else {
+        context.ToAmmyContext().Types.Object
+      }
+    }
+    
+    public GetValueListExpectedType(this _list : PropertyValue.ValueList, _expectedType : TypeSymbol, context : DependentPropertyEvalContext) : TypeSymbol
+    {
+      // We don't need ExpectedType now
+      context.ToAmmyContext().Types.Object
+      //expectedType.GetCollectionItemTypes(context)
+    }
+    
+    public GetType(this _ : PropertyValue.String, ctx : DependentPropertyEvalContext) : TypeSymbol
+    {
+      ctx.ToAmmyContext().Types.String;
+    }
+    
+    public GetType(this _ : PropertyValue.Number, ctx : DependentPropertyEvalContext) : TypeSymbol
+    {
+      ctx.ToAmmyContext().Types.Double;
+    }
+    
+    public GetType(this _ : PropertyValue.ResourceWithName, ctx : DependentPropertyEvalContext) : TypeSymbol
+    {
+      ctx.ToAmmyContext().Types.Object;
+    }
+    
+    public GetType(this _ : PropertyValue.ResourceWithRef, ctx : DependentPropertyEvalContext) : TypeSymbol
+    {
+      ctx.ToAmmyContext().Types.Object;
+    }
+    
+    public GetType(this _ : PropertyValue.Boolean, ctx : DependentPropertyEvalContext) : TypeSymbol
+    {
+      ctx.ToAmmyContext().Types.Boolean;
+    }
+    
+    public ResetKeyBaseUnresolvedStatus(this _ : PropertyValue.ReferenceValue, keyBase : QualifiedReference, symbol : DeclarationSymbol) : object
+    {
+      keyBase.ResetProperties();
+      keyBase.Ref = Ref.[DeclarationSymbol].Some(keyBase.Location, symbol);
+      _ = keyBase.Ref.Resolve();
+          
+      match (keyBase) {
+        | simple is QualifiedReference.Simple       with name = simple.Name
+        | qualified is QualifiedReference.Qualified with name = qualified.Name =>
+          name.ResetProperties();
+          name.Ref = Ref.[DeclarationSymbol].Some(keyBase.Location, symbol);
+          _ = name.Ref.Resolve();
+          
+        | _ => {}
+      }
+      
+      null
+    }
+    
+    public ResolveReferenceValue(this _ : PropertyValue.ReferenceValue, keyRef : Ref[DeclarationSymbol], expectedType : TypeSymbol, context : DependentPropertyEvalContext) : Ref[DeclarationSymbol]
+    {
+      def context = context.ToAmmyContext();
+      
+      def algo = 
+        fun(candidate : DeclarationSymbol) : ValueOption[DeclarationSymbol] {
+          | _ is Member.MethodSymbol when expectedType is DelegateSymbol =>
+            VSome(candidate)
+            
+          | DependencyPropertySymbol when expectedType.IsDescendant(context.Types.DependencyProperty) =>
+            VSome(candidate)
+            
+          | member is MemberSymbol => 
+            def isUwpBrush = expectedType.FullName == "Windows.UI.Xaml.Media.Brush";
+            
+            if (member.GetMemberReturnType(context).IsDescendant(expectedType) || isUwpBrush)
+              VSome(candidate)
+            else
+              VNone()
+                
+          | ts is TypeSymbol => 
+            if (ts.IsDescendant(expectedType) || expectedType.IsDescendant(context.Types.Type)) 
+              VSome(candidate)
+            else 
+              VNone()
+              
+          | _ => VSome(candidate)
+        };
+      
+      if (keyRef.IsResolvedToEvaluated)
+        keyRef.ResolvedTo :> Ref[DeclarationSymbol]
+      else
+        keyRef.Resolve(algo)
+    }
+  }
+}

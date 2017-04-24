@@ -1,0 +1,344 @@
+﻿using Nemerle;
+using Nemerle.Extensions;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.Text;
+using System.IO;
+using System.Threading;
+using System.Diagnostics;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Nitra.Internal;
+using Nitra.ProjectSystem;
+using DotNet;
+
+using Ammy;
+using Ammy.Scopes;
+using Ammy.Xaml;
+using Ammy.Symbols;
+using Ammy.Language;
+using Ammy.Infrastructure;
+using Ammy.Converters;
+using Ammy.Frontend;
+using Ammy.Backend;
+using Ammy.Platforms;
+
+[assembly: ProjectSupport("Ammy", typeof(Ammy.Language.Start))]
+
+namespace Ammy.Language 
+{
+  public partial class Start : AstBase, IProjectSupport
+  {
+    static _locker : object = object();
+    
+    public Context : AmmyDependentPropertyEvalContext { get; private set; }
+    public Platform : IAmmyPlatform { get; set; }
+    
+    public RefreshProject(_cancellationToken : CancellationToken, files : ImmutableArray[FileEvalPropertiesData], data : object) : void
+    { 
+      when (Platform == null) {
+        Platform = WpfPlatform();
+        //throw Exception("Ammy platform not set");
+      }
+    
+      Mapping.Id = 0;
+      
+      def (context, rootTypeScope, rootNs) = data :> (AmmyDependentPropertyEvalContext * Scope * NamespaceSymbol);
+      def host = ProjectEvalPropertiesHost(files);
+      
+      RemoveParsedSymbols(rootNs, files, context);
+      
+      def (rootNs, csharpMessages) = if (context.SourceCodeProject != null)
+                     CSharpBackend.Load(context.SourceCodeProject, rootNs, context.Types.Object, Platform.PlatformTypeNames, context)
+                   else
+                     (rootNs, array[]);
+      def _a = csharpMessages;
+      
+      context.ResetCounterValues();
+      context.Fields.Clear();
+      context.FunctionCalls.Clear();
+      context.MissingXamlMarked = false;
+      
+      def rootTemplateDefinitions = TableScope(null, "Root function definitions");
+            
+      foreach (file in files) {
+        when (file.Ast is Start as start) {
+          start.Top.RootTypeScope = rootTypeScope;
+          start.Top.GlobalDeclarationScope = rootTemplateDefinitions;
+          start.Top.RootNamespace = rootNs;
+        }
+      }
+      
+      host.EvalProperties(context, "SymbolHierarchy", 0);
+      context.EvalParsingContexts();
+      
+      host.EvalProperties(context, "Scopes", 1);
+      context.EvalParsingContexts();
+      
+      host.EvalProperties(context, "Resolve symbols", 2);
+      context.EvalParsingContexts();
+      
+      host.EvalProperties(context, "TopNode", 3);
+      context.EvalParsingContexts();
+      
+      host.EvalProperties(context, "Mark missing XAMLs", 4);
+      
+      context.ParsingContexts = context.ParsingContexts.Clear();
+      
+      foreach (file in files) {
+        when (file.Ast is Start as start) {
+          if (start.Top is TopWithNode as withNode) {
+            when (withNode.TopNode.IsAllPropertiesEvaluated) {
+              //Debug.WriteLine(withNode.TopNode.Xaml.Build());
+              //GenerateFunctionCalls(withNode, context);
+            }
+          } else {
+          }
+        }
+      }
+    }
+    
+    private RemoveParsedSymbols(rootNs : NamespaceSymbol, files : ImmutableArray[FileEvalPropertiesData], context : AmmyDependentPropertyEvalContext) : void
+    {      
+      def dirtyFiles = if (context.SourceCodeProject != null) 
+                          HashSet.[int](context.SourceCodeProject.DirtyFiles) 
+                        else
+                          HashSet.[int]();
+        
+      foreach (f in files)
+        _ = dirtyFiles.Add(f.FileId);
+      
+      def removeParsedSymbols(tableScope : TableScope)
+      {        
+        def undefineFilter(decl : Declaration) {
+            if (!decl.IsParsed) {
+              false
+            } else {
+              def id = decl.Source?.File?.Id;
+              dirtyFiles.Contains(id);
+              //true
+            }
+        }
+        
+        tableScope.Undefine(undefineFilter);
+        
+        foreach (symbols in tableScope.Symbols)
+        foreach (symbol is NamespaceSymbol in symbols)
+          removeParsedSymbols(symbol.MemberTable);
+      }
+      
+      removeParsedSymbols(rootNs.MemberTable);
+    }
+    
+    public RefreshReferences(_cancellationToken : CancellationToken, project : Project) : object
+    {
+      when (Platform == null)
+        Platform = WpfPlatform();
+      
+      when (project.Data == null)
+        RefreshReferences(project);
+      
+      def (context, _, _) = project.Data :> (AmmyDependentPropertyEvalContext * Scope * NamespaceSymbol);
+      
+      Context = context;
+      Context.ProjectDir = project.ProjectDir;
+      Context.Platform = Platform;
+      
+      project.Data;
+    }
+    
+    private RefreshReferences(project : Project) : void
+    {      
+      def context = AmmyDependentPropertyEvalContext();
+      def backend = Ammy.Backend.ReflectionBackend();
+      def timer = Stopwatch.StartNew();      
+      
+      backend.AdditionalTypesToLoad = Platform.ProvideTypes();
+      backend.PlatformTypeNames = Platform.PlatformTypeNames;
+      
+      def ns = backend.LoadExternalSymbols(project.Libs, project.ProjectDir, project.CompilerMessages, context) :> NamespaceSymbol;
+      def rootTypeScope = PrepareScopes(ns, context);
+      
+      //Debugger.Launch();
+      //SaveNitraMetadata(project, ns);
+      //def resourceLoader = ResourceLoader();
+      //def resourceDictionaryScope = resourceLoader.GetResourceDictionaryScope(project);
+      
+      //def _a = resourceDictionaryScope;
+      
+      Debug.WriteLine($"RefreshReferences took: $(timer.Elapsed)");
+      
+      project.Data = (context, rootTypeScope, ns);
+    }
+    
+    public PrepareScopes(rootNamespace : NamespaceSymbol, context : AmmyDependentPropertyEvalContext) : Scope
+    {      
+      mutable rootTypeScope = rootNamespace.MemberTable;
+      
+      def rootSymbols = rootNamespace.GetSymbols();
+      def defaultNamespaces = Platform.DefaultNamespaces;
+      
+      def handleNamespace(ns : NamespaceSymbol) {
+        when (defaultNamespaces.Contains(ns.FullName))
+          rootTypeScope = rootTypeScope.UnionWith(ns.MemberTable);
+      }
+      
+      def systemNsRef = BindNs(rootNamespace.Scope, "System");
+      
+      when (systemNsRef.IsSymbolEvaluated)
+      {
+        def systemNs = systemNsRef.Symbol;
+      
+        DefineAlias(context, systemNs, rootNamespace, "Object",  "object");
+        DefineAlias(context, systemNs, rootNamespace, "Void",    "void");
+        DefineAlias(context, systemNs, rootNamespace, "String",  "string");
+        DefineAlias(context, systemNs, rootNamespace, "Boolean", "bool");
+        DefineAlias(context, systemNs, rootNamespace, "Byte",    "byte");
+        DefineAlias(context, systemNs, rootNamespace, "SByte",   "sbyte");
+        DefineAlias(context, systemNs, rootNamespace, "Int16",   "short");
+        DefineAlias(context, systemNs, rootNamespace, "UInt16",  "ushort");
+        DefineAlias(context, systemNs, rootNamespace, "Int32",   "int");
+        DefineAlias(context, systemNs, rootNamespace, "UInt32",  "uint");
+        DefineAlias(context, systemNs, rootNamespace, "Int64",   "long");
+        DefineAlias(context, systemNs, rootNamespace, "UInt64",  "ulong");
+        DefineAlias(context, systemNs, rootNamespace, "Single",  "float");
+        DefineAlias(context, systemNs, rootNamespace, "Double",  "double");
+        DefineAlias(context, systemNs, rootNamespace, "Decimal", "decimal");
+        DefineAlias(context, systemNs, rootNamespace, "Char",    "char");
+      }
+      
+      context.Types.Collect(rootNamespace, Platform.PlatformTypeNames);
+      
+      WalkExternalSymbols(rootSymbols, sym => {
+        when(sym is TypeSymbol as ts) {
+          context.TypeMap[ts.FullName] = ts;
+          
+          when (ts is TopEnumSymbol as enm)
+            Ammy.Converters.EnumConvert.Register(enm);
+        }
+      }, handleNamespace);
+      
+      mutable resultScope = rootTypeScope;
+      
+      def importList = Platform.StaticPropertyImportList
+                               .Select(importFrom => SymbolInfo(importFrom, s => resultScope = resultScope.UnionWith(s.GetPublicStaticProperties())));
+      
+      PlatformTypes.LoadTypes(rootNamespace, importList);
+      
+      resultScope
+    }
+    
+    private static GetPublicStaticProperties(this ts : TypeSymbol) : Scope
+    {
+      if (ts != null) {
+        ts.Scope.FilterWith((s : DeclarationSymbol) => {
+          match (s) {
+            | m is Member.PropertySymbol => m.IsStatic() && m.IsPublic()
+            | _ => false
+          }
+        });
+      } else {
+        EmptyScope.Instance
+      }
+    }
+    
+    private static BindType(scope : Scope, name : string) : Ref[TopGenericTypeSymbol]
+    {
+      scope.Bind.[TopGenericTypeSymbol](Reference(Location.Default, name))
+    }
+    
+    private static BindNs(scope : Scope, name : string) : Ref[NamespaceSymbol]
+    {
+      scope.Bind.[NamespaceSymbol](Reference(Location.Default, name))
+    }
+    
+    private static DefineAlias(context : DependentPropertyEvalContext, systemNs : NamespaceSymbol, declaredIn : NamespaceSymbol, name : string, aliasName : string) : void
+    {
+      def symbolRef  = BindType(systemNs.Scope, name);
+      
+      unless (symbolRef.IsSymbolEvaluated)
+        return;
+          
+      def symbol     = symbolRef.Symbol;
+      def decl       = symbol.FirstDeclarationOrDefault :> Ammy.Backend.IExternalTopTypeDeclaration;
+      def aliasDecl  = ExternalTopTypeDeclaration.[TypeAliasSymbol](Name(Location.Default, aliasName), decl.Type);
+      def alias      = aliasDecl.DefineSymbol(declaredIn.MemberTable);
+      alias.Replacement = symbolRef;
+      alias.TypeParametersCount = 0;
+      alias.TypeParameters      = ImmutableArray.Create();
+      alias.DeclaredIn          = declaredIn;
+      alias.EvalProperties(context);
+    }
+    
+    public static WalkExternalSymbols(symbols : IEnumerable[DeclarationSymbol], work : Action[DeclarationSymbol], namespaceWork : Action[NamespaceSymbol]) : void {
+      foreach (item in symbols.ToList()) {
+        | ns is NamespaceSymbol => 
+          namespaceWork(ns);
+          foreach (symList in ns.MemberTable.Symbols.ToList())
+            WalkExternalSymbols(symList, work, namespaceWork);
+            
+        | x is TypeSymbol => 
+          work(item);
+          
+          when (x is GenericContainerTypeSymbol as cont)
+            when (cont.NestedTypes.Count > 0)
+              WalkExternalSymbols(cont.NestedTypes.Cast.[DeclarationSymbol](), work, namespaceWork);
+              
+        | _ => ()
+      }
+    }
+    
+    public GetSymbolById(data : object, symbolId : int) : ValueOption[DeclarationSymbol]
+    {
+      def (_, _, rootNamespace) = data :> (AmmyDependentPropertyEvalContext * Scope * NamespaceSymbol);
+      // TODO: cache symbols an use it cache to find symbol by id
+      def findSymbol(tableScope : TableScope) : ValueOption[DeclarationSymbol]
+      {
+        foreach (symbols in tableScope.Symbols)
+        foreach (symbol is NamespaceSymbol in symbols)
+        {
+          when (symbol.Id == symbolId)
+            return ValueOption.Some(symbol);
+            
+          when (symbol.IsMemberTableEvaluated)
+          {
+            def result = findSymbol(symbol.MemberTable);
+          
+            when (result.IsSome)
+              return result;
+          }
+        }
+        
+        ValueOption.None()
+      }
+      
+      findSymbol(rootNamespace.MemberTable)
+    }
+    
+    public DeconstructType(symbol : DeclarationSymbol, type : out TypeSymbol, typeArgs : out ImmutableArray[TypeSymbol]) : bool
+    {
+      match (symbol)
+      {
+        | s is TopConstructedTypeSymbol    => type = s.TypeInfo; typeArgs = s.Args; true
+        | s is NestedConstructedTypeSymbol => type = s.TypeInfo; typeArgs = s.Args; true
+        | _ => type = null; typeArgs = ImmutableArray.Empty; false
+      }
+    }
+    
+    public VisitGlobalSymbols(data : object, callback : Predicate[DeclarationSymbol]) : void
+    {
+      def (_ctx, _ns, nsSym) = data :> AmmyDependentPropertyEvalContext * Scope * NamespaceSymbol;
+      _ = nsSym.VisitChildrenAndSelf(SymbolUtils.GetNestedSymbol, callback);
+    }
+  }
+}

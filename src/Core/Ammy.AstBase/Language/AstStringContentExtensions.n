@@ -1,0 +1,112 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.Xaml;
+using Ammy.Language;
+using Ammy.InitAst;
+using Ammy.Converters;
+
+namespace Ammy.Language
+{
+  public module AstStringContentExtensions
+  {
+    /*public StringContent(this content : StringContent, isInsideFrameworkTemplate : bool, parentNodeTypeOpt : option[TypeSymbol], parentVariableAst : InitAst, context : DependentPropertyEvalContext) : BuildResult
+    {
+      def context = context.ToAmmyContext();
+      def result = match (parentNodeTypeOpt) {
+        | Some(parentNodeType) => 
+          def column = content.Location.StartLineColumn.Column;
+          
+          match (parentNodeType.GetContentProperty(), content.Parent) {
+            | (Some, parentNode is Node) => 
+              def preparedString = PrepareString(content.Val.Value, column);
+              Build.AddChild(parentNodeType, context.Types.String, parentVariableAst, preparedString.AsPrimitiveValue(context), None(), isInsideFrameworkTemplate, parentNode.IsTopNode, context);
+            // Parent has content property but not Node?
+            | (Some, _) => assert2(false); null
+            | (None, _) => 
+              def resultStr = PrepareString(content.Val.Value, column);
+                  
+              match (Build.TryConverter(resultStr, parentNodeType.FullName)) {
+                | BuildResult.Result(ast) =>
+                  content.IsParentNodeConstructor = true;
+                  BuildResult.Result(ast)
+                | _ => BuildResult.Error("Couldn't find content property on '" + parentNodeType.FullName + "'")
+              }
+              
+          }
+        | _ => BuildResult.Error("Parent node is not resolved")
+      }
+      
+      when (!content.IsIsParentNodeConstructorEvaluated)
+        content.IsParentNodeConstructor = false;
+        
+      result
+    }
+    */
+    public PrepareString(str : string, column : int) : string
+    {
+      def splitted = str.Split(array[Environment.NewLine], StringSplitOptions.None);
+      
+      // Remove multiline whitespaces 
+      //
+      // this: "A
+      //        B"
+      // returns:
+      // "A
+      // B"
+      // not:
+      //  "A
+      //         B"
+      def splitted = 
+        if (splitted.Length > 1) {
+          splitted.Select(s => 
+            if (s.StartsWith(String(' ', column))) 
+              s.Substring(column) 
+            else 
+              s.TrimStart(' ')
+          );
+        } else {
+          splitted
+        }
+
+      string.Join(<#\r\n#>, splitted);
+    }
+    
+    public BuildXaml(this instance : StringContent, parentNodeType : option[TypeSymbol], context : DependentPropertyEvalContext) : XamlElement
+    {
+      def _context = context.ToAmmyContext();
+      
+      match (parentNodeType) {
+        /*
+        | Some(typeSymbol) when typeSymbol.IsDescendant(context.Types.ItemsControl) => 
+          
+          if (typeSymbol.IsDescendant(context.Types.ListBox))
+            XamlValue.Node(XamlNode("ListBoxItem", instance.Location, [XamlValue.String(instance.Val.Value)]))
+          else if (typeSymbol.IsDescendant(context.Types.ListView))
+            XamlValue.Node(XamlNode("ListViewItem", instance.Location, [XamlValue.String(instance.Val.Value)]))
+          else if (typeSymbol.IsDescendant(context.Types.TreeView))
+            XamlValue.Node(XamlNode("TreeViewItem", instance.Location, [XamlValue.String(instance.Val.Value)]))
+          else if (typeSymbol.IsDescendant(context.Types.ComboBox))
+            XamlValue.Node(XamlNode("ComboBoxItem", instance.Location, [XamlValue.String(instance.Val.Value)]))
+          else if (typeSymbol.IsDescendant(context.Types.StatusBar))
+            XamlValue.Node(XamlNode("StatusBarItem", instance.Location, [XamlValue.String(instance.Val.Value)]))
+          else
+            XamlValue.String(instance.Val.Value)
+        */
+        | _ => XamlValue.String(instance.Val.Value)
+      }
+    }
+  }
+}

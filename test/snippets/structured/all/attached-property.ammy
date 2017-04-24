@@ -1,0 +1,9 @@
+StackPanel "AttachedProperty" {
+    TextElement.FontSize: 30
+    TextElement.FontStyle: "Italic"
+
+    ListBox {
+        IsTextSearchEnabled: true
+        TextBlock { "Hello, World!" }
+    }
+}

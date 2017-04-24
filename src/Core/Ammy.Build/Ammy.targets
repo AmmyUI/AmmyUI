@@ -1,0 +1,51 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="Ammy.Build.dll" TaskName="Ammy.Build.AmmyCompilerTask" />
+  <UsingTask AssemblyFile="Ammy.Build.dll" TaskName="Ammy.Build.RewriteConnectionsTask" />
+  
+  <Target Name="AmmyCompileTask" BeforeTargets="MarkupCompilePass1" AfterTargets="ResolveReferences">  
+    <Message Text="ReferencePath = @(ReferencePath)" />
+    <Message Text="TargetFileName = $(TargetFileName)" />
+    <Message Text="RootNamespace = $(RootNamespace)" />
+
+    <AmmyCompilerTask References="@(ReferencePath)" Items="@(None)" TargetPath="$(TargetPath)" SourceFiles="@(Compile)" IncludedPages="@(Page)" ProjectDir="$(ProjectDir)" OutputPath="$(IntermediateOutputPath)" RootNamespace="$(RootNamespace)" AssemblyName="$(AssemblyName)" DefineConstants="$(DefineConstants)">
+      <Output TaskParameter="GeneratedItems" PropertyName="AmmyGeneratedItems" />
+      <Output TaskParameter="GeneratedXamlItems" PropertyName="AmmyGeneratedXamlItems" />
+      <Output TaskParameter="HasErrors" PropertyName="HasErrors" />
+      <Output TaskParameter="AmmyPlatform" PropertyName="AmmyPlatform" />
+    </AmmyCompilerTask>
+    <Error Condition="$(HasErrors)" Text="Ammy compilation failed" />
+    <ItemGroup>
+      <Compile Include="$(AmmyGeneratedItems)" />
+    </ItemGroup>
+    <ItemGroup Condition="$(AmmyPlatform) == 'WPF'">
+      <Page Include="$(AmmyGeneratedXamlItems)">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+    </ItemGroup>
+    <ItemGroup Condition="$(AmmyPlatform) == 'UWP'">
+      <Page Include="$(AmmyGeneratedXamlItems)">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+    </ItemGroup>
+    <ItemGroup Condition="!$(HasErrors)">
+      <Compile Include="$(MSBuildThisFileDirectory)internal.cs" />
+    </ItemGroup>
+    <ItemGroup Condition="$(AmmyPlatform) == 'XamarinForms'">
+      <EmbeddedResource Include="$(AmmyGeneratedXamlItems)">
+        <SubType>Designer</SubType>
+        <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup Condition=" $(AmmyPlatform) == 'Avalonia'">
+      <EmbeddedResource Include="$(AmmyGeneratedXamlItems)">
+        <SubType>Designer</SubType>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="RewriteConnectionsTask" BeforeTargets="Compile" AfterTargets="PrepareResources">
+    <RewriteConnectionsTask Items="@(None)" ProjectDir="$(ProjectDir)" OutputPath="$(IntermediateOutputPath)" DefineConstants="$(DefineConstants)" />
+  </Target>
+</Project>

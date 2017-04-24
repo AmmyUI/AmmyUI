@@ -1,0 +1,61 @@
+﻿Window "DataGridSample.MainWindow" {
+  #MainWindow
+
+  Grid "MainGrid" { 
+    #MainGrid
+    
+    Grid "DataGridLayer" { 
+      #DataGridLayer
+      #TwoRows("*", 60)
+
+      DataGrid { 
+        #DataGrid
+        ItemsSource: bind Guests
+      }
+
+      Button "ShowDialogButton" { 
+        #Button
+        #Cell(row: 1)
+        "Add guest" 
+      }
+    }
+
+    Grid "DialogLayer" { 
+      #DialogLayer
+
+      Border "Dialog" {
+        #Dialog
+
+        StackPanel { 
+          TextBlock { #FormLabel, "First name" }
+          TextBox { #FormInput, Text: bind NewGuestFirstName }
+          TextBlock { #FormLabel, "Last name" }
+          TextBox { #FormInput, Text: bind NewGuestLastName }
+
+          RadioButton { 
+            #FormRadio 
+            "Male" 
+            IsChecked: bind NewGuestIsMale
+          }
+          RadioButton { 
+            #FormRadio
+            "Female"
+            Margin: "0,0,0,15" 
+          }
+
+          Button "AddGuestButton" { 
+            #Button 
+            "Add guest"
+            Command: bind AddGuest
+          }
+
+          Button "CancelButton" { 
+            #Button
+            "Cancel"
+            Background: $accentColor1
+          }
+        }
+      }
+    }
+  }
+}

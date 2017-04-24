@@ -1,0 +1,5 @@
+﻿UserControl "Ammy.WpfTest.Resolving.AncestorType" {
+  Grid { 
+    Width: bind Height from $ancestor<AncestorType>
+  }
+}

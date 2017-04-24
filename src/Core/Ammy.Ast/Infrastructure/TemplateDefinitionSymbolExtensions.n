@@ -1,0 +1,25 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.Language;
+
+namespace Ammy
+{
+  public module TemplateDefinitionSymbolExtensions
+  {
+    public GetTemplateSignature(instance : FunctionSymbol) : string 
+    {
+      def parms = instance.Parameters.Symbols
+                          .SelectMany(s => s)
+                          .OfType.[FunctionParameterSymbol]()
+                          .Select(s => s.Name);
+      $"$(instance.Name)(..$(parms;\", \";))"
+    }
+  }
+}

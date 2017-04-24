@@ -1,0 +1,3 @@
+Window "StaticProperties" {
+  Background: Brushes.Red
+}

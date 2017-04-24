@@ -1,0 +1,19 @@
+content cell(row, column) {
+    Grid.Row: $row
+    Grid.Column: $column
+}
+
+content rows(height0, height1) {
+    Grid.RowDefinitions: [
+        RowDefinition { Height: $height0 }
+        RowDefinition { Height: $height1 }
+    ]
+}
+
+Grid "TemplateParameters" {
+  rows(50, 60)
+  
+  TextBlock {
+    cell(1,1)
+  }
+}

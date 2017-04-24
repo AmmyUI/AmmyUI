@@ -1,0 +1,109 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+using Ammy;
+using Ammy.Backend;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  public module AstNodeExtensions
+  {
+    public ResolveKey(this _ : NodeAbstract, keyRef : Ref[DeclarationSymbol]) : Ref[TypeSymbol]
+    {
+      match (keyRef) {
+        | amb is Ref[DeclarationSymbol].Ambiguous when amb.Ambiguities.Any(a => a.Kind == Kind.TopNode) => 
+          amb.Resolve(s => if (s.Kind == Kind.TopNode && s is TypeSymbol) 
+                             VSome(s :> TypeSymbol) 
+                           else 
+                             VNone());
+        | rf when rf != null && rf.IsResolvedToEvaluated => rf.ResolvedTo :> Ref[TypeSymbol]
+        | _ => keyRef.Resolve()
+      }
+    }
+    
+    public IsInsideFrameworkTemplate(this _node : NodeBase, _ : bool, _ : TypeSymbol, _ : DependentPropertyEvalContext) : bool
+    {      
+      false
+    }
+    
+    public IsTypeArgumentsMismatch(this _ : NodeBase, genericArgsCount : int, nodeType : TypeSymbol) : bool
+    {
+      match (nodeType) {
+        | g is GenericEntitySymbol when g.TypeParametersCount != genericArgsCount => true
+        | _ => false
+      }
+    }
+    
+    public GetDictionaryKey(this node : NodeBase, context : DependentPropertyEvalContext) : option[InitAst]
+    {
+      def context = context.ToAmmyContext();
+      def getString (str) {
+        InitAst.PrimitiveValue(context.Types.String.AsTypeInfo(), str, false)
+      }
+      def isTargetTypeSet(styleNode) {
+        styleNode.Members.ParsingContext.TargetType.IsCollectorEvaluated &&
+        styleNode.Members.ParsingContext.TargetType.Collector.GetSymbols().Count > 0
+      }
+      
+      if (node.NodeKey.HasValue) 
+        Some(getString(node.NodeKey.Value.Key.Value))
+      else if (node.NodeName.HasValue) 
+        Some(getString(node.NodeName.Value.Key.Value));
+      else if (node.Type.IsDescendant(context.Types.Style) && !isTargetTypeSet(node)) 
+        None()
+      else {
+        def keyPropertyAttr = node.Type.GetAttributeStringValue("DictionaryKeyPropertyAttribute");
+        if (keyPropertyAttr is Some(attr))
+          Some(InitAst.Property(node.AstVariable, attr));
+        else 
+          None()
+      };
+    }
+    
+    public BuildXaml(this node : NodeBase, nodeType : TypeSymbol, members : ImmutableArray[XamlElement], genericArgRefs : ImmutableArray[Ref[DeclarationSymbol]], rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
+    {
+      def context = context.ToAmmyContext();
+      def ns = context.GetNamespaceAliasFor(nodeType, rootSymbolId);
+      
+      def genericArgToString(genericArgRef) : string {
+        if (genericArgRef.IsSymbolEvaluated && genericArgRef.Symbol is TypeSymbol) {
+          def typeSymbol = genericArgRef.Symbol :> TypeSymbol;
+          def alias = context.GetNamespaceAliasFor(typeSymbol, rootSymbolId);
+          alias + typeSymbol.ResolveAlias().Name
+        } else {
+          "<invalid-type-arg>"
+        }
+      }
+      
+      def genericArgs = string.Join(",", genericArgRefs.Select(genericArgToString));
+      
+      def typeArguments = if (!string.IsNullOrWhiteSpace(genericArgs)) 
+                            [XamlAttribute(context.Platform.XPrefix + "TypeArguments", XamlValue.String(genericArgs), node.GenericArgs.Location)] 
+                          else 
+                            [];
+                            
+      def name = if (node.NodeName.HasValue) [XamlAttribute(context.Platform.XPrefix + "Name", XamlValue.String(node.NodeName.Value.Key.Value), Helpers.NoLocation)] 
+                 else [];
+      def key = if (node.NodeKey.HasValue) [XamlAttribute(context.Platform.XPrefix + "Key", XamlValue.String(node.NodeKey.Value.Key.Value), Helpers.NoLocation)] 
+                else [];
+      def allMembers = key.Concat(name)
+                          .Concat(typeArguments)
+                          .Concat(members);
+            
+      XamlNode(ns + nodeType.Name, node.Location, allMembers);
+    }
+  }
+}

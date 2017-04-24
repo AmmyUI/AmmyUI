@@ -1,0 +1,38 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Xaml
+{
+  public class XamlList : XamlElement
+  {
+    public Elements : array[XamlElement] { get; }
+    
+    public this (elements : IEnumerable[XamlElement])
+    {
+      Elements = elements.ToArray();
+    }
+    
+    public override Build(location : XamlLocation, indent : int) : string 
+    {
+      Start = location;
+      
+      mutable result = "";
+      
+      Start = location;
+      End = location;
+      
+      foreach (el in Elements) {
+        result += el.Build(End, indent);
+        End = el.End;
+      }
+            
+      result
+    }
+  }
+}

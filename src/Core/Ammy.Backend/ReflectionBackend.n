@@ -1,0 +1,748 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Reflection;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Type = System.Type;
+
+using Nitra;
+using Nitra.Declarations;
+using Nitra.ProjectSystem;
+using DotNet;
+using Ammy.Scopes;
+using Ammy.Platforms;
+
+namespace Ammy.Backend
+{
+  public class ReflectionBackend : IBackEnd
+  {
+    public static NoLocation : Location       = Location(SourceSnapshot.Default.File, NSpan(0));
+    public static NoFile : ProjectSystem.File = SourceSnapshot.Default.File;
+    public static NoSpan : NSpan              = NSpan(0);
+    
+    _typeToSymbolMap : ConcurrentDictionary[string, TypeSymbol] = ConcurrentDictionary();
+    _nsToSymbolMap : ConcurrentDictionary[AssemblyRegistry.Namespace, NamespaceSymbol] = ConcurrentDictionary();
+    
+    _registry : AssemblyRegistry = AssemblyRegistry();
+    
+    mutable _singleDimensionArray : SingleDimensionArraySymbol;
+    mutable _objectSymbol : TypeSymbol;
+    mutable _context : DependentPropertyEvalContext;
+    mutable _rootNamespace : NamespaceSymbol;
+    mutable static _resolverRegistered : bool = false;
+    mutable static _knownAssemblyPaths : Dictionary[string, string] = Dictionary();
+    
+    public AdditionalTypesToLoad : array[System.Type] { get; set; }
+    public PlatformTypeNames : PlatformTypeNames { get; set; }
+    
+    public LoadExternalSymbols(libs : IEnumerable[LibReference], libPath : string, compilerMessages : ICompilerMessages, context : DependentPropertyEvalContext) : DeclarationSymbol
+    { 
+      when (!_resolverRegistered) {
+        def resolveHandler = ResolveEventHandler(TryResolve);
+        AppDomain.CurrentDomain.AssemblyResolve += resolveHandler;
+        AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (_sender, eventArgs) => Assembly.ReflectionOnlyLoad(eventArgs.Name);
+        WindowsRuntimeMetadata.ReflectionOnlyNamespaceResolve += (_sender, eventArgs) =>
+            {
+                def path =
+                    WindowsRuntimeMetadata.ResolveNamespace(eventArgs.NamespaceName, Enumerable.Empty.[string]())
+                        .FirstOrDefault();
+                when (path == null) return;
+
+                eventArgs.ResolvedAssemblies.Add(Assembly.ReflectionOnlyLoadFrom(path));
+            };
+        _resolverRegistered = true;
+      }
+      
+      _context = context;
+      
+      def timer = Stopwatch.StartNew();
+      
+      _rootNamespace = NamespaceSymbol();
+      _rootNamespace.MemberTable = TableScope(_rootNamespace, "MemberTable");
+      _rootNamespace.DeclaredIn  = null;
+      _rootNamespace.FullName    = "";
+      _rootNamespace.EvalProperties(context);
+      
+      // Collect paths
+      foreach (lib in libs) {
+        | name is FullNameLibReference with filePath = name.Path
+        | file is FileLibReference     with filePath = file.Path =>
+          try {
+            def assemblyLocation = Path.GetDirectoryName(filePath);
+            def filename = Path.GetFileName(filePath);
+            _knownAssemblyPaths[filename] = assemblyLocation;
+          } catch {
+            | _ => compilerMessages.Warning(Location(SourceSnapshot.Default.File, NSpan(0)), "Problem collecting path from: " + filePath, 0)
+          }
+          | _ => {}
+      }
+      
+      foreach (lib in libs) {
+        | name is FullNameLibReference with filePath = name.Path
+        | file is FileLibReference     with filePath = file.Path =>
+          def fullPath = IO.Path.Combine(libPath, filePath);
+          def ismd = Path.GetExtension(fullPath).Equals(".winmd", StringComparison.InvariantCultureIgnoreCase);
+          
+          try {
+            if (System.IO.File.Exists(fullPath)) {
+              def assembly =
+                if (ismd) {
+                  
+                  Assembly.ReflectionOnlyLoadFrom(fullPath);
+                } else
+                  Assembly.Load(System.IO.File.ReadAllBytes(fullPath));
+                  
+              _registry.RegisterAssembly(assembly, System.IO.Path.GetDirectoryName(fullPath));
+            } else {
+              compilerMessages.Warning(Location(SourceSnapshot.Default.File, NSpan(0)), "Couldn't find assembly " + fullPath, 0)
+            }
+          } catch {
+            | _ => compilerMessages.Warning(Location(SourceSnapshot.Default.File, NSpan(0)), "Failed to import assembly: " + fullPath, 0)
+          }
+        | _ => {}
+      }
+      
+      try {
+        when (AdditionalTypesToLoad != null)
+          _registry.RegisterTypes(AdditionalTypesToLoad);
+      } catch {
+        e => compilerMessages.Warning(Location(SourceSnapshot.Default.File, NSpan(0)), e.ToString());
+      }
+      
+      def globalNamespace = _registry.GlobalNamespace;
+      
+      _registry.GlobalNamespace.Symbol = _rootNamespace;
+      
+      foreach (ns in globalNamespace.Namespaces.Values)
+        _ = GetOrCreateNamespace(ns);
+      
+      foreach (type in globalNamespace.Types)
+        _ = CreateTypeSymbol(type, _rootNamespace);
+      
+      InitSystemTypes();
+      InitBaseTypeSet();
+      
+      Debug.WriteLine($"Total of LoadExternalSymbols took: $(timer.Elapsed)");
+      
+      _rootNamespace
+    }
+    
+    private TryResolve(_ : object, args : ResolveEventArgs) : Assembly
+    {
+      try {
+        def commaIndex = args.Name.IndexOf(",");
+        def filename = if (commaIndex >= 0)
+                        args.Name.Substring(0, commaIndex) + ".dll";
+                       else
+                        args.Name + ".dll";          
+      
+        mutable path;
+        when (args.RequestingAssembly != null && _knownAssemblyPaths.TryGetValue(filename, out path)) {
+          def fullPath = Path.Combine(path, filename);
+          when (File.Exists(fullPath)) {
+            def assembly = Assembly.Load(File.ReadAllBytes(fullPath));
+            return assembly;
+          }
+        }
+      
+        foreach (path in _knownAssemblyPaths.Values) {
+          def fullPath = Path.Combine(path, filename);
+          when (File.Exists(fullPath)) {
+            def assembly = Assembly.Load(File.ReadAllBytes(fullPath));
+            return assembly;
+          }
+        }
+        
+        null
+      } catch {
+        | _ => null
+      }
+    }
+    
+    GetTypeSymbol(type : Type) : TypeSymbol
+    {
+      if (type.IsGenericType && type.IsConstructedGenericType) {
+        CreateConstructedTypeSymbol(type);
+      } else if (type.IsGenericParameter) {
+        def name  = Name(NoLocation, type.Name);
+        def tps   = TypeParameterDeclaration(name, type).DefineSymbol();
+        tps.EvalProperties(_context);
+        tps
+      } else if (type.IsArray) {
+        CreateArrayTypeSymbol(type);
+      } else {
+        mutable symbol;
+        if (type.AssemblyQualifiedName != null && _typeToSymbolMap.TryGetValue(type.AssemblyQualifiedName, out symbol)) {
+          symbol
+        } else {
+          _objectSymbol
+        }
+      }
+    }
+    
+    //GetOrCreateTypeSymbol(type : Type, owner : NamespaceSymbol) : TypeSymbol 
+    //{
+    //  _typeToSymbolMap.GetOrAdd(type, _ => CreateTypeSymbol(type, owner));
+    //}
+    
+    CreateConstructedTypeSymbol(type : Type) : TypeSymbol 
+    {
+      def typeDefinition = type.GetGenericTypeDefinition();
+      def typeInfo = GetTypeSymbol(typeDefinition) :> GenericTypeSymbol;
+      def args = type.GenericTypeArguments.Select(GetTypeSymbol).ToImmutableArray();
+      def name = Name(NoLocation, typeDefinition.Name);
+      def constructedType = ExternalConstructedTypeDeclaration.[TopConstructedTypeSymbol] (name, type).DefineSymbol(null);
+            
+      constructedType.TypeInfo = typeInfo;
+      constructedType.Args = args;
+      constructedType.EvalProperties(_context);
+      constructedType
+    }
+    
+    CreateArrayTypeSymbol(type : Type) : TypeSymbol 
+    {      
+      def args = [GetTypeSymbol(type.GetElementType())].ToImmutableArray();
+      def typeInfo = if (type.GetArrayRank() == 1) _singleDimensionArray : ArraySymbol
+                     else 
+                     {
+                       def a = MultiDimensionArraySymbol();
+                       a.TypeParametersCount = 0;
+                       a.Rank        = type.GetArrayRank() :> uint;
+                       //a.LowerBounds = t.LowerBounds.ToArray();
+                       //a.Sizes       = t.Sizes.ToArray();
+                       a.EvalProperties(_context);
+                       a
+                     };
+                     
+      def constructedType = TopConstructedTypeSymbol();
+      constructedType.TypeInfo = typeInfo;
+      constructedType.Args = args;
+      constructedType.EvalProperties(_context);
+      constructedType.Scope = typeInfo.Scope;
+      constructedType
+    }
+    
+    //CreateTypeSymbol(type : Type) : TypeSymbol 
+    //{ 
+    //  def ns = if (string.IsNullOrEmpty(type.Namespace) || type.Namespace == _registry.GlobalNamespace.Name)
+    //              _registry.GlobalNamespace;
+    //            else
+    //              _registry.GlobalNamespace.GetOrAddNamespace(type.Namespace);
+    //             
+    //  def owner = GetOrCreateNamespace(ns);
+    //    
+    //  GetOrCreateTypeSymbol(type, owner);
+    //}
+    
+    CreateTypeSymbol(type : Type, declaredIn : NamespaceSymbol) : TypeSymbol
+    { 
+      //Debug.WriteLine($"CreateTypeSymbol $(type.FullName), declared in $(declaredIn.FullName)");
+      
+      when (type.IsNested) {
+        def nestedTypeOwner = GetTypeSymbol(type.DeclaringType);
+        
+        when (nestedTypeOwner is GenericContainerTypeSymbol as genericContainerTypeSymbol) {
+          def nestedTypeSymbol = CreateNestedType(type, genericContainerTypeSymbol);
+          genericContainerTypeSymbol.NestedTypes.Add(nestedTypeSymbol);
+          return nestedTypeSymbol;
+        }
+      }
+      
+      def name = Name(NoLocation, TypeNameWithoutGenericSpecifier(type.Name));
+      def symbol : TopTypeSymbol =
+               if (type.IsSubclassOf(typeof(MulticastDelegate))) AssemblyTypeDeclaration.[TopDelegateSymbol](name, type, type.Assembly).DefineSymbol(declaredIn.MemberTable) 
+               else if (type.IsInterface) AssemblyTypeDeclaration.[TopInterfaceSymbol](name, type, type.Assembly).DefineSymbol(declaredIn.MemberTable)
+               else if (type.IsEnum) {
+                 def en = AssemblyTypeDeclaration.[TopEnumSymbol](name, type, type.Assembly).DefineSymbol(declaredIn.MemberTable);
+                 en.UnderlyingType = null; // TODO
+                 en
+               }
+               else if (type.IsValueType) AssemblyTypeDeclaration.[TopStructSymbol] (name, type, type.Assembly).DefineSymbol(declaredIn.MemberTable)
+               else AssemblyTypeDeclaration.[TopClassSymbol](name, type, type.Assembly).DefineSymbol(declaredIn.MemberTable);
+                
+      unless (symbol.IsDeclaredInEvaluated)
+        symbol.DeclaredIn = declaredIn;
+      
+      InitTypeSymbol(symbol, type);
+      
+      symbol;
+    }
+    
+    CreateNestedType(type : Type, declaredIn : GenericContainerTypeSymbol) : NestedTypeSymbol
+    {      
+      //Debug.WriteLine($"LoadNestedType declaredIn: $(declaredIn.FullName) type: $(type.FullName)");
+      
+      def name = Name(NoLocation, TypeNameWithoutGenericSpecifier(type.Name));
+      def symbol : NestedTypeSymbol  =
+          if (type.IsSubclassOf(typeof(MulticastDelegate)))  ExternalNestsdTypeDeclaration.[NestedDelegateSymbol] (name, type).DefineSymbol(declaredIn.MemberTable) 
+          else if (type.IsInterface) ExternalNestsdTypeDeclaration.[NestedInterfaceSymbol](name, type).DefineSymbol(declaredIn.MemberTable)
+          else if (type.IsEnum)      ExternalNestsdTypeDeclaration.[NestedEnumSymbol]     (name, type).DefineSymbol(declaredIn.MemberTable)
+          else if (type.IsValueType) ExternalNestsdTypeDeclaration.[NestedStructSymbol]   (name, type).DefineSymbol(declaredIn.MemberTable)
+          else                       ExternalNestsdTypeDeclaration.[NestedClassSymbol]    (name, type).DefineSymbol(declaredIn.MemberTable);
+            
+      unless (symbol.IsDeclaredInEvaluated)
+        symbol.DeclaredIn = declaredIn;
+
+      InitTypeSymbol(symbol, type);
+      
+      symbol
+    }
+    
+    TypeNameWithoutGenericSpecifier(name : string) : string
+    {
+      match (name.LastIndexOf('`')) {
+        | -1 => name
+        | idx => name.Substring(0, idx)
+      }
+    }
+    
+    InitTypeSymbol(typeSymbol : DeclaredTypeSymbol, type : Type) : void
+    { 
+      _ = _typeToSymbolMap.TryAdd(type.AssemblyQualifiedName, typeSymbol);
+      
+      when ((typeSymbol : DeclarationSymbol) is ContainerSymbol as containerSymbol)
+        containerSymbol.MemberTable = LazyScope(_ => LoadTypeMembers(containerSymbol, type), "MemberTable", typeSymbol);
+                
+      when (typeSymbol is GenericTypeSymbol as genericSymbol) {
+        def genericArgs = type.GetGenericArguments();
+        
+        unless (genericSymbol.IsTypeParametersCountEvaluated)
+          genericSymbol.TypeParametersCount = genericArgs.Length;
+          
+        unless (genericSymbol.IsTypeParametersEvaluated)
+          genericSymbol.TypeParameters = CreateGenericParameters(genericArgs.Length, genericArgs).ToImmutableArray();
+      }
+            
+      def modifierHost = typeSymbol;
+      def flags = ModifierSet(_context);
+      mutable modifiers;
+      when (type.IsPublic)
+        modifiers |= Modifiers.Public;
+      when (type.IsAbstract)
+        modifiers |= Modifiers.Abstract;
+      when (type.IsSealed)
+        modifiers |= Modifiers.Sealed;
+      when (type.IsAbstract && type.IsSealed)
+        modifiers |= Modifiers.Static;
+
+      flags.Add(modifiers);
+      modifierHost.Flags = flags;
+
+      when ((typeSymbol : DeclarationSymbol)  is CustomAttributeHostDeclarationSymbol as attrHost)
+        attrHost.CustomAttributes = GetCustomAttributes(type).Select(a => LoadCustomAttribute(a))
+                                                             .ToList();
+                                        
+      when (typeSymbol is GenericContainerTypeSymbol as genericContainerTypeSymbol)
+        genericContainerTypeSymbol.NestedTypes = List();
+              
+      typeSymbol.EvalProperties(_context);
+            
+      //Debug.WriteLine($"InitTypeSymbol owner: $(typeSymbol.FullName) type: $(type.FullName)");
+    }
+    
+    GetOrCreateNamespace(ns : AssemblyRegistry.Namespace) : NamespaceSymbol
+    {
+      //Debug.WriteLine($"GetOrCreateNamespace $(ns.Name)");
+      
+      if (ns.Symbol != null) {
+        ns.Symbol;
+      } else {
+        def ownerSymbol = ns.Owner.Symbol ?? GetOrCreateNamespace(ns.Owner);
+      
+        ns.Symbol = CreateNamespaceSymbol(ownerSymbol, ns);
+      
+        foreach (childNs in ns.Namespaces.Values)
+            _ = GetOrCreateNamespace(childNs);
+        
+        // HACK: UWP's ICommand.IsVisible returns `false`. This is the only type that we need with IsVisible == false.
+        foreach (childType when (childType.IsVisible || childType.Name == "ICommand") in ns.Types)
+          _ = CreateTypeSymbol(childType, ns.Symbol);
+        
+        ns.Symbol
+      }
+    }
+    
+    CreateNamespaceSymbol(owner : NamespaceSymbol, ns : AssemblyRegistry.Namespace) : NamespaceSymbol
+    {
+      //Debug.WriteLine($"CreateNamespaceSymbol owner: $(owner.FullName) ns: $(ns.Name)");
+      
+      def name   = Name(NoLocation, ns.Name);
+      def symbol = ExternalNamespaceDeclaration(name, ns.Name).DefineSymbol(owner.MemberTable);
+      
+      symbol.Assembly = ns.Assembly;
+      symbol.MemberTable = TableScope(symbol, "MemberTable");
+      
+      when (!symbol.IsDeclaredInEvaluated)
+        symbol.DeclaredIn = owner;
+        
+      symbol.EvalProperties(_context);
+      
+      symbol
+    }
+    
+    LoadCustomAttribute(attribute : object) : CustomAttributeSymbol
+    {
+      def customAttributeSymbol = CustomAttributeSymbol();
+      def attrType = GetTypeSymbol(attribute.GetType());
+      customAttributeSymbol.Type = attrType;
+      customAttributeSymbol.FullName = attrType.FullName;
+            
+      def name = Name(NoLocation, customAttributeSymbol.Name);
+      customAttributeSymbol.AddDeclaration(ExternalCustomAttributeDeclaration(name, attribute));
+      customAttributeSymbol.EvalProperties(_context);
+      customAttributeSymbol
+    }
+    
+    LoadTypeMembers(owner : ContainerSymbol, type : Type) : void
+    { 
+      def gettersAndSetters = HashSet();
+      def fakeHost = TopClassSymbol();
+      fakeHost.MemberTable = TableScope(fakeHost, "MemberTable"); 
+      
+      def getTypeScope(type : TypeSymbol) {
+        | x is TopConstructedTypeSymbol => x.TypeInfo.Scope
+        | _ => type.Scope
+      }
+      def members = type.GetMembers(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+      
+      foreach (member in members.Where(m => !(m is Type))) {
+          match (member) {
+            | prop is PropertyInfo => 
+              def symbol = LoadTypeMember(member, owner) :> Member.PropertySymbol;
+              symbol.Scope = getTypeScope(symbol.Type);
+              
+              def getter = prop.GetGetMethod();
+              def setter = prop.GetSetMethod();
+              
+              symbol.Getter = if (getter != null) {
+                                _ = gettersAndSetters.Add(getter);
+                                Some(LoadTypeMember(getter, fakeHost) :> Member.MethodSymbol);
+                              } else None();
+              
+              symbol.Setter = if (setter != null) {
+                                _ = gettersAndSetters.Add(setter);
+                                Some(LoadTypeMember(setter, fakeHost) :> Member.MethodSymbol);
+                              } else None();
+            | FieldInfo =>
+              def symbol = LoadTypeMember(member, owner);
+              when (symbol is Member.FieldSymbol as fld)
+                symbol.Scope = getTypeScope(fld.Type);
+            | evt is EventInfo => 
+              _ = LoadTypeMember(member, owner);              
+              _ = gettersAndSetters.Add(evt.GetAddMethod());
+              _ = gettersAndSetters.Add(evt.GetRemoveMethod());
+            | _ when !(member is MethodInfo) => 
+              _ = LoadTypeMember(member, owner);
+            | _ => ()
+          }
+      }
+      
+      foreach (method when !gettersAndSetters.Contains(method) in members.OfType.[MethodInfo]()) {    
+        def symbol = LoadTypeMember(method, owner) :> Member.MethodSymbol;  
+        symbol.Scope = getTypeScope(symbol.ReturnType);
+      }
+            
+      when (owner is SupportsInheritanceTypeSymbol)
+        XamlSymbolLoader.LoadType(owner :> SupportsInheritanceTypeSymbol, _objectSymbol, _context, PlatformTypeNames);
+    }
+    
+    LoadTypeMember(member : MemberInfo, owner : ContainerSymbol) : DeclarationSymbol
+    {
+      def name = Name(NoLocation, member.Name); // TODO: type.Name.UniqueKey
+      def flags = ModifierSet(_context);
+      
+      def symbol : DeclarationSymbol =
+        match (member)
+        {
+          | m is PropertyInfo =>
+            def prop = ExternalPropertyDeclaration(name, m).DefineSymbol(owner.MemberTable);
+            prop.Flags = flags;
+            def method = m.GetMethod ?? m.SetMethod;
+                        
+            when (method.IsAbstract)
+              flags.Add(Modifiers.Private);
+            when (method.IsFamily)
+              flags.Add(Modifiers.Protected);
+            when (method.IsPublic)
+              flags.Add(Modifiers.Public);
+            when (method.IsStatic)
+              flags.Add(Modifiers.Static);
+                        
+            unless (prop.IsDeclaredInEvaluated)
+              prop.DeclaredIn = owner :> GenericContainerTypeSymbol;
+              
+            prop.Type = GetTypeSymbol(m.PropertyType);
+            prop.Scope = prop.Type.Scope;
+            
+            prop
+                  
+          | m is ConstructorInfo =>
+            def method = ExternalConstructorDeclaration(name, m).DefineSymbol(owner.MemberTable);
+            method.Flags = flags;
+                        
+            when (m.IsAbstract)
+              flags.Add(Modifiers.Private);
+            when (m.IsFamily)
+              flags.Add(Modifiers.Protected);
+            when (m.IsPublic)
+              flags.Add(Modifiers.Public);
+            when (m.IsStatic)
+              flags.Add(Modifiers.Static);
+              
+            unless (method.IsDeclaredInEvaluated)
+              method.DeclaredIn = owner :> GenericContainerTypeSymbol;
+              
+            method.Scope = method.DeclaredIn.Scope;
+            method.EvalProperties(_context);
+            
+            LoadParameters(m.GetParameters(), method.ParameterScope);
+            
+            method
+
+          | m is MethodInfo =>
+            def method = ExternalMethodDeclaration(name, m).DefineSymbol(owner.MemberTable);
+            method.Flags = flags;
+            
+            when (m.IsAbstract)
+              flags.Add(Modifiers.Private);
+            when (m.IsFamily)
+              flags.Add(Modifiers.Protected);
+            when (m.IsPublic)
+              flags.Add(Modifiers.Public);
+            when (m.IsStatic)
+              flags.Add(Modifiers.Static);
+
+            unless (method.IsDeclaredInEvaluated)
+              method.DeclaredIn = owner :> GenericContainerTypeSymbol;
+              
+            def genericArgs = m.GetGenericArguments();
+            
+            unless (method.IsTypeParametersCountEvaluated)
+              method.TypeParametersCount = genericArgs.Length;
+              
+            unless (method.IsTypeParametersEvaluated)
+              method.TypeParameters = CreateGenericParameters(genericArgs.Length, genericArgs).ToImmutableArray();
+            
+            method.ReturnType = GetTypeSymbol(m.ReturnType); 
+            method.Scope = method.ReturnType.Scope;
+            method.EvalProperties(_context);
+            
+            LoadParameters(m.GetParameters(), method.ParameterScope);
+            
+            method
+            
+          | m is FieldInfo =>
+            if (owner is EnumSymbol)
+            {
+              def field = ExternalEnumFieldDeclaration(name, m).DefineSymbol(owner.MemberTable);
+              
+              //field.Flags = flags;
+              unless (field.IsDeclaredInEvaluated)
+                field.DeclaredIn = owner :> EnumSymbol;
+              field
+            }
+            else
+            {
+              when(m.IsInitOnly)
+                flags.Add(Modifiers.Readonly);
+              
+              def field = ExternalFieldDeclaration (name, m).DefineSymbol(owner.MemberTable);
+              
+              field.Flags = flags;
+              
+              when (m.IsFamily)
+                flags.Add(Modifiers.Protected);
+              when (m.IsPublic)
+                flags.Add(Modifiers.Public);
+              when (m.IsInitOnly)
+                flags.Add(Modifiers.Readonly);
+              when (m.IsStatic)
+                flags.Add(Modifiers.Static);
+              
+              unless (field.IsDeclaredInEvaluated)
+                field.DeclaredIn = owner :> GenericContainerTypeSymbol;
+                
+              field.Type = GetTypeSymbol(m.FieldType); 
+              field.Scope = field.Type.Scope;
+              
+              field
+            }
+                  
+          | m is EventInfo    =>
+            def evnt = ExternalEventDeclaration   (name, m).DefineSymbol(owner.MemberTable);
+            
+            unless (evnt.IsDeclaredInEvaluated)
+              evnt.DeclaredIn = owner :> GenericContainerTypeSymbol;
+              
+            evnt.Type = GetTypeSymbol(m.EventHandlerType);             
+            evnt
+                  
+          | _ => assert(false)
+        };
+        
+        when (symbol is CustomAttributeHostDeclarationSymbol as attrHost) {
+            attrHost.CustomAttributes = GetCustomAttributes(member)
+                                              .Select(a => LoadCustomAttribute(a))
+                                              .ToList();
+        }
+              
+        symbol.EvalProperties(_context);
+        symbol
+    }
+    
+    internal LoadParameters(parameters : array[ParameterInfo], containingScope : TableScope) : void
+    {
+      foreach (p in parameters)
+      {
+        //when (p.Name == null)
+        //  assert2(false, p.Member.DeclaringType.FullName + "." + p.Member.Name + "." + p.Name + " == null");
+          
+        def name = p.Name ?? "<invalid>";
+        def parameterName = Name(NoLocation, name);
+        def parameter = ExternalParameterDeclaration(parameterName, p).DefineSymbol(containingScope);
+        parameter.Type = GetTypeSymbol(p.ParameterType);
+        mutable parameterModifier;
+        when (p.IsOut)
+          parameterModifier |= ParameterModifier.Out;
+        when (p.ParameterType.IsByRef)
+          parameterModifier |= ParameterModifier.Ref;
+        when (GetCustomAttributes(p).OfType.[ParamArrayAttribute]().Count() > 0)
+          parameterModifier |= ParameterModifier.Params;
+        parameter.Modifier = parameterModifier;
+        parameter.Index = p.Position :> uint;
+        parameter.EvalProperties(_context);
+      }
+    }
+    
+    CreateGenericParameters(genericParameterCount : int, genericParams : array[Type]) : array[TypeParameterSymbol]
+    {
+      if (genericParameterCount == 0)
+        AstUtils.NoTypeParameters
+      else
+      {
+        def result = array(genericParameterCount : int);
+        foreach (tp in genericParams with i)
+        {
+          def name  = Name(NoLocation, tp.Name);
+          def tps   = TypeParameterDeclaration(name, tp).DefineSymbol();
+          tps.EvalProperties(_context);
+          result[i] = tps;
+        }
+        result
+      }
+    }
+    
+    InitSystemTypes() : void
+    {      
+      _singleDimensionArray = SingleDimensionArraySymbol();
+      _singleDimensionArray.TypeParametersCount = 0;
+      _singleDimensionArray.EvalProperties(_context);
+      
+      _objectSymbol = GetTypeSymbol(typeof(object));
+    }
+    
+    InitBaseTypeSet() : void
+    {      
+      def interfaces = List();
+      mutable resolved = 1;
+      
+      while (resolved > 0) {
+        resolved = 0;
+
+        foreach (type in _typeToSymbolMap.Values) {
+          def reflectionType = (type.FirstDeclarationOrDefault :> IExternalTypeDeclaration).Type;
+          
+          when (type is SupportsInheritanceTypeSymbol as supportsInheritanceType) {
+            when (supportsInheritanceType.IsBaseTypeSetEvaluated)
+              continue;
+          
+            resolved++;
+            
+            interfaces.Clear();
+          
+            def baseTypeSet = BaseTypeReferenceSet(_context);
+            supportsInheritanceType.BaseTypeSet = baseTypeSet;
+      
+            def addBaseTypes(type) : void {
+              when (type.BaseType != null) {
+                baseTypeSet.AddParent(GetTypeSymbol(type.BaseType));
+                addBaseTypes(type.BaseType);
+              }
+            }
+          
+            def collectInterfaces(type) : void {
+              foreach (iface in type.GetInterfaces())
+                interfaces.Add(iface);
+            
+              when (type.BaseType != null)
+                collectInterfaces(type.BaseType);
+            }
+          
+            addBaseTypes(reflectionType);
+            collectInterfaces(reflectionType);
+          
+            foreach (iface in interfaces.Distinct()) {
+              baseTypeSet.AddParent(GetTypeSymbol(iface));
+            }
+          }
+        }
+      }
+      /*foreach (type in _typeToSymbolMap.Values) {
+        def reflectionType = (type.FirstDeclarationOrDefault :> IExternalTypeDeclaration).Type;
+        when (type is SupportsInheritanceTypeSymbol as supportsInheritanceType) {
+          foreach (baseType in supportsInheritanceType.BaseTypeSet.ParentTypes)
+            InitBaseTypeSet(baseType);
+        }
+      }*/
+      
+      _context.NextPass();
+
+      foreach (type in _typeToSymbolMap.Values) {
+        type.EvalProperties(_context);
+
+        when ((type : DeclarationSymbol) is ContainerSymbol as containerSymbol)
+          unless (containerSymbol.IsScopeEvaluated)
+            type.Scope = containerSymbol.MemberTable;
+      }
+    }
+    
+    private GetCustomAttributes(type : Type) : IEnumerable[object]
+    {
+      if (type.Assembly.ReflectionOnly) 
+        CustomAttributeData.GetCustomAttributes(type)
+      else
+        type.GetCustomAttributes(true)
+    }
+    
+    private GetCustomAttributes(member : MemberInfo) : IEnumerable[object]
+    {
+      if (member.DeclaringType.Assembly.ReflectionOnly) 
+        CustomAttributeData.GetCustomAttributes(member)
+      else
+        member.GetCustomAttributes(true)
+    }
+    
+    private GetCustomAttributes(parameter : ParameterInfo) : IEnumerable[object]
+    {
+      if (parameter.Member.DeclaringType.Assembly.ReflectionOnly) 
+        CustomAttributeData.GetCustomAttributes(parameter)
+      else
+        parameter.GetCustomAttributes(true)
+    }
+    
+    public Dispose() : void
+    {}
+  }
+  
+  
+}

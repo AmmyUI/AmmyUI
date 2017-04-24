@@ -1,0 +1,93 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+using Nitra;
+using Nitra.Runtime;
+using Nitra.Declarations;
+
+namespace Ammy.Language
+{
+  map syntax AmmySyntax.Expr -> Expr
+  {
+    | IntegerLiteral -> IntegerLiteral { Value = ParsedValue(Digits, try { int.Parse(GetText(Digits)); } catch { _ => 0 } );}
+    | FloatLiteral   -> FloatLiteral   { Value = ParsedValue(Digits, try { double.Parse(GetText(Digits), CultureInfo.InvariantCulture); } catch { | _ => 0.0 }); }
+    | String         -> String         { Value = ParsedValue(StringLiteral.Span, StringLiteral.Value()); }
+    | Char           -> Char           { Value = ParsedValue(CharLiteral.Span, CharLiteral.Value()); }
+    | True           -> TrueLiteral    { }
+    | False          -> FalseLiteral   { }
+    | Null           -> NullLiteral    { }
+    | QualifiedName  -> QualifiedName  { Key -> Key; }
+    | ArrayRef -> ArrayRef
+      {
+        Left -> Left;
+        Expr -> Index;
+      }
+    | Constructor -> Constructor {
+      ConstructorType -> ConstructorType;
+      Arguments.Item1 -> Arguments;
+    }
+    | Invocation -> Invocation {
+      Left -> Left;
+      Arguments.Item1 -> Arguments;
+    }
+    | Braces -> this.Expr
+    | MemberAccess {
+      Key -> Key;
+      Left -> Expr;
+    }
+    | Cast {
+      TypeName -> TypeName;
+      Right -> Right;
+    }
+    | Ternary {
+      Condition -> Condition;
+      Left -> Left;
+      Right -> Right;
+    }
+    | Or           { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | And          { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Equal        { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | NotEqual     { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | LessEqual    { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Less         { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | GreaterEqual { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Greater      { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Sum          { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Sub          { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Modulus      { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Multiply     { Expr1 -> Expr1; Expr2 -> Expr2; }
+    | Divide       { Expr1 -> Expr1; Expr2 -> Expr2; }
+
+    | Minus         { Expr -> Expr1; }
+    | LogicalNegate { Expr -> Expr1; }
+  }
+
+  map syntax AmmySyntax.Argument -> Expr.Argument
+  {
+    Expr -> Expr;
+  }
+
+  map syntax AmmySyntax.LambdaExpr -> LambdaExpr
+  {
+    Parameter -> Parameter;
+    Expression -> Expression;
+  }
+
+  map syntax Ammy.AmmySyntax.LambdaParameter -> LambdaParameter 
+  {
+    Name = Name(Location(File, Span), Key.Value());
+    Type -> Type;
+  }
+
+  map syntax Ammy.AmmySyntax.LambdaParameterType -> LambdaParameterType
+  {
+    TypeName -> TypeName;
+  }
+}

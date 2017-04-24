@@ -1,0 +1,54 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+using Ammy.InitAst;
+using Ammy.Language;
+using Ammy.Infrastructure;
+
+namespace Ammy.Converters
+{
+  /*
+  public module ThicknessConverter
+  {
+    public Convert(num : PropertyValue.Number, context : AmmyDependentPropertyEvalContext) : option[BuildResult]
+    {
+      def numAst = InitAst.PrimitiveValue(context.Types.Double.AsTypeInfo(), num.Val.Value.ToString(CultureInfo.InvariantCulture), false);
+      def ast = InitAst.New(context.Types.Thickness.AsTypeInfo(), array[numAst]);
+          
+      Some(BuildResult.Result(ast))
+    }
+    
+    public Convert(numbers : array[Double], context : AmmyDependentPropertyEvalContext) : option[BuildResult]
+    {
+      def doubleToAst(num) {
+        InitAst.PrimitiveValue(context.Types.Double.AsTypeInfo(), num.ToString(CultureInfo.InvariantCulture), false);
+      }
+      
+      def numbersAst = numbers.Select(doubleToAst)
+                              .ToList();
+      
+      def args = if (numbers.Length == 1) array[numbersAst[0]];
+                 else if (numbers.Length == 2) array[numbersAst[0], numbersAst[1], numbersAst[0], numbersAst[1]]
+                 else if (numbers.Length == 4) array[numbersAst[0], numbersAst[1], numbersAst[2], numbersAst[3]]
+                 else null;
+     
+      if (args != null) {
+        def ast = InitAst.New(context.Types.Thickness.AsTypeInfo(), args);          
+        Some(BuildResult.Result(ast))         
+      } else {
+        Some(BuildResult.Error("Invalid format for Thickness. 1, 2 or 4 elements are accepted"))
+      }
+    }
+  }
+  */
+}

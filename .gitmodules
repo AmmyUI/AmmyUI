@@ -1,0 +1,6 @@
+[submodule "lib/Nitra"]
+	path = lib/Nitra
+	url = git://github.com/rsdn/Nitra.git
+[submodule "external/AmmyStandardLib"]
+	path = external/AmmyStandardLib
+	url = https://github.com/AmmyUI/AmmyStandardLib.git

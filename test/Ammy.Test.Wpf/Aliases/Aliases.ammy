@@ -1,0 +1,15 @@
+﻿UserControl "Ammy.WpfTest.Aliases.Aliases" {
+  alias Alias0 (text="a") {
+    TextBlock {
+      Text: $text
+    }
+  }
+
+  Grid { 
+    @Alias0 ("s") {}
+    @Alias0 {}                      
+    @Alias0 ("dd") 
+    @Alias0 () 
+    @Alias0
+  }
+}

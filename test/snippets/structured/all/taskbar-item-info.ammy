@@ -1,0 +1,8 @@
+Window "TaskbarItemInfo" {
+    TaskbarItemInfo: TaskbarItemInfo {
+        ThumbButtonInfos: [
+            ThumbButtonInfo { Description: "Previous", ImageSource: "Images/previousSmall.gif" }
+            ThumbButtonInfo { Description: "Next", ImageSource: "Images/nextSmall.gif" }
+        ]
+    } 
+}

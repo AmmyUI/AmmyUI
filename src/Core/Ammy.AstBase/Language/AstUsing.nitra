@@ -1,0 +1,40 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Runtime;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+
+namespace Ammy.Language
+{
+  abstract ast SyntaxModuleUsingDirective
+  {
+  stage 2:
+    in    CurrentScope      : Scope;
+    inout Opening           : Scope;
+        
+    in TypeScope : Scope;
+  }
+  
+  ast SyntaxModuleUsingOpenDirective : SyntaxModuleUsingDirective
+  {
+    NamespaceOrTypeName.Scope = CurrentScope;
+    OpeningOut                = OpeningIn.UnionWith(NamespaceOrTypeName.Ref.Scope);
+
+    unless (NamespaceOrTypeName.Ref.Symbol is NamespaceSymbol)
+      Error(context, "Using directive can only open namespace.");
+
+    NamespaceOrTypeName : QualifiedReference;
+  }
+}

@@ -1,0 +1,351 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Globalization;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+
+using Nitra;
+using Nitra.Declarations;
+
+using DotNet;
+
+namespace Ammy.Language
+{
+  abstract ast Unary : Expr 
+  { 
+    Expr1.Scope = Scope;
+    Expr1.Used = true;
+    Expr1.ParameterScope = ParameterScope;
+
+    Type = Expr1.Type;
+    
+    Expr1 : Expr; 
+    
+    out Operation : UnaryOp;
+
+    //AstValue = this.UnaryOp(Operation, Expr1.Type, Expr1.AstValue, context);
+  }
+
+  abstract ast NumericUnary : Unary
+  {
+    //unless (Expr1.Type == context.GetInt32Type() ||
+    //        Expr1.Type == context.GetDoubleType())
+    //  Expr1.Error(context, $"Expected int or float, but found $(self.Expr1.Type)");
+  }
+  
+  abstract ast BoolUnary : Unary
+  {
+    unless (Expr1.Type.IsDescendant(context.GetBooleanType()))
+      Expr1.Error(context, $"Expected bool but found $(self.Expr1.Type)");
+  }
+
+  abstract ast BinaryExpr : Expr
+  { 
+    Expr1.Scope = Scope;
+    Expr2.Scope = Scope;
+    Expr1.Used = true;
+    Expr2.Used = true;
+    Expr1.ParameterScope = ParameterScope;
+    Expr2.ParameterScope = ParameterScope;
+
+    Expr1 : Expr;
+    Expr2 : Expr; 
+    
+    out Operation : BinaryOp;
+
+    //AstValue = this.BinaryOp(Operation, Expr1.Type, Expr1.AstValue, Expr2.Type, Expr2.AstValue, context);
+  }
+
+  abstract ast SameTypesExpr : BinaryExpr
+  {}
+
+  abstract ast OrAndExpr : SameTypesExpr
+  {
+    Type = context.GetBooleanType()
+                  .WaitForAndReturn(Expr1.Type)
+                  .WaitForAndReturn(Expr2.Type);
+  }
+
+  abstract ast EqualExpr : SameTypesExpr
+  {
+    Type = context.GetBooleanType()
+                  .WaitForAndReturn(Expr1.Type)
+                  .WaitForAndReturn(Expr2.Type);
+  }
+
+  abstract ast NumericBinary : SameTypesExpr
+  {
+  }
+
+  abstract ast Comparison : NumericBinary 
+  {
+    Type = context.GetBooleanType()
+                  .WaitForAndReturn(Expr1.Type)
+                  .WaitForAndReturn(Expr2.Type);
+  }
+
+  abstract ast Arithmetic : NumericBinary
+  {
+    Type = this.GetArithmeticType(Expr1.Type, Expr2.Type, context);
+  }
+
+  abstract ast Expr : BindableAst
+  {
+    in ExpectedType : TypeSymbol;
+    in Used : bool = false;
+    in ParameterScope : TableScope = TableScope(null, "parameters");
+
+    stage 1:
+    out Type : TypeSymbol;
+
+    unless (Type.IsDescendant(ExpectedType) || (ExpectedType.IsNumeric() && Type.IsNumeric()))
+      Error(context, $"Expected $(self.ExpectedType) but got $(self.Type)");
+
+    | IntegerLiteral {
+        Value : int; 
+        Type = context.GetInt32Type();
+    }
+    | FloatLiteral {
+        Value : double; 
+        Type = context.GetDoubleType();
+        //AstValue = BuildResult.Result();
+    }
+    | String {
+        Value : string; 
+        Type = context.GetStringType();
+        //AstValue = BuildResult.Result();
+    }
+    | Char {
+        Value : char; 
+        Type = context.GetCharType();
+        //AstValue = BuildResult.Result(InitAst.PrimitiveValue("System.Char", Value.ToString(), false));
+    }
+    | FalseLiteral {
+      Type = context.GetBooleanType();
+    }
+    | TrueLiteral {
+      Type = context.GetBooleanType();
+    }
+    | NullLiteral {
+      Type = context.GetObjectType();
+    }
+    | QualifiedName {
+        Key.Scope = Scope.HideWith(ParameterScope);
+
+      stage 1:
+        Key: QualifiedReference;
+        
+        out Ref: Ref[DeclarationSymbol] = Key.Ref.Resolve();
+
+        Type = this.GetMemberAccessReturnType(Ref, context);
+    }
+    | ArrayRef {
+      Left : Expr;
+      Left.Scope = Scope;
+      Left.ParameterScope = ParameterScope;
+        
+    stage 1:
+      Index : Expr;
+      Index.Scope = Scope;
+      Index.ExpectedType = context.GetInt32Type();
+      Index.ParameterScope = ParameterScope;
+      Index.Used = true;
+
+      Type = this.ArrayRefGetType(Left.Type, Index.Type, context);
+    }
+    | MemberAccess {
+      Expr : Expr;
+      Expr.Scope = Scope;
+      Expr.ParameterScope = ParameterScope;
+
+      Key : Reference;
+      Key.Scope = Expr.Type.Scope;
+
+      Type = this.GetMemberAccessReturnType(Ref, context); 
+
+      stage 1:
+      out Ref : Ref[DeclarationSymbol] = Key.Ref.Resolve();     
+    }
+    | Constructor {
+      ConstructorType : QualifiedReference;
+      ConstructorType.Scope = Scope;
+
+      Arguments : Expr.Argument*;
+      Arguments.ParameterScope = ParameterScope;
+      Arguments.Scope = Scope.HideWith(ParameterScope);
+      Arguments.IndexIn = 0;
+      Arguments.ParentParameterScope = Ref.Symbol.ParameterScope;
+      Arguments.Used = true;
+
+      stage 1:
+      out Ref : Ref[Member.ConstructorSymbol] = this.FindSuitableConstructor(ConstructorType.Ref.Symbol, Arguments.ArgumentType, context);
+
+      Type = Ref.Symbol.DeclaredIn;
+    }
+    | Invocation {
+      Left : Expr;
+      Left.Scope = Scope;
+      Left.ParameterScope = ParameterScope;
+
+      Arguments : Expr.Argument*;
+      Arguments.ParameterScope = ParameterScope;
+      Arguments.Scope = Scope.HideWith(ParameterScope);
+      Arguments.IndexIn = 0;
+      Arguments.ParentParameterScope = Method.Symbol.ParameterScope;
+      Arguments.Used = true;
+      
+      Type = Method.Symbol.ReturnType;
+
+      stage 1:
+      out Method : Ref[Member.MethodSymbol] = this.InvocationResolveMethod(Left, Left.Type, Arguments.Type, context);
+    }
+    | Argument {
+      inout Index : int;
+      IndexOut = IndexIn + 1;
+
+      in ParentParameterScope : TableScope;      
+
+      Expr : Expr;
+      Expr.ParameterScope = ParameterScope;
+      Expr.Scope = Scope;
+      Expr.Used = true;
+
+      ExpectedType = ParentParameterScope.GetParameterType(IndexIn);
+      Type = Expr.Type;
+
+      stage 1:
+      out ArgumentType : TypeSymbol = Type;
+    }
+    | Ternary {
+      Condition : Expr;
+      Condition.ParameterScope = ParameterScope;
+      Condition.Scope = Scope;
+      Condition.Used = true;
+
+      Left : Expr;
+      Left.ParameterScope = ParameterScope;
+      Left.Scope = Scope;
+      Left.Used = true;
+
+      Right : Expr;
+      Right.ParameterScope = ParameterScope;
+      Right.Scope = Scope;
+      Right.Used = true;
+
+      Type = Left.Type
+                 .WaitForAndReturn(Condition.Type)
+                 .WaitForAndReturn(Left.Type)
+                 .WaitForAndReturn(Right.Type);
+    }
+    | Cast { 
+      TypeName : QualifiedReference;
+      TypeName.Scope = Scope;
+
+      Right : Expr;
+      Right.ParameterScope = ParameterScope;
+      Right.Scope = Scope;
+      Right.Used = true;
+      
+      stage 1:
+      out TypeRef : Ref[TypeSymbol] = TypeName.Ref.Resolve();
+      Type = TypeRef.Symbol;
+    }
+    | Or            : OrAndExpr {
+      Operation = BinaryOp.Or();
+    }
+    | And           : OrAndExpr {
+      Operation = BinaryOp.And();
+    }
+    | Equal         : EqualExpr {
+      Operation = BinaryOp.Equal();
+    }
+    | NotEqual      : EqualExpr {
+      Operation = BinaryOp.NotEqual();
+    }
+    | LessEqual     : Comparison {
+      Operation = BinaryOp.LessEqual();
+    }
+    | Less          : Comparison {
+      Operation = BinaryOp.Less();
+    }
+    | GreaterEqual  : Comparison {
+      Operation = BinaryOp.GreaterEqual();
+    }
+    | Greater       : Comparison {
+      Operation = BinaryOp.Greater();
+    }
+    | Sum           : Arithmetic {
+      Operation = BinaryOp.Sum();
+    }
+    | Sub           : Arithmetic {
+      Operation = BinaryOp.Sub();
+    }
+    | Modulus       : Arithmetic {
+      Operation = BinaryOp.Mod();
+    }
+    | Multiply      : Arithmetic {
+      Operation = BinaryOp.Mul();
+    }
+    | Divide        : Arithmetic {
+      Operation = BinaryOp.Div();
+    }
+    | Minus         : NumericUnary {
+      Operation = UnaryOp.Minus();
+    }
+    | LogicalNegate : BoolUnary {
+      Operation = UnaryOp.LogicalNegate();
+    }
+  }
+
+  ast LambdaExpr {
+    in TypeScope : Scope;
+    in ExpectedType : TypeSymbol;
+
+    Parameter : LambdaParameter;
+    Parameter.ContainingTable = Expression.ParameterScope;
+    Parameter.TypeScope = TypeScope;
+    
+    Expression : Expr;
+    Expression.ExpectedType = ExpectedType;
+    Expression.Scope = TypeScope.WaitForAndReturn(Parameter.Symbol.Type);
+    
+    stage 1:
+    out AstValue : BuildResult = this.BuildAstValue(Expression, Expression.Type, Parameter.Symbol.Name, Parameter.Symbol.Type, context);
+  }
+
+  declaration LambdaParameter {
+    symbol {
+      Kind      = "lambda parameter";
+      SpanClass = DotNetLang.ParameterSpanClass;
+
+      in Type : TypeSymbol;
+
+      Scope = Type.Scope;
+    }
+    
+    Type : LambdaParameterType?;
+    Type.TypeScope = TypeScope;
+
+    Symbol.Type = this.ResolveLambdaParameterType(Type.TypeNameRef, context);
+
+    in TypeScope : Scope;
+  }
+
+  ast LambdaParameterType {
+    TypeName : QualifiedReference;
+    TypeName.Scope = TypeScope;
+    
+    in TypeScope : Scope;
+
+  stage 1:
+    out TypeNameRef : Ref[TypeSymbol] = TypeName.Ref.Resolve();
+  }
+}

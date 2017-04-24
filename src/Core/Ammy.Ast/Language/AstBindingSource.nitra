@@ -1,0 +1,83 @@
+﻿using Nitra;
+using Nitra.Declarations;
+
+using DotNet;
+
+using Ammy;
+using Ammy.Converters;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Scopes;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  abstract ast BindingSource : BindableAst
+  {
+    in RootSymbolId : string;
+  stage 1:
+    out Xaml        : XamlElement;
+  }
+
+  ast BindingSourceThis : BindingSource
+  {
+    Xaml = XamlAttribute("RelativeSource", XamlValue.String("{x:Static RelativeSource.Self}"), Location);
+  }
+
+  ast BindingSourceViewmodel : BindingSource
+  {
+    Xaml = XamlEmpty();
+  }
+
+  ast BindingSourceTemplate : BindingSource
+  {
+    Xaml = XamlAttribute("RelativeSource", XamlValue.String("{x:Static RelativeSource.TemplatedParent}"), Location);
+  }
+
+  ast BindingSourcePreviousData : BindingSource
+  {
+    Xaml = XamlAttribute("RelativeSource", XamlValue.String("{x:Static RelativeSource.PreviousData}"), Location);
+  }
+
+  ast BindingSourceAncestor : BindingSource
+  {
+    Level : int; 
+    
+    AncestorTypeKey : QualifiedReference;
+    AncestorTypeKey.Scope = Scope;
+
+  stage 1:
+
+    out AncestorType : Ref[TypeSymbol] = AncestorTypeKey.Ref.Resolve();
+    out AncestorTypeName : string = (context :> AmmyDependentPropertyEvalContext).GetNamespaceAliasFor(AncestorType.Symbol, RootSymbolId) + AncestorType.Name;
+
+    Xaml = if (Level.HasValue && Level.Value != -1)
+              XamlAttribute("RelativeSource", XamlValue.String($<#{RelativeSource FindAncestor, AncestorType={x:Type $AncestorTypeName}, AncestorLevel=$Level}#>), Location)
+           else 
+              XamlAttribute("RelativeSource", XamlValue.String($<#{RelativeSource FindAncestor, AncestorType={x:Type $AncestorTypeName}}#>), Location);
+  }
+
+  ast BindingSourceName : BindingSource
+  {
+    Name : string; 
+    Xaml = XamlAttribute("ElementName", XamlValue.String(Name.Value), Location);
+  }
+
+  ast BindingSourceReference : BindingSource
+  {
+    Key : QualifiedReference;
+    Key.Scope = Scope;
+
+  stage 1:
+    out Ref : Ref[MemberSymbol] = Key.Ref.Resolve();
+    Xaml = XamlAttribute("Source", XamlValue.String($"{x:Static local:$(Ammy.Infrastructure.BaseExtensions.FullName(Key))}}"), Location);
+  }
+
+  ast BindingSourceResource : BindingSource
+  {
+    ResourceKey : Reference;
+
+  stage 1:
+    Xaml = XamlAttribute("Source", XamlValue.String($"{StaticResource $(ResourceKey.Text)}"), Location);
+  }
+}

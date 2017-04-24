@@ -1,0 +1,10 @@
+﻿using System.Windows.Interactivity
+using System
+
+alias Grid_0(text=none, hint="Search") {
+  Grid {
+    DockPanel.Dock: Right
+    Width: 100
+    Height: 200
+  }
+}

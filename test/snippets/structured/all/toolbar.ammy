@@ -1,0 +1,20 @@
+ToolBar "ToolBar" {
+    Height: 30
+    RenderOptions.BitmapScalingMode: NearestNeighbor
+    Button { Image { Source: "copy.gif" } }
+    Separator {}
+    ToggleButton { Image { Source: "bold.gif" } }
+    ToggleButton { Image { Source: "italic.gif" } }
+    ToggleButton { Image { Source: "underline.gif" } }
+    Separator {}
+    ToggleButton { Image { Source: "left.gif" } }
+    ToggleButton { Image { Source: "right.gif" } }
+    ToggleButton { Image { Source: "justify.gif" } }
+    Separator {}
+    Label { "Zoom" }
+    ComboBox {
+        ComboBoxItem { "100%" }
+        ComboBoxItem { "75%" }
+        ComboBoxItem { "50%" }
+    }
+}

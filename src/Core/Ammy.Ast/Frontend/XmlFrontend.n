@@ -1,0 +1,82 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Security;
+using System.Linq;
+
+using Nitra.Declarations;
+
+using Ammy.Language;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+
+namespace Ammy.Frontend
+{
+  module XmlFrontend
+  {
+    public _Compile(_file : FileEvalPropertiesData, _top : Language.TopWithNode, _typeName : string, _context : AmmyDependentPropertyEvalContext) : string 
+    {
+      def ast = InitAst.Seq([]);//top.AstValue.GetAst();
+      def xml = InitAstToXml(ast);
+      
+      "<root>" + xml + "</root>";
+    }
+    
+    public InitAstToXml(ast : InitAst) : string 
+    {
+      def escape(text) {
+        System.Security.SecurityElement.Escape(text);
+      }
+      
+      match(ast) {
+        | Seq(elems) => string.Join(Environment.NewLine, elems.Select(ast => InitAstToXml(ast)))
+        | Variable(name) => $"<var name=\"$(escape(name))\" />"
+        | NewVariable(name, type, _) => $"<newvar name=\"$(escape(name))\">$(InitAstToXml(type))</newvar>"
+        | New(typeInfo, parms) => 
+          def type = InitAstToXml(typeInfo);
+          def parmString = string.Join("", parms.Select(p => InitAstToXml(p)));
+          $"<new>$type$parmString</new>"
+        | TypeInfo(typeName, genericArgs, isArray) => 
+          $<#<typeinfo typename="$(escape(typeName))" isarray="$isArray">..$(genericArgs; ""; a => InitAstToXml(a))</typeinfo>#>
+        | PrimitiveValue(type, val, isnull) => 
+          def val = SecurityElement.Escape(val);
+          $"<prim val=\"$val\" isnull=\"$isnull\">" + InitAstToXml(type) + "</prim>"
+        | Assign(left, right) => "<assign>" + InitAstToXml(left) + InitAstToXml(right) + "</assign>"
+        | Property(instance, propName) => $"<prop name=\"$(escape(propName))\">" + InitAstToXml(instance) + "</prop>"
+        | Field(instance, fieldName) => $"<field name=\"$(escape(fieldName))\">" + InitAstToXml(instance) + "</field>"
+        | Call(left, method, parms) => 
+          def parmString = string.Join("", parms.Select(p => InitAstToXml(p)));
+          $"<call method=\"$(escape(method))\">" + InitAstToXml(left) + parmString + "</call>"
+        | Cast(type, obj) => "<cast>" + InitAstToXml(type) + InitAstToXml(obj) + "</cast>"
+        | StaticCall(type, method, parms) => 
+          "<staticcall method=\"" + escape(method) + "\">" + 
+            InitAstToXml(type) +
+            string.Join(Environment.NewLine, parms.Select(ast => InitAstToXml(ast))) + 
+          "</staticcall>"
+        | StaticField(type, field) => $"<staticfield field=\"$(escape(field))\">" + InitAstToXml(type) + "</staticfield>"
+        | StaticProperty(type, property) => $"<staticproperty property=\"$(escape(property))\">" + InitAstToXml(type) +  "</staticproperty>"
+        | This => "<this />"
+        | Null(type) => "<null>" + InitAstToXml(type) + "</null>"
+        | Typeof(type) => "<typeof>" + InitAstToXml(type) + "</typeof>"
+        | Binary(op, e1, e2) => 
+          def opName = op.GetType().Name;
+          $"<binary op=\"$(escape(opName))\">" + InitAstToXml(e1) + InitAstToXml(e2) + "</binary>"
+        | Unary(op, e) => 
+          def opName = op.GetType().Name;
+          $"<unary op=\"$(escape(opName))\">" + InitAstToXml(e) + "</unary>"
+        | Lambda(body, parms, isAction) => 
+          def parms = $"..$(parms; \"\"; p => InitAstToXml(p))";
+          $"<lambda isaction=\"$isAction\">" + InitAstToXml(body) + parms + "</lambda>"
+        | Parameter(name, type) => $"<parameter name=\"$(escape(name))\" type=\"$(escape(type))\" />"
+        | MethodInfo(owner, methodName, isInstance) => $"<methodinfo name=\"$(escape(methodName))\" isInstance=\"$isInstance\">" + InitAstToXml(owner) + "</methodinfo>"
+        | CreateDelegate(type, method) => "<delegate>" + InitAstToXml(type) + InitAstToXml(method) + "</delegate>"
+        | Ternary(cond, left, right) => "<ternary>" + InitAstToXml(cond) + InitAstToXml(left) + InitAstToXml(right) + "</ternary>"
+        | ArrayAccess(arr, index) => "<arrayaccess>" + InitAstToXml(arr) + InitAstToXml(index) + "</arrayaccess>"
+      }
+    }
+  }
+}

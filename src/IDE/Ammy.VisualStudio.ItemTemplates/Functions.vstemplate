@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Ammy Mixins</Name>
+    <Description>Creates empty Ammy mixin file</Description>
+    <Icon>icon.png</Icon>
+    <TemplateID>3e546ccb-f877-4e0a-b738-261193aaade2</TemplateID>
+    <ProjectType>CSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Functions.ammy</DefaultName>
+    <AppliesTo>CSharp + (WindowsXaml | MultiTarget | XamarinXaml)</AppliesTo>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+    </References>
+    <ProjectItem ReplaceParameters="true" OpenInEditor="true" TargetFileName="$safeitemname$.ammy">Functions.ammy_</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

@@ -1,0 +1,10 @@
+StackPanel "LabelForTextbox" {
+    Label {
+        "_User Name:"
+        Target: bind from "userNameBox"
+    }
+    TextBox "userNameBox" {}
+    TextBlock {
+      Text: bind Text from "userNameBox"
+    }
+}

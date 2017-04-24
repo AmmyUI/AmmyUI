@@ -1,0 +1,4 @@
+﻿//using Ammy.Test.TestDependency
+
+UserControl "Ammy.WpfTest.Bugs.x64reference" {
+}

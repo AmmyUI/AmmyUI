@@ -1,0 +1,1 @@
+test\Ammy.Test.Wpf\bin\Debug\Ammy.WpfTest.exe

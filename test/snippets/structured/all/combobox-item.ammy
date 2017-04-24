@@ -1,0 +1,6 @@
+ComboBox "ComboBoxItem" {
+    ComboBoxItem { "Item 1" }
+    ComboBoxItem { "Item 2" }
+
+    SelectedIndex: 1
+}

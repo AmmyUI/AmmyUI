@@ -1,0 +1,14 @@
+// http://stackoverflow.com/questions/338056/resourcedictionary-in-a-separate-assembly
+// I have resource dictionary files (MenuTemplate.xaml, ButtonTemplate.xaml, etc) that I want to use in multiple 
+// separate applications. I could add them to the applications' assemblies, but it's better if I compile these 
+// resources in one single assembly and have my applications reference it, right?
+
+UserControl "ResourceDictionaryAssembly" {
+    Resources: ResourceDictionary {
+      MergedDictionaries: {
+        ResourceDictionary {
+          Source: "Dictionaries\\ResourceDictionary.xaml"
+        }
+      }
+    }
+}

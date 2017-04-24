@@ -1,0 +1,5 @@
+StackPanel "Visibility" {
+    Button { Content: "1", Visibility: Collapsed }
+    Button { Content: "2", Visibility: Hidden }
+    Button { Content: "3", Visibility: Visible }
+}

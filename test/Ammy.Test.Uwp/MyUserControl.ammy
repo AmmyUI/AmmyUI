@@ -1,0 +1,7 @@
+﻿UserControl "Ammy.UwpTest.MyUserControl" {
+
+  Grid 
+  {
+    RowDefinitions: []
+  }
+}  

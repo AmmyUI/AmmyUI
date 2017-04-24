@@ -1,0 +1,13 @@
+﻿using Ammy;
+
+language AmmyLanguage
+{
+  syntax module AmmySyntax start rule Start;
+  extension = .ammy;
+
+  company     = Ion;
+  description = Ammy plugin for Visual Studio;
+  authors     = Mihhail Maslakov;
+  copyright   = Ion OÜ;
+  license url = http://opensource.org/licenses/BSD-3-Clause;
+}

@@ -1,0 +1,9 @@
+﻿using MahApps.Metro.Controls
+
+MetroWindow "WpfApplication18.MainWindow" {
+  MahApps.Metro.Controls.Dialogs.DialogParticipation.Register: bind 
+  Width: bind ActualWidth from "LayoutRoot" set [
+	  Converter: resource "RatioConverter"
+	  ConverterParameter: 0.5  
+  ]
+}

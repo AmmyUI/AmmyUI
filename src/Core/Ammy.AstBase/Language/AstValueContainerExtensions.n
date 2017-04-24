@@ -1,0 +1,21 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.InitAst;
+
+namespace Ammy.Language
+{
+  public module AstValueContainerExtensions
+  {
+    public SetAstValueAsIgnore(this _container : AstValueContainer) : void
+    {
+      //container.AstValue = BuildResult.Ignore();
+    }
+  }
+}

@@ -1,0 +1,3 @@
+﻿Application "Ammy.Test.Workbench.App" {
+  StartupUri: "MainWindow.g.xaml"
+}

@@ -1,0 +1,23 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Ammy.Infrastructure;
+
+namespace Ammy.InitAst
+{
+  public module Extensions
+  {
+    public AsPrimitiveValue(this str : string, context : DependentPropertyEvalContext) : InitAst.PrimitiveValue
+    {
+      def context = context.ToAmmyContext();
+      InitAst.PrimitiveValue(context.Types.String.AsTypeInfo(), str, false)
+    }
+  }
+}

@@ -1,0 +1,90 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Extensions;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+using Nitra;
+using Nitra.Declarations;
+using Nitra.ProjectSystem;
+
+using Ammy;
+using Ammy.Backend;
+using Ammy.Language;
+using Ammy.Converters;
+using Ammy.Infrastructure;
+using Ammy.Scopes;
+using Ammy.Symbols;
+
+namespace Ammy
+{
+  partial module GetScope
+  {
+    public CreateNameScopeFactory(property : Property, expectedType : TypeSymbol, context : DependentPropertyEvalContext) : ScopeFactory
+    {
+      def context = context.ToAmmyContext();
+      
+      def isExpectedType(s, of) {
+        | (TypeSymbol, _) when of.IsDescendant(context.Types.Type) => true
+        | (ts is TypeSymbol, of is TypeSymbol) => ts.IsDescendant(of)
+        | (prop is DependencyPropertySymbol, of is TypeSymbol) => prop.Type.IsDescendant(of)
+        | (prop is Member.PropertySymbol, of is TypeSymbol) => prop.Type.IsDescendant(of)
+        | (field is Member.FieldSymbol, of is TypeSymbol) => field.Type.IsDescendant(of)
+        | _ => true
+      }
+      
+      fun (scope : Scope) : Scope {
+        match (property.Ref.Symbol) {
+          | prop is Member.PropertySymbol when prop.Type.IsDescendant(context.Types.DependencyProperty) =>
+            scope.FilterWith(s : DeclarationSymbol => s is NamespaceSymbol ||
+                                                      s is DependencyPropertySymbol ||
+                                                      s.IsDependencyObject(context.ToAmmyContext()))
+                 .FilterWith(s => isExpectedType(s, expectedType) || 
+                                 s is NamespaceSymbol ||
+                                (s is TypeSymbol && expectedType.IsDescendant(context.Types.Type)))
+          | Member.EventSymbol 
+          | _ => scope
+        }
+      }
+    }
+
+    public CreatePropertyNameScopeFactory(context : DependentPropertyEvalContext, isForgiving : bool = false) : ScopeFactory
+    {
+      fun (scope : Scope) : Scope {
+        if (scope is PropertyScope)
+          scope
+        else
+          PropertyScope(context, isForgiving, scope)
+      }
+    }
+
+    public CreateNodeNameScopeFactory(context : DependentPropertyEvalContext) : ScopeFactory
+    {
+      fun (scope : Scope) : Scope {
+        NodeScope(context, scope)
+      }
+    }
+    
+    //public CreateNamespaceNameScopeFactory(context : DependentPropertyEvalContext) : ScopeFactory
+    //{
+    //  fun (scope : Scope) : Scope {
+    //   NamespaceScope(scope, context)
+    // }
+    //}
+    
+    /*public static DependencyPropertyScopeFactory : ScopeFactory = DependencyPropertyScopeFactoryImpl;
+    
+    private static DependencyPropertyScopeFactoryImpl(scope : Scope) : Scope 
+    { 
+      scope.FilterWith(s : DeclarationSymbol => s is NamespaceSymbol ||
+                                                s is DependencyPropertySymbol ||
+                                                s.IsDependencyObject())
+    }*/
+  }
+}

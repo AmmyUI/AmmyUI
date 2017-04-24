@@ -1,0 +1,26 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  public module AstXamlContainerExtensions
+  {
+    public GetAstDescription(this instance : IAst, context : DependentPropertyEvalContext) : string
+    {
+      def context = context.ToAmmyContext();
+      context.MissingXamlMarked = true;
+      
+      def name = instance.GetType().Name;
+      name
+    }
+  }
+}

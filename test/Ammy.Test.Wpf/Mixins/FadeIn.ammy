@@ -1,0 +1,10 @@
+﻿Window "Ammy.WpfTest.Mixins.FadeIn" {
+  TextBlock {
+    "Hello, world!"
+    Style: Style {
+      #FadeIn_OnEvent(event: "FrameworkElement.Loaded")
+      #FadeIn_OnData(bind Text, "")
+      #FadeIn_OnProperty("FrameworkElement.Visibility", "Visible")
+    }
+  }
+}

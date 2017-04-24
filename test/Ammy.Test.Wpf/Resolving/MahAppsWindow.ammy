@@ -1,0 +1,7 @@
+﻿using MahApps.Metro.Controls
+
+MetroWindow "Ammy.WpfTest.Resolving.MahAppsWindow" {
+  Grid { 
+    TextBlock { "generic content" }
+  }
+}

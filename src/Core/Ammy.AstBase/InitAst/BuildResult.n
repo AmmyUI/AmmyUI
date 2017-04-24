@@ -1,0 +1,86 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.InitAst
+{   
+  public variant BuildResult
+  {  
+    private mutable _warning : option[string] = None();
+    
+    | Result { 
+      Ast : InitAst; 
+      
+      public this (ast : InitAst, warning : option[string]) 
+      {
+        Ast = ast;
+        _warning = warning;
+      }
+    }
+    | Error { Message : string; }
+    | Ignore
+       
+    public override ToString() : string {
+      match (this) {
+        | Error(e) => e
+        | Result(ast) => ast.ToString()
+        | _ => base.ToString()
+      }
+    }
+      
+    public HasWarning : bool { get { _warning.IsSome }}
+    public GetWarning() : string { _warning.Value }
+    
+    public GetAst() : InitAst {
+      match (this) {
+        | Result(ast) => ast
+        // Errors should be reported on AST
+        | Error => InitAst.Seq([])
+        | Ignore => InitAst.Seq([])
+      }
+    }
+    
+    public MaybeAppend(toAppend : option[InitAst]) : BuildResult {
+      match (toAppend, this) {
+        | (Some(append), Result(ast)) => BuildResult.Result(InitAst.Seq([ast, append]))
+        | (Some(append), Ignore) => BuildResult.Result(append)
+        | _ => this
+      }
+    }
+    
+    public Prepend(toPrepend : InitAst) : BuildResult {
+      match (this) {
+        | Result(ast) => BuildResult.Result(InitAst.Seq([toPrepend, ast]))
+        | Ignore => BuildResult.Result(toPrepend)
+        | _ => this
+      }
+    }
+    
+    public Prepend(toPrepend : BuildResult) : BuildResult {
+      match (toPrepend) {
+        | Result(ast) => this.Prepend(ast)
+        | _ => this
+      }
+    }  
+    
+    public Append(toAppend : InitAst) : BuildResult {
+      match (this) {
+        | Result(ast) => BuildResult.Result(InitAst.Seq([ast, toAppend]))
+        | Ignore => BuildResult.Result(toAppend)
+        | _ => this
+      }
+    }
+    
+    public Append(toAppend : BuildResult) : BuildResult {
+      match (toAppend) {
+        | Result(ast) => this.Append(ast)
+        | _ => this
+      }
+    }
+  }
+}

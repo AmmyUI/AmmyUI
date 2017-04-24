@@ -1,0 +1,21 @@
+StackPanel "ResourcesBrushes" {
+    Resources: [
+        SolidColorBrush Key="backgroundBrush" { "Red" }
+        LinearGradientBrush Key="gradientBrush" {
+            StartPoint: "0,0"
+            GradientStop { Color: "Blue", Offset: 0 }
+            GradientStop { Color: "White", Offset: 0.5 }
+            GradientStop { Color: "Red", Offset: 1 }
+        }
+    ]
+
+    Button {
+        "OK"
+        Background: resource "gradientBrush"
+    }
+
+    Button {
+        "Cancel"
+        Background: resource "backgroundBrush"
+    }
+}

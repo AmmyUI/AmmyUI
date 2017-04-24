@@ -1,0 +1,271 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+namespace Ammy.InitAst
+{   
+  public variant InitAst
+  {      
+    | Seq { 
+      Elems : list[InitAst]; 
+      
+      public override ToString() : string {
+        "Seq[" + string.Join(", ", Elems.Select(e => e.ToString())) + "]"
+      }
+    }
+    | Variable { Name : string; }
+    | NewVariable { 
+      Name : string; 
+      Type : InitAst.TypeInfo; 
+      GivenName : option[string]; 
+      
+      public this(name : string, type : InitAst.TypeInfo) {
+        this (name, type, None());
+      }
+      
+      public this(name : string, type : string) {
+        this (name, InitAst.TypeInfo(type), None());
+      }
+      
+      public this(name : string, type : string, givenName : option[string]) {
+        this (name, InitAst.TypeInfo(type), givenName);
+      }
+    }
+    | New { 
+      Type : InitAst.TypeInfo;
+      Parameters : array[InitAst];
+    }
+    | TypeInfo {
+      FullName : string;
+      GenericArguments : array[InitAst.TypeInfo];
+      IsArray : bool;
+      
+      public this (fullName : string) {
+        FullName = fullName;
+        GenericArguments = array[];
+        IsArray = false;
+      }
+      
+      public this (fullName : string, genericArguments : array[InitAst.TypeInfo]) {
+        FullName = fullName;
+        GenericArguments = genericArguments;
+        IsArray = false;
+      }
+    }
+    | PrimitiveValue {
+      Type : InitAst.TypeInfo;
+      Val : string;
+      IsNull : bool;
+    }
+    | Assign {
+      Left : InitAst;
+      Right : InitAst;
+    }
+    | Property {
+      Instance : InitAst;
+      Name : string;
+    }
+    | Field {
+      Instance : InitAst;
+      Name : string;
+    }
+    | Call {
+      Left : InitAst;
+      Method : string;
+      Parameters : array[InitAst];
+    }    
+    | StaticCall {
+      Type : InitAst.TypeInfo;
+      MethodName : string;
+      Parameters : array[InitAst];
+    }
+    | StaticField {
+      Type : InitAst.TypeInfo;
+      FieldName : string;
+    }
+    | StaticProperty {
+      Type : InitAst.TypeInfo;
+      PropertyName : string;
+    }
+    | Cast {
+      Type : InitAst.TypeInfo;
+      Obj : InitAst;
+    }
+    | Typeof {
+      Type : InitAst.TypeInfo;
+      
+      public this (fullName : string) {
+        Type = fullName.AsTypeInfo();
+      }
+    }
+    | This
+    | Null {
+      Type : InitAst.TypeInfo;
+    }
+    | Binary {
+      Op : BinaryOp;
+      Expr1 : InitAst;
+      Expr2 : InitAst;
+    }
+    | Unary {
+      Op : UnaryOp;
+      Expr : InitAst;
+    }
+    | Lambda {
+      Body : InitAst;
+      Parameters : array[InitAst.Parameter];
+      IsAction : bool;
+    }
+    | Parameter {
+      Name : string;
+      TypeName : string;
+    }
+    | MethodInfo {
+      Owner : InitAst;
+      MethodName : string;
+      IsInstanceMethod : bool;
+    }
+    | CreateDelegate {
+      DelegateType : InitAst.TypeInfo;
+      Method : MethodInfo;
+    }
+    | Ternary {
+      Condition : InitAst;
+      True : InitAst;
+      False : InitAst;
+    }
+    | ArrayAccess {
+      Array : InitAst;
+      Index : InitAst;
+    }
+    
+    public override ToString() : string 
+    {
+      def type = this.GetType();
+      def typeName = type.Name;
+      def props = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
+      
+      def getPropertyValue(field) {
+        def val = field.GetValue(this);
+        
+        if (val is IEnumerable as arr) {
+          "[" + 
+            string.Join(", ", arr.OfType.[object]()
+                                 .Select(o => o.ToString())) +
+          "]"
+        } else {
+          val.ToString()
+        }
+      }
+      
+      def values = props.Select(prop => getPropertyValue(prop));
+      
+      typeName + "(" + string.Join(", ", values) + ")";
+    }
+    
+    public IsEventPattern() : bool
+    {
+      match (this) {
+        | Call(_, method, parms) =>
+          (method.StartsWith("add_") || method.StartsWith("remove_")) && 
+          parms.Length == 1 && 
+          parms[0] is InitAst.CreateDelegate
+        | _ => false
+      }
+    }
+    
+    public static Clone(ast : InitAst, customClone : InitAst -> ValueOption[InitAst]) : InitAst
+    {
+      def custom = customClone(ast);
+      when (custom is VSome(res)) {
+        return res;
+      }
+      
+      def clone = Clone(_, customClone);
+      
+      match (ast) {
+        | Seq(elems) => InitAst.Seq(elems.Map(e => clone(e)))
+        | Variable => ast
+        | NewVariable(name, type, givenName) => InitAst.NewVariable(name, clone(type) :> InitAst.TypeInfo, givenName)
+        | New(type, parameters) => InitAst.New(clone(type) :> InitAst.TypeInfo, parameters.Map(p => clone(p)))
+        | TypeInfo(name, genericArgs, isArray) => InitAst.TypeInfo(name, genericArgs.MapToArray(a => clone(a) :> InitAst.TypeInfo), isArray)
+        | PrimitiveValue => ast
+        | Assign(left, right) => InitAst.Assign(clone(left), clone(right))
+        | Property(instance, name) => InitAst.Property(clone(instance), name)
+        | Field(instance, name) => InitAst.Field(clone(instance), name)
+        | Call(left, method, parms) => InitAst.Call(clone(left), method, parms.MapToArray(p => clone(p)))
+        | StaticCall(type, method, parms) => InitAst.StaticCall(type, method, parms.MapToArray(p => clone(p)))
+        | StaticField(type, field) => InitAst.StaticField(clone(type) :> InitAst.TypeInfo, field)
+        | StaticProperty(type, prop) => InitAst.StaticProperty(clone(type) :> InitAst.TypeInfo, prop)
+        | Cast(type, obj) => InitAst.Cast(type, clone(obj))
+        | This => ast
+        | Null => ast
+        | Typeof => ast
+        | Binary(op, e1, e2) => InitAst.Binary(op, clone(e1), clone(e2))
+        | Unary(op, e) => InitAst.Unary(op, clone(e))
+        | Lambda(body, parms, isAction) => InitAst.Lambda(clone(body), parms.MapToArray(p => clone(p) :> InitAst.Parameter), isAction)
+        | Parameter(name, typeName) => InitAst.Parameter(name, typeName)
+        | MethodInfo(owner, name, isInstance) => InitAst.MethodInfo(clone(owner), name, isInstance)
+        | CreateDelegate(type, method) => InitAst.CreateDelegate(clone(type) :> InitAst.TypeInfo, clone(method) :> InitAst.MethodInfo)
+        | Ternary(cond, left, right) => InitAst.Ternary(clone(cond), clone(left), clone(right))
+        | ArrayAccess(arr, index) => InitAst.ArrayAccess(clone(arr), clone(index))
+      }
+    }
+  }
+  
+  public variant BinaryOp {
+    | Or
+    | And
+    | Equal
+    | NotEqual
+    | LessEqual
+    | Less
+    | GreaterEqual
+    | Greater
+    | Sum
+    | Sub
+    | Mod
+    | Mul
+    | Div
+  }
+  
+  public variant UnaryOp {
+    | Minus
+    | LogicalNegate
+  }
+  
+  public module InitAstExtensions
+  {
+    public AsTypeInfo(this fullTypeName : string) : InitAst.TypeInfo
+    {
+      InitAst.TypeInfo(fullTypeName)
+    }
+    
+    public AsTypeInfo(this type : TypeSymbol, isArray : bool = false) : InitAst.TypeInfo
+    {
+      match(type) {
+        | alias is TypeAliasSymbol => (alias.Replacement.Symbol :> TypeSymbol).AsTypeInfo()
+        | g is GenericEntitySymbol when g.TypeParametersCount > 0 => 
+          InitAst.TypeInfo(type.FullName, g.TypeParameters.Select(tp => tp.TypeSubst.AsTypeInfo()).ToArray(), isArray)
+        
+        | _ => 
+          InitAst.TypeInfo(type.FullName, array[], isArray)
+      }
+    }
+    
+    public Concat(this ast : InitAst, toConcat : InitAst) : InitAst
+    {
+      InitAst.Seq([ast, toConcat])
+    }
+  }
+}

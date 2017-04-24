@@ -1,0 +1,8 @@
+﻿Window "StyleSpecialSyntax" {
+  Style: Style {
+    set [
+      Topmost: true
+      Clip: EllipseGeometry { RadiusX: "100" }
+    ]
+  }
+}

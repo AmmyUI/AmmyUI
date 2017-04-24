@@ -1,0 +1,61 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+namespace Ammy.Scopes
+{
+  class LazyScope : TableScope
+  {
+    mutable _isLoaded : bool;
+    _symbolLoader : Action[TableScope];
+    
+    public this (symbolLoader : Action[TableScope], title : string, owner : DeclarationSymbol)
+    {
+      base(owner, title);
+      
+      _symbolLoader = symbolLoader;
+    }
+    
+    private EnsureLoaded() : void
+    {
+        when (!_isLoaded) {
+          _isLoaded = true;
+          _symbolLoader(this);
+        }
+    }
+    
+    public override Symbols : Hashtable[int, list[DeclarationSymbol]].ValueCollection
+    {
+      get
+      {
+        EnsureLoaded();
+        base.Symbols
+      }
+    }
+
+    public override BindMany[TSymbol](reference : Reference, results : ref LightList[TSymbol]) : void
+    {
+      EnsureLoaded();
+      base.BindMany(reference, ref results);
+    }
+    
+    public override FindMany[TSymbol](predicate : Predicate[TSymbol], results : ref LightList[TSymbol]) : void
+    {
+      EnsureLoaded();
+      base.FindMany(predicate, ref results)
+    }
+    
+    public override MakeCompletionList(prefix : string) : Seq[DeclarationSymbol]
+    {
+      EnsureLoaded();
+      base.MakeCompletionList(prefix);
+    }
+  }
+}

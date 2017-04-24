@@ -1,0 +1,85 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.IO;
+using System.Threading;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra.Declarations;
+using Nitra.ProjectSystem;
+using Nitra.BackEnd.Cci;
+using DotNet;
+using CSharp;
+using Ammy.Platforms;
+
+namespace Ammy.Backend
+{
+  public module CSharpBackend
+  {
+    public Load(project : ISourceCodeProject, globalNamespace : NamespaceSymbol, objectType : TypeSymbol, platformTypeNames : PlatformTypeNames, context : DependentPropertyEvalContext) : (NamespaceSymbol * array[string])
+    {
+      when (project.IsParsed && project.DirtyFiles.Count == 0)
+        return (globalNamespace, array[]);
+        
+      def files = project.Files
+                         .OfType.[FsFile[CompilationUnit]]();
+      
+      foreach (f in files) {
+        when (project.DirtyFiles.Contains(f.Id)) {
+          f.ResetCache();
+          f.UpdateParseTree();
+        }
+          
+        f.DeepResetProperties();
+      }
+      
+      def firstFile = files.FirstOrDefault();
+      def messages = List();
+      
+      when (firstFile != null) {
+        def ast = firstFile.Ast :> CompilationUnit;
+        def cts = CancellationTokenSource();
+        def context = DependentPropertyEvalContext();
+        def fileEvals = files.Select(f => f.GetEvalPropertiesData()).ToImmutableArray();
+        def cciBackend = CciBackEnd();
+        
+        try {
+          ast.RefreshProject(cts.Token, fileEvals, (cciBackend, context, globalNamespace));
+        
+          foreach (f in files) {
+            foreach (m in f.GetCompilerMessages()) {
+              messages.Add(m.ToString())
+            }
+          }
+        } catch {
+          | e => messages.Add(e.Message);
+        }        
+      }
+      
+      def registerParsedTypes(tableScope : TableScope)
+      {
+        foreach (slist in tableScope.Symbols)
+          foreach (symbol is SupportsInheritanceTypeSymbol in slist)
+            when (symbol.FirstDeclarationOrDefault?.IsParsed)
+              XamlSymbolLoader.LoadType(symbol, objectType, context, platformTypeNames);
+                
+        foreach (symbols in tableScope.Symbols)
+        foreach (symbol is NamespaceSymbol in symbols)
+          registerParsedTypes(symbol.MemberTable);
+      }
+      
+      registerParsedTypes(globalNamespace.MemberTable);
+      
+      project.ClearDirty();
+      project.IsParsed = true;
+      
+      (globalNamespace, messages.ToArray())
+    }
+  }
+}

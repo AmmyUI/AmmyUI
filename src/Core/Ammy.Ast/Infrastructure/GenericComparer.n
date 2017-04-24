@@ -1,0 +1,31 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Infrastructure
+{
+  class GenericComparer[T, TV] : IEqualityComparer[T]
+  {
+    private _selector : Func[T, TV];
+
+    public this(selector : Func[T, TV])
+    {
+        _selector = selector;
+    }
+
+    public Equals(x : T, y : T) : bool
+    {
+        Equals(_selector(x), _selector(y));
+    }
+
+    public GetHashCode(obj : T) : int
+    {
+        _selector(obj).GetHashCode();
+    }
+  }
+}

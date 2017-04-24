@@ -1,0 +1,3 @@
+Window "AttachedProperty" {
+    TextBlock.Text: "Hello, world" // Doesn't make sense, but should be accepted
+}

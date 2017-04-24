@@ -1,0 +1,226 @@
+﻿using System.Linq;
+﻿using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy;
+using Ammy.Converters;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Scopes;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  abstract ast PropertyValue
+  {
+    in GlobalDeclarationScope : Scope;
+    in TemplateParameterScope : Scope;
+    in ParentProperty         : Property;
+    in IsListElement          : bool = false;
+    in ExpectedType           : TypeSymbol;
+    in TypeScope              : Scope;
+    in RootSymbolId           : string;
+    in Assignee               : IAst;
+
+  stage 1:
+    out Xaml : XamlValue;
+
+  stage 4:
+    out XamlGuard : object = object();
+
+    when (XamlGuard != null && !this.IsXamlEvaluated && !context.IsMissingXamlMarked())
+      Error(context, "XAML not evaluated: " + this.GetAstDescription(context));
+
+    | String { 
+      Val : string;
+      Xaml = this.BuildXaml();
+    }
+    | Number { 
+      Val : string;
+      Xaml = this.BuildXaml();
+    }
+    | Boolean {
+      Val : bool;
+      Xaml = this.BuildXaml();
+    }
+    | Null {
+      Xaml = this.BuildXaml();
+    }
+    | ReferenceValue {
+      Key : QualifiedReference;
+      Key.Scope = this.GetKeyScope(TypeScope,
+                                   // For Setter { Property: SomeProperty(from target type) }
+                                   //ParentProperty.ParentNodeType, 
+                                   // Same as above
+                                   //ParentProperty.ParsingContext.TargetType.Scope, 
+                                   // If Enum -> enum values, property -> union with opened static values etc, event -> create fake symbol
+                                   Assignee, 
+                                   ExpectedType,
+                                   context);
+
+      Key.NameScopeFactory = GetScope.CreateNameScopeFactory(ParentProperty, ExpectedType, context);
+
+      KeyBase : QualifiedReference;
+      KeyBase.Scope = this.GetKeyScope(TypeScope, 
+                                       //ParentProperty.ParentNodeType, 
+                                       //EmptyScope.Instance, 
+                                       Assignee, 
+                                       ExpectedType,
+                                       context);
+
+    stage 1:
+      out Ref     : Ref[DeclarationSymbol] = this.ResolveReferenceValue(Key.Ref, ExpectedType, context);
+      out RefBase : Ref[DeclarationSymbol] = this.ResolveReferenceValue(KeyBase.Ref, ExpectedType, context);
+
+      //ParentProperty.ParsingContext.TargetType.Collector |= (ParentProperty.Ref.Symbol, RefBase.Symbol);
+      //ParentProperty.ParsingContext.RelativeSource.Collector |= (ParentProperty.Ref.Symbol, RefBase.Symbol);
+
+      out _dummy : object = this.ResetKeyBaseUnresolvedStatus(KeyBase, Ref.Symbol);
+      Xaml = this.BuildXaml(Ref.Symbol, ExpectedType, IsListElement, RootSymbolId, context);
+
+      when (Ref.IsUnresolved)
+        Error(context, "Unresolved reference " + Key.FullName());
+    }
+    | NodeValue {
+      Node : Node;
+      
+      Node.TypeScope           = TypeScope;
+      
+      Node.FunctionRefScope    = ParentProperty.FunctionRefScope;
+      Node.ParentPropertyScope = EmptyScope.Instance;
+      Node.ParentNodeType      = None();
+      Node.ParentVariableAst   = ParentProperty.ParentVariableAst;
+      Node.Parent              = null;
+      Node.ParsingContext      = ParentProperty.ParsingContext;
+      Node.Breadcrumbs         = ParentProperty.Breadcrumbs.Add(Breadcrumb.Property(ParentProperty, ParentProperty.Ref.Symbol));
+      Node.RootSymbolId        = ParentProperty.RootSymbolId;
+      Node.GlobalDeclarationScope = ParentProperty.GlobalDeclarationScope;
+      Node.TemplateParameterScope = TemplateParameterScope;
+      Node.IsInsideFrameworkTemplate = ParentProperty.IsInsideFrameworkTemplate;
+      
+      IsCombine : bool;
+
+      Xaml = this.BuildXaml(Node.Xaml);
+    }
+    | ValueList {
+      Values : PropertyValue*;
+
+      Values.GlobalDeclarationScope = GlobalDeclarationScope;
+      Values.TemplateParameterScope = TemplateParameterScope;
+      Values.ParentProperty = ParentProperty;
+      Values.IsListElement = true;
+      Values.ExpectedType = this.GetValueListExpectedType(ExpectedType, context);
+      Values.TypeScope = TypeScope;
+      Values.RootSymbolId = RootSymbolId;
+      Values.Assignee     = ParentProperty;
+
+      Xaml = this.BuildXaml(Values.Xaml);
+    }
+    | Parameter {
+      in Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
+      
+      Key : Reference;
+      Key.Scope = GlobalDeclarationScope.HideWith(TemplateParameterScope);
+
+      //when (!Ref.Symbol.Type.Symbol.IsAssignableFrom(ParentProperty.Ref.Symbol.Type))
+      //  Error (context, $"$(Ref.Symbol.Type.Symbol.Name) value is not assignable to $(ParentProperty.Ref.Symbol.Type.Name)");
+      
+      Xaml = this.BuildXaml(Ref.Symbol, context);
+    }
+    | ResourceWithName {
+      Name : string; 
+      IsDynamic : bool;
+
+      Xaml = this.BuildXaml();
+    }
+    | ResourceWithRef {
+      Key : QualifiedReference;
+      Key.Scope = TypeScope;
+      
+      IsDynamic : bool;
+
+    stage 1:
+      out Ref : Ref[Member.PropertySymbol] = Key.Ref.Resolve();
+      Xaml = this.BuildXaml(Ref.Symbol);
+    }
+    | TypeFunction {
+      TypeFunction : TypeFunctionRef;
+      
+      TypeFunction.TypeScope           = TypeScope;      
+      TypeFunction.FunctionRefScope    = ParentProperty.FunctionRefScope;
+      TypeFunction.ParentPropertyScope = EmptyScope.Instance;
+      TypeFunction.ParentNodeType      = None();
+      TypeFunction.ParentVariableAst   = ParentProperty.ParentVariableAst;
+      TypeFunction.Parent              = null;
+      TypeFunction.ParsingContext      = ParentProperty.ParsingContext;
+      TypeFunction.Breadcrumbs         = ParentProperty.Breadcrumbs.Add(Breadcrumb.Property(ParentProperty, ParentProperty.Ref.Symbol));
+      TypeFunction.RootSymbolId        = ParentProperty.RootSymbolId;
+      TypeFunction.GlobalDeclarationScope = ParentProperty.GlobalDeclarationScope;
+      TypeFunction.TemplateParameterScope = TemplateParameterScope;
+      TypeFunction.IsInsideFrameworkTemplate = ParentProperty.IsInsideFrameworkTemplate;
+
+      Xaml = this.BuildXaml(TypeFunction.Xaml, context);
+    }
+    | Binding {
+      BindingSource : BindingSource?;
+      BindingSource.Scope = TypeScope;
+      BindingSource.RootSymbolId = RootSymbolId;
+
+      out BindingTargetType : TypeSymbol = GetBindingExpectedType(ParentProperty.Ref.Symbol.GetPropertyType(), context);
+
+      Converter : LambdaExpr?;
+      Converter.ExpectedType = BindingTargetType;
+      Converter.TypeScope = TypeScope;
+      
+      ConverterBack : LambdaExpr?;
+      ConverterBack.ExpectedType = context.GetObjectType();
+      ConverterBack.TypeScope = TypeScope;
+
+      Settings : NodeMember*;
+      Settings.ParentPropertyScope = context.GetBindingTypeScope();
+      Settings.TypeScope           = TypeScope;
+      Settings.FunctionRefScope    = ParentProperty.FunctionRefScope;
+      Settings.ParentNodeType      = Some(context.GetBindingType());
+      Settings.Parent              = ParentProperty;
+      Settings.ParsingContext      = ParentProperty.ParsingContext.NewRelativeSource(ParentProperty.ParentNodeType, context);
+      Settings.Breadcrumbs         = ParentProperty.Breadcrumbs;
+      Settings.RootSymbolId        = RootSymbolId;
+      Settings.IsInsideFrameworkTemplate = false;
+      Settings.GlobalDeclarationScope    = GlobalDeclarationScope;
+      Settings.TemplateParameterScope    = TemplateParameterScope;
+
+    stage 1:
+      Path : BindingPath?;
+      Path.ParameterScope = TemplateParameterScope;
+
+      Xaml = this.BuildXaml(Path.Path, BindingSource.Xaml, Settings.Xaml, Converter, Converter.AstValue, RootSymbolId, context);
+    }
+  }
+
+  abstract ast BindingPath {
+    out Path : string;
+    in ParameterScope : Scope;
+
+    | String {
+      StringValue : string;
+      Path = StringValue.Value;
+    } 
+    | Parameter {
+      Key : Reference;      
+      Key.Scope = ParameterScope;
+      
+      Path = this.BuildXaml(Ref.Symbol, context);
+
+      out Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
+    }
+    | ReferenceKey {
+    stage 1:
+      Key : QualifiedReference;
+      Key.NameScopeFactory = GetScope.CreatePropertyNameScopeFactory(context, true);
+      Key.Scope = PropertyScope(context, true, EmptyScope.Instance);
+
+      Path = Key.FullName();
+    }
+  }
+}

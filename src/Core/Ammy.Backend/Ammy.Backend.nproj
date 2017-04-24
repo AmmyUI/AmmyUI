@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>3f6612f1-b749-40da-b2f8-b61b4e22c547</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ammy.Backend</RootNamespace>
+    <AssemblyName>Ammy.Backend</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>true</NoStdLib>
+    <NemerleVersion>Net-4.0</NemerleVersion>
+    <NemerleBinPathRoot Condition=" '$(NemerleBinPathRoot)' == '' ">$(ProgramFiles)\Nemerle</NemerleBinPathRoot>
+    <Nemerle Condition=" '$(Nemerle)' == '' ">$(NemerleBinPathRoot)\$(NemerleVersion)</Nemerle>
+    <Name>Ammy.Backend</Name>
+    <KeyOriginatorFile>..\..\..\lib\Nitra\Common\Nitra.snk</KeyOriginatorFile>
+    <DocumentationFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunDebugger>true</RunDebugger>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSharp.Grammar, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e080a9c724e2bfcd">
+      <Name>CSharp.Grammar</Name>
+      <AssemblyName>CSharp.Grammar.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\CSharp.Grammar.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNet.BackEnd.CCI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e080a9c724e2bfcd">
+      <Name>DotNet.BackEnd.CCI</Name>
+      <AssemblyName>DotNet.BackEnd.CCI.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\DotNet.BackEnd.CCI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetLang">
+      <Name>DotNetLang</Name>
+      <AssemblyName>DotNetLang.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\DotNetLang.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Nitra.Runtime">
+      <Name>Nitra.Runtime</Name>
+      <AssemblyName>Nitra.Runtime.dll</AssemblyName>
+      <HintPath>..\..\lib\\Nitra-bin\Nitra.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Nemerle">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(Nemerle)\Nemerle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <MacroReference Include="Nemerle.Linq">
+      <HintPath>$(Nemerle)\Nemerle.Linq.dll</HintPath>
+    </MacroReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyNamespaceSymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssemblyRegistry.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssemblyTypeSymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BaseExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CSharpBackend.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DependencyPropertyDeclaration.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DependencyPropertySymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExternalDeclarations.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ISourceCodeProject.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LazyScope.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.n" />
+    <Compile Include="ReflectionBackend.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RoutedEventDeclaration.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RoutedEventSymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XamlSymbolLoader.n">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ammy.Platforms\Ammy.Platforms.csproj">
+      <Name>Ammy.Platforms</Name>
+      <Project>{6e35138d-7436-425c-9e7a-2d5a9b30b3ee}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(Nemerle)\Nemerle.MSBuild.targets" />
+  <!--
+		To modify your build process, add your task inside one of the targets below and uncomment it. 
+		Other similar extension points exist, see Microsoft.Common.targets.
+
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>

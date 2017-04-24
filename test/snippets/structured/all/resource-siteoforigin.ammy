@@ -1,0 +1,4 @@
+Image "ResourceSiteOfOrigin" {
+    Height: 480
+    Source: "pack://siteOfOrigin:,,,/Images/slideshow.gif"
+}

@@ -1,0 +1,43 @@
+﻿
+
+using System
+
+        alias 
+
+        Header
+        (
+
+
+        text
+
+
+        ) 
+        
+        
+        
+        {
+          
+          TextBlock { 
+          
+              Text: $text
+            
+              FontSize: 16
+          
+          }
+        }
+
+        Window "Ammy.WpfTest.Bugs.SpacesAndNewlines" {
+        
+        
+          StackPanel { 
+          
+              @Header("First chapter") {}
+
+              @Header("Second chapter") {}
+          }
+
+
+        }
+
+          
+

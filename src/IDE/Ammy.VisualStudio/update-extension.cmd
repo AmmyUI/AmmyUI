@@ -1,0 +1,2 @@
+"c:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" /q /a /u:"Ammy.VisualStudio.3f67c783-4db2-4c64-8bf3-d672ebf15b62"
+"c:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" /a /q "Ammy.VisualStudio.vsix"

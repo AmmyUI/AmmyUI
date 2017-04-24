@@ -1,0 +1,183 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+using Ammy.Language;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+
+namespace Ammy.Frontend
+{
+  public class CSharpFrontend : IAmmyFrontend
+  {
+    public Compile(file : FileEvalPropertiesData, _topWithNode : TopWithNode, typeName : string, context : AmmyDependentPropertyEvalContext) : string 
+    { 
+      //def topNode = topWithNode.TopNode;
+      def baseType = "";//AstToCode(topNode.AstType);
+      def namespaceName = ""; //topWithNode.Namespace.FullName;
+      
+      def content = 
+@"
+$NAMESPACE_START$ 
+$IND$public partial class $TYPENAME$ : $BASETYPE$
+$IND${
+$IND$    $FIELDS$
+$IND$
+$IND$    private System.Action __sq_dispose = () => {};
+$IND$
+$IND$    public void InitializeComponent() 
+$IND$    {
+$IND$        AmmySidekick.Listener.Instance.RegisterHandler(""$TARGETID$"", this);
+$IND$
+$IND$        $AST$
+$IND$
+$IND$        $FIELDASSIGNS$
+$IND$    }
+$IND$}
+$NAMESPACE_END$ 
+";
+        def emptyNs = string.IsNullOrWhiteSpace(namespaceName);
+        def nsInd = if (emptyNs) "" else "    ";
+        
+        def ast = InitAst.Seq([]); //topWithNode.AstValue.GetAst();
+        def code = AstToCode(ast, nsInd + "        ") + ";";
+        def fieldList = context.Fields.Get(file.FullName);
+        
+        def fieldInits = fieldList.Select((field) => field.Type + " " + field.Name + ";" + Environment.NewLine);
+        def fieldInitString = string.Join("    ", fieldInits);
+          
+        def fieldAssigns = fieldList.Select(field => field.Name + " = " + field.Variable + ";" + Environment.NewLine);
+        def fieldAssignString = string.Join("        ", fieldAssigns);
+                  
+        def content = content.Replace("$NAMESPACE_START$", if (emptyNs) "" else "namespace " + namespaceName + Environment.NewLine + "{");
+        def content = content.Replace("$IND$", nsInd);
+        def content = content.Replace("$NAMESPACE_END$", if (emptyNs) "" else "}");
+        
+        def content = content.Replace("$TYPENAME$", typeName);
+        def content = content.Replace("$BASETYPE$", baseType);
+        def content = content.Replace("$FIELDS$", fieldInitString);
+        def content = content.Replace("$TARGETID$", typeName);
+        def content = content.Replace("$FIELDASSIGNS$", fieldAssignString);
+        def content = content.Replace("$AST$", code);
+      
+        //System.Diagnostics.Debug.WriteLine(code);
+        
+        content
+    }
+    
+    private AstToCode(ast : InitAst, indent = "" : string) : string {
+      def astToCode = AstToCode(_, indent);
+      
+      match(ast) {
+
+        | Seq(elems) => 
+          def noEmptySeqs = elems.Where(ast => if (ast is InitAst.Seq([])) false 
+                                               else true);
+          string.Join(';' + Environment.NewLine + indent, noEmptySeqs.Select(ast => astToCode(ast)))
+        | Variable(name) => name
+        | NewVariable(name, _, _) => Environment.NewLine + indent + "var " + name;
+        | New(typeInfo, parms) =>
+          def type = astToCode(typeInfo);
+          def parmString = string.Join(", ", parms.Select(p => astToCode(p)));
+          
+          $"new $type($parmString)"
+        | TypeInfo(typeName, genericArgs, isArray) => 
+          def typeName = Regex.Replace(typeName, <#<(\w|\s|,)+>$#>, "");
+                     
+          def args = $<#<..$(genericArgs; ","; a => astToCode(a))>#>;
+          def arraySuffix = if (isArray) "[]" else "";
+          
+          if (genericArgs.Length > 0) 
+            $"$typeName$args" + arraySuffix
+          else 
+            typeName + arraySuffix
+          
+        | PrimitiveValue(_, _, true) => "null"
+        | PrimitiveValue(ti, val, _) when ti.FullName == "System.String"  => "\"" + val + "\""
+        | PrimitiveValue(_, val, _) => val
+        | Assign(left, right) => astToCode(left) + " = " + astToCode(right)
+        | Property(instance, propName) => astToCode(instance) + "." + propName
+        | Field(instance, fieldName) => astToCode(instance) + "." + fieldName
+        | Call(left, method, parms) => 
+          if (ast.IsEventPattern()) {
+            def separatorIndex = method.IndexOf("_");
+            def action = method.Substring(0, separatorIndex);
+            def eventName = method.Substring(separatorIndex + 1);
+            def actionCode = if (action == "add") " += " 
+                             else if (action == "remove") " -= " 
+                             else throw InvalidOperationException();
+            
+            astToCode(left) + "." + eventName + actionCode + astToCode(parms[0]); 
+          } else {
+            def parmString = string.Join(", ", parms.Select(p => astToCode(p)));
+            astToCode(left) + "." + method + "(" + parmString + ")" 
+          }
+        | StaticCall(type, method, parms) => 
+          def parmString = string.Join(", ", parms.Select(p => astToCode(p)));
+          astToCode(type) + "." + method + "(" + parmString + ")"
+        | StaticField(type, field) => astToCode(type) + "." + field
+        | StaticProperty(type, property) => astToCode(type) + "." + property
+        | Cast(type, obj) => "(" + type + ")(" + astToCode(obj) + ")"
+        | This => "this"
+        | Null => "null"
+        | Typeof(type) => $"typeof($(astToCode(type)))"
+        | Binary(op, e1, e2) => binaryOpToCode(op, e1, e2)
+        | Unary(op, e) => unaryOpToCode(op, e)
+        | Lambda(body, parms, _) => 
+          def parms = $"..$(parms; \",\"; p => astToCode(p))";
+          def nl = Environment.NewLine;
+          
+          if (body is InitAst.Seq(elems) ) {
+            def bodyCode = if(elems.Length > 0) 
+                             nl + indent + indent + AstToCode(body, indent + indent)+ ";" + nl + indent;
+                           else "";
+            $"($parms) => { " + bodyCode + "}"
+          } else 
+            $"($parms) => " + astToCode(body)
+        | Parameter(name, _type) => name
+        | MethodInfo(owner, methodName, _) => astToCode(owner) + "." + methodName
+        | CreateDelegate(type, method) => $"new $(astToCode(type))($(astToCode(method)))"
+        | ArrayAccess => throw NotImplementedException()
+        | Ternary => throw NotImplementedException()
+      }
+    }
+     
+    private binaryOpToCode(bin : BinaryOp, e1 : InitAst, e2 : InitAst) : string {
+      def op = match (bin) {
+        | Or           => "||"
+        | And          => "&&"
+        | Equal        => "=="
+        | NotEqual     => "!="
+        | LessEqual    => "<="
+        | Less         => "<"
+        | GreaterEqual => ">="
+        | Greater      => ">"
+        | Sum          => "+"
+        | Sub          => "-"
+        | Mod          => "%"
+        | Mul          => "*"
+        | Div          => "/"
+      }
+      
+      "(" + AstToCode(e1) + " " + op + " " + AstToCode(e2) + ")"
+    }
+     
+    private unaryOpToCode(un : UnaryOp, e : InitAst) : string {
+      def op = match (un) {
+        | Minus           => "-"
+        | LogicalNegate   => "!"
+      }
+      
+      "(" + op + " " + AstToCode(e) + ")"
+    }
+  }
+}

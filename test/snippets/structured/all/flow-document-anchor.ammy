@@ -1,0 +1,36 @@
+FlowDocumentReader "FlowDocumentAnchor" {
+    FlowDocument {
+        Paragraph {
+            "Chapter 1"
+
+            FontSize: 22
+            FontWeight: Bold
+        }
+
+        Paragraph {
+            "Why WPF?"
+
+            FontSize: 35
+            FontWeight: Bold
+        }
+
+        Paragraph {
+            "In movies and on TV, the main characters are typically an exaggeration of the people you encounter in real life. They’re more attractive, they react more quickly, and they somehow always know exactly what to do. The same could be said about the software they use. "
+
+            Figure {
+                Width: 130
+                BlockUIContainer {
+                    Image { Source: "Images/wpf.jpg" }
+                }
+            }
+        }
+
+        Paragraph {
+            "..."
+        }
+
+        Paragraph {
+            "..."
+        }
+    }
+}

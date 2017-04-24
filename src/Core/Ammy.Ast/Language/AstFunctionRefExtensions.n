@@ -1,0 +1,212 @@
+﻿using Nemerle;
+using Nemerle.Imperative;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Text.RegularExpressions;
+using System.IO;
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+using Ammy.Xaml;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  public module AstFunctionRefExtensions
+  {
+    public NamedArgumentsPrecedePositional(this _ : FunctionRef, arguments : FunctionArgument.IAstList) : bool
+    {
+      mutable namedArgumentMet = false;
+      
+      for (mutable i = 0; i < arguments.Count; i++) {
+        when (arguments[i] is NamedFunctionArgument)
+          namedArgumentMet = true;
+          
+        when (arguments[i] is SimpleFunctionArgument && namedArgumentMet)
+          return true;
+      }
+      
+      false
+    }
+    
+    public CreateId(this rf : FunctionRef, functionName : string, context : DependentPropertyEvalContext) : string
+    {
+      def context = context.ToAmmyContext();
+      def name = rf.Source.File.Name + "_" + functionName;
+      
+      Path.GetFileNameWithoutExtension(name + "_" + context.GetCounterValue(name));
+    }
+        
+    public BuildTypeFunctionXaml(this rf : TypeFunctionRef, nodeType : TypeSymbol, _functionFullName : string, members : ImmutableArray[XamlElement], id : string, rootSymbolId : string, context : DependentPropertyEvalContext) : XamlElement
+    {
+      def context = context.ToAmmyContext();
+      
+      def xaml = rf.BuildXaml(nodeType, members, ImmutableArray.Empty, rootSymbolId, context);
+      def outputPath = context.OutputPath?.Replace("\\", "/") ?? "";
+      //def value = $<#/$(context.AssemblyName);component/$outputPath$id.fun.xaml|$functionFullName#>;
+      def value = $<#/$(context.AssemblyName);component/$outputPath$id.fun.xaml#>;
+      def loaderAttribute = if (context.NeedUpdate && nodeType.IsDescendant(context.Types.DependencyObject))
+                              [XamlAttribute(context.GetNamespaceAliasFor(context.Types.Ammy, rootSymbolId) + context.Types.Ammy.Name + ".Function", XamlValue.String(value), rf.Location)];
+                            else [];
+      
+      XamlNode(xaml.Name, xaml.OriginalLocation, loaderAttribute.Concat(xaml.Attributes)
+                                                                .Concat(xaml.ChildNodes)
+                                                                .Concat(if (xaml.Value != null) [xaml.Value] else []))
+    }
+    
+    public AnyRequiredParametersNotSupplied(this rf : FunctionRef, parameterScope : TableScope, arguments : ImmutableArray[FunctionParameterSymbol]) : bool
+    {
+      RequiredParametersNotSupplied(rf, parameterScope, arguments).Count > 0
+    }
+    
+    public RequiredParametersNotSupplied(this _rf : FunctionRef, parameterScope : TableScope, arguments : ImmutableArray[FunctionParameterSymbol]) : List[string]
+    {
+      def parameters = parameterScope.GetSymbols()
+                                     .OfType.[FunctionParameterSymbol]()
+                                     .Select(s => s.FirstDeclarationOrDefault :> FunctionParameter)
+                                     .Where(p => p != null);
+      def missingParameters = List();
+      
+      foreach (parameter when !parameter.DefaultValue.HasValue in parameters) {
+        def parameterName = parameter.Name.Text;
+        
+        when (!arguments.Any(a => a.Name == parameterName))
+          missingParameters.Add(parameterName)
+      }
+      
+      missingParameters
+    }
+    
+    public FunctionRefXaml(this rf : FunctionRef, 
+                           functionRef : FunctionRefSymbol, 
+                           function : FunctionSymbol, 
+                           parameters : ImmutableArray[FunctionParameterSymbol], 
+                           parameterValues : List[XamlValue], 
+                           membersXaml : IEnumerable[XamlElement], 
+                           xamlTemplate : XamlNode, 
+                           rootSymbolId : string,
+                           context : DependentPropertyEvalContext) : XamlList
+    {
+      def context = context.ToAmmyContext();
+      def parameterValuePrefix = "{PARAMETER_";
+      def parameters = parameters.Zip(parameterValues, (p, v) => (p, v));
+      
+      def getFunctionParameter (name) {
+        function.Parameters
+                .GetSymbols()
+                .OfType.[FunctionParameterSymbol]()
+                .FirstOrDefault(s => s.Name == name)
+      }
+      
+      def symbolName = function.Name;
+      def symbolOpenedNamespaces = context.OpenedNamespaces.Get(symbolName);
+      def rootOpenedNamespaces = context.OpenedNamespaces.Get(rootSymbolId);
+      
+      def allNamespaces = ListDictionary();
+      def nsMapping = Dictionary();
+      
+      nsMapping["x"] = "x";
+      
+      foreach (symbolNs in symbolOpenedNamespaces)
+        allNamespaces.Add(symbolNs.FullName, (symbolNs.Alias, 0));
+      
+      foreach (rootNs in rootOpenedNamespaces)
+        allNamespaces.Add(rootNs.FullName, (rootNs.Alias, 1));
+      
+      foreach (ns in allNamespaces.Items) {
+        def namespaceName = ns.Key;
+        def aliases = ns.Value;
+        
+        if (aliases.Count == 2) {
+          // Both have same namespace, map one to another
+          def (symNsAlias, _) = aliases[0];
+          def (rootNsAlias, _) = aliases[1];
+                    
+          nsMapping[symNsAlias] = rootNsAlias;
+        } else {
+          def (nsAlias, source) = aliases[0];
+          
+          when (source == 0) {
+            // Exists in symbol, doesn't exist in root
+            nsMapping[nsAlias] = context.AddNamespaceAliasFor(rootSymbolId, namespaceName);
+          }
+        }
+      }
+      
+      def nameSelector(originalName : string) : string {
+        def split = originalName.Split(':');
+        
+        if (split.Length == 2) {
+          def alias = split[0];
+          def name = split[1];
+          
+          nsMapping[alias] + ":" + name
+        } else {
+          originalName
+        }
+      }
+      
+      def result = xamlTemplate.ReplaceAttributeValue(name => nameSelector(name), a => {
+        match (a.Value) {
+          | XamlValue.String(val) when val.StartsWith(parameterValuePrefix) => 
+            def parameterName = val.Substring(parameterValuePrefix.Length).TrimEnd('}');
+            def (_, xamlValue) = parameters.FirstOrDefault((p, _v) => p.Name == parameterName);
+            
+            // If parameter argument is not supplied, try default value
+            def xamlValue = if (xamlValue == null) {
+                              match (getFunctionParameter(parameterName)) {
+                                | FunctionParameterSymbol(FirstDeclarationOrDefault = decl is FunctionParameter) 
+                                  when decl.DefaultValue.HasValue && decl.DefaultValue.Value.IsXamlEvaluated => 
+                                  decl.DefaultValue.Value.Xaml
+                                | _ => null
+                              }
+                            } else xamlValue;
+                
+            if (xamlValue != null)
+              Some(XamlAttribute(nameSelector(a.Name), xamlValue, a.OriginalLocation, a.IsCombine))
+            else
+              None()
+          | XamlValue.String(val) =>
+            def newValue = Regex.Replace(val, @"\W(ns\d):|^(ns\d):", m => {
+                if (m.Groups[1].Success)
+                    m.Value[0].ToString() + nsMapping[m.Groups[1].Value] + ":";
+                else if (m.Groups[2].Success)
+                    nsMapping[m.Groups[2].Value] + ":";
+                else m.Value;
+            });
+            
+            Some(XamlAttribute(nameSelector(a.Name), XamlValue.String(newValue), a.OriginalLocation, a.IsCombine))
+            
+          | _ => Some(XamlAttribute(nameSelector(a.Name), a.Value, a.OriginalLocation, a.IsCombine))
+        }
+      });
+      
+      
+      match (functionRef, rf) {
+        | (TypeFunctionRefSymbol, tfr is TypeFunctionRef) =>
+          def name = if (tfr.NodeName.HasValue) [XamlAttribute(context.Platform.XPrefix + "Name", XamlValue.String(tfr.NodeName.Value.Key.Value), tfr.NodeName.Location)] 
+                 else [];
+          def key = if (tfr.NodeKey.HasValue) [XamlAttribute(context.Platform.XPrefix + "Key", XamlValue.String(tfr.NodeKey.Value.Key.Value), tfr.NodeKey.Location)] 
+                    else [];
+          XamlList(array[result.AppendChildren(membersXaml.Concat(name).Concat(key))])
+          
+        | (ContentFunctionRefSymbol, _) => 
+          def value = if (result.Value != null) [result.Value]
+                      else [];
+                      
+          def elements = value.Concat(result.Attributes)
+                              .Concat(result.ChildNodes)
+                              .ToArray();
+                              
+          XamlList(elements)
+        | _ => assert2(false); null
+      }
+    }
+  }
+}

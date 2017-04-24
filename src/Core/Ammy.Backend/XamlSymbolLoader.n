@@ -1,0 +1,157 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+using Nemerle.Extensions;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Backend;
+using Ammy.Infrastructure;
+using Ammy.Platforms;
+
+namespace Ammy.Backend
+{
+  public module XamlSymbolLoader
+  { 
+    public LoadType(type : SupportsInheritanceTypeSymbol, objectType : TypeSymbol, context : DependentPropertyEvalContext, platformTypeNames : PlatformTypeNames) : void
+    {
+      def dependencyProperties = List();
+      def routedEvents = List();
+      def normalProperties = Dictionary();
+      def normalEvents = Dictionary();
+      def methods = Dictionary();
+            
+      foreach (s in type.MemberTable.Symbols.SelectMany(s => s)) {
+        | x is Member.PropertySymbol => 
+          normalProperties[x.Name] = x;
+          match(x.FirstDeclarationOrDefault) {
+            | d is ExternalPropertyDeclaration when IsDependencyProperty(d, platformTypeNames?.DependencyProperty) =>
+              dependencyProperties.Add(DependencyPropertyDeclaration(d.Name, d.Symbol.FullName, 
+                                                                        d.Symbol.SpanClass, d.Symbol.DeclaredIn));
+            | _ => ()
+          }
+        | x is Member.EventSymbol => normalEvents[x.Name] = x
+        | x is Member.MethodSymbol => methods[x.Name] = x
+        | x is Member.FieldSymbol =>
+          match(x.FirstDeclarationOrDefault) {
+            | d is Member.Field when IsDependencyProperty(d, platformTypeNames?.DependencyProperty) =>
+              dependencyProperties.Add(DependencyPropertyDeclaration(d.Name, d.Symbol.FullName, 
+                                                                        d.Symbol.SpanClass, d.Symbol.DeclaredIn));
+            | d is ExternalFieldDeclaration when IsDependencyProperty(d, platformTypeNames?.DependencyProperty) =>
+              dependencyProperties.Add(DependencyPropertyDeclaration(d.Name, d.Symbol.FullName, 
+                                                                        d.Symbol.SpanClass, d.Symbol.DeclaredIn));
+            | d is Member.Event  when IsRoutedEvent(d, platformTypeNames?.DependencyProperty) =>
+              routedEvents.Add(RoutedEventDeclaration(d.Name, d.Symbol.FullName, 
+                                                                        d.Symbol.SpanClass, d.Symbol.DeclaredIn));
+            | d is ExternalFieldDeclaration  when IsRoutedEvent(d, platformTypeNames?.DependencyProperty) =>
+              routedEvents.Add(RoutedEventDeclaration(d.Name, d.Symbol.FullName, 
+                                                                        d.Symbol.SpanClass, d.Symbol.DeclaredIn));
+            | _ => ()
+          }
+        | _ => ()
+      }
+
+      // Process properties
+      foreach (propDeclaration in dependencyProperties) {
+        def oldName = propDeclaration.Name.Text;
+        def newName = oldName.Substring(0, oldName.Length - "Property".Length);
+        def symbol = type.MemberTable.Define(propDeclaration, null, Name(propDeclaration.Location, newName)) : DependencyPropertySymbol;
+        symbol.Kind = "DependencyProperty";
+        symbol.Flags = ModifierSet(context);
+        symbol.SpanClass = propDeclaration.SpanClass;
+        symbol.FullName = propDeclaration.FullName;
+        symbol.DeclaredIn = propDeclaration.DeclaredIn;
+        symbol.DependencyPropertyName = oldName;
+        symbol.Scope = if (propDeclaration.Symbol.IsScopeEvaluated)
+                         propDeclaration.Symbol.Scope;
+                       else
+                         EmptyScope.Instance;
+        
+        mutable normalProp;
+        mutable method;
+        
+        if (normalProperties.TryGetValue(newName, out normalProp) && normalProp.IsTypeEvaluated) {
+          // Dependency Property
+          symbol.Type = normalProp.Type;
+          symbol.HasProperty = true;
+        } else if (methods.TryGetValue("Get" + newName, out method) && method.IsReturnTypeEvaluated) {
+          // Attached Property
+          symbol.Type = method.ReturnType;
+          
+          when (methods.TryGetValue("Set" + newName, out method))
+            symbol.HasSetMethod = true;
+        } else {
+          symbol.Type = objectType;
+        }
+      }
+      
+      // Process events
+      foreach (routedEvent in routedEvents) {
+        def oldName = routedEvent.Name.Text;
+        def newName = oldName.Substring(0, oldName.Length - "Event".Length);
+        def symbol = type.MemberTable.Define(routedEvent, null, Name(routedEvent.Location, newName)) : RoutedEventSymbol;
+        symbol.Kind = "RoutedEvent";
+        symbol.Flags = ModifierSet(context);
+        symbol.SpanClass = routedEvent.SpanClass;
+        symbol.FullName = routedEvent.FullName;
+        symbol.DeclaredIn = routedEvent.DeclaredIn;
+        
+        mutable normalEvent;
+        
+        if (normalEvents.TryGetValue(newName, out normalEvent) && normalEvent.IsTypeEvaluated) {
+          symbol.Type = normalEvent.Type;
+          symbol.HasEvent = true;
+        } else {
+          symbol.Type = objectType;
+        }
+      }
+    }
+      
+    private IsDependencyProperty(memberDecl : ExternalFieldDeclaration, dependencyPropertyTypeName : string) : bool 
+    {
+      memberDecl.Field.IsStatic &&
+      //memberDecl.Field.IsInitOnly &&
+      //memberDecl.Field.IsPublic &&
+      memberDecl.Name.Text.EndsWith("Property") &&
+      memberDecl.Symbol.Type.IsDescendant(dependencyPropertyTypeName)
+    }
+      
+    private IsDependencyProperty(memberDecl : Member.Field, dependencyPropertyTypeName : string) : bool 
+    {
+      
+      //memberDecl.IsStatic &&
+      //memberDecl.Field.IsInitOnly &&
+      memberDecl.Name.Text.EndsWith("Property") &&
+      memberDecl.Symbol.Type.IsDescendant(dependencyPropertyTypeName)
+    }
+          
+    private IsDependencyProperty(memberDecl : ExternalPropertyDeclaration, dependencyPropertyTypeName : string) : bool 
+    {
+      memberDecl.Property.GetMethod != null &&
+      memberDecl.Property.GetMethod.IsStatic &&
+      memberDecl.Name.Text.EndsWith("Property") &&
+      memberDecl.Symbol.Type.IsDescendant(dependencyPropertyTypeName)
+    }
+    
+    private IsRoutedEvent(memberDecl : ExternalFieldDeclaration, routedEventTypeName : string) : bool 
+    {
+      memberDecl.Field.IsStatic &&
+      memberDecl.Field.IsInitOnly &&
+      //memberDecl.Field.IsPublic &&
+      memberDecl.Name.Text.EndsWith("Event") &&
+      memberDecl.Symbol.Type.IsDescendant(routedEventTypeName)
+    }
+    
+    private IsRoutedEvent(memberDecl : Member.Event, routedEventTypeName : string) : bool 
+    {
+      memberDecl.Name.Text.EndsWith("Event") &&
+      memberDecl.Symbol.Type.IsDescendant(routedEventTypeName)
+    }
+  }
+}

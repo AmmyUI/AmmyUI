@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Ammy.WPF</id>
+    <version>1.2.49</version>
+    <authors>Ion OÜ</authors>
+    <owners>Ion OÜ</owners>
+    <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
+    <projectUrl>https://www.ammyui.com</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Ammy UI Language for XAML platforms. Please install Ammy Visual Studio Extension for full support.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>xaml wpf</tags>
+    <dependencies>
+      <dependency id="Ammy" version="1.2.49" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\packages\Ammy.Wpf.1.0.0\lib\net40\AmmySidekick.dll" target="lib\net40" />
+    <file src="..\src\AmmyStandardLib\lib-wpf.ammy" target="content\lib.ammy" />
+    <file src="..\release-notes.txt" target="readme.txt" />
+  </files>
+</package>

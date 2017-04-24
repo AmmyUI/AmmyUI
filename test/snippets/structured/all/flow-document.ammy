@@ -1,0 +1,27 @@
+FlowDocument "FlowDocument" {
+    Paragraph {
+        "Chapter 1"
+
+        FontSize: 22
+        FontWeight: Bold
+    }
+
+    Paragraph {
+        "Why WPF?"
+
+        FontSize: 35
+        FontWeight: Bold
+    }
+
+    Paragraph {
+        "In movies and on TV, the ..."
+    }
+
+    Paragraph {
+        "..."
+    }
+
+    Paragraph {
+        "..."
+    }
+}

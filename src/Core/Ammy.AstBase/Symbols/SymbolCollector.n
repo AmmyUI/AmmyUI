@@ -1,0 +1,60 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Serialization2;
+using Nitra.Declarations;
+using Nitra.Staging;
+using DotNet;
+
+using Ammy.Language;
+using Ammy.Infrastructure;
+
+namespace Ammy.Symbols
+{
+  /*
+  public class SymbolCollector : ICollector
+  {
+    public CreatedOnStage           : int  { get; }
+    public CreatedOnPass            : int  { get; }
+    public IsEmpty                  : bool { get { _symbols.Count == 0 } }
+    
+    private mutable _symbols : List[DeclarationSymbol] = List();
+
+    public this(context : DependentPropertyEvalContext)
+    {
+      context.NotifyCollectorCreated(out CreatedOnStage, out CreatedOnPass);
+    }
+    
+    [Collect]
+    public Add(val : DeclarationSymbol) : void
+    {
+      _symbols.Add(val);
+    }
+
+    public GetSymbols() : List[DeclarationSymbol]
+    {
+      _symbols
+    }
+
+    public override ToString() : string
+    {
+      $"$CreatedOnStage($CreatedOnPass): ..$(_symbols; \", \"; (fr) => fr.Name)"
+    }
+    
+    public Serialize(_writer : IO.BinaryWriter, _metadataWriter : MetadataWriter) : void
+    {
+      throw NotImplementedException()
+    }
+
+    public static Deserialize(_reader : IO.BinaryReader, _metadataReader : MetadataReader) : this
+    {
+      throw NotImplementedException();
+    }
+  }*/
+}

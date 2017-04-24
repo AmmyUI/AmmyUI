@@ -1,0 +1,14 @@
+﻿using Ammy.WpfTest.CustomControls;
+using Ammy.WpfTest.CustomControls.zz;
+
+UserControl "Ammy.WpfTest.BB.AmmyReferencingXaml" {
+	StackPanel { 
+		CustomTextBlock {
+		
+		}
+
+		CustomControl {
+		
+		}
+	}
+}

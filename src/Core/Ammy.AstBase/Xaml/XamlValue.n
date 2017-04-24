@@ -1,0 +1,91 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+
+namespace Ammy.Xaml
+{
+  public variant XamlValue : XamlElement
+  {
+    | String {
+      public this (value : string, originalLocation : Location) 
+      {
+        Value = value;
+        OriginalLocation = originalLocation;
+      }
+      
+      Value : string;
+    }
+    | Node {      
+      public this (value : XamlNode, originalLocation : Location) 
+      {
+        Value = value;
+        OriginalLocation = originalLocation;
+      }
+      
+      Value : XamlNode;    
+    }
+    | List {
+      public this (values : IEnumerable[XamlValue], originalLocation : Location) 
+      {
+        Values = values.ToArray();
+        OriginalLocation = originalLocation;
+      }
+      
+      Values : array[XamlValue]
+    }
+    | None {}
+    
+    public override ToString() : string
+    {
+      "Value: " + this.GetType().Name;
+    }
+    
+    public ReplaceAttributeValue(nodeNameSelector : Func[string, string], attributeSelector : Func[XamlAttribute, option[XamlAttribute]]) : XamlValue
+    {
+      match (this) {
+        | node is XamlValue.Node => XamlValue.Node(node.Value.ReplaceAttributeValue(nodeNameSelector, attributeSelector), OriginalLocation)
+        | lst is XamlValue.List => XamlValue.List(lst.Values.Select(v => v.ReplaceAttributeValue(nodeNameSelector, attributeSelector)).ToArray(), OriginalLocation)
+        | _ => this
+      }
+    }
+    
+    public override Build(start : XamlLocation, indent : int) : string 
+    {
+      Start = start;
+      
+      def (result, end) = match (this) {
+        | s is XamlValue.String => 
+          def result = $<#$(s.Value)#>;
+          (result, XamlLocation(Start.Row, Start.Column + result.Length, Start.Position + result.Length));
+          
+        | n is XamlValue.Node   => 
+          def result = $<#$(n.Value.Build(Start, indent))#>;
+          (result, n.Value.End);
+          
+        | n is XamlValue.List   => 
+          mutable result = "";
+          mutable location = Start;
+          
+          foreach (val in n.Values) {
+            result += Environment.NewLine + val.Build(XamlLocation(location.Row + 1, location.Column, location.Position), indent + 2);
+            location = val.End;
+          }
+        
+          (result, location);
+          
+        | XamlValue.None        => ("", start)
+        | _ => assert2(false); (null, null)
+      }
+      
+      End = end;
+      result
+    }
+  }
+}

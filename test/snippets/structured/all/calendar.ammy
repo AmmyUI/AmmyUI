@@ -1,0 +1,12 @@
+Calendar "Calendar" {
+    BlackoutDates: [
+        CalendarDateRange {
+            Start: "4/1/2016"
+            End: "4/10/2016"
+        }
+        CalendarDateRange {
+            Start: "5/1/2016"
+            End: "5/5/2016"
+        }
+    ]
+}

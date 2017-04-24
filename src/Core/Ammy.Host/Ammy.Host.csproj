@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CF1235A7-BBB7-4473-9222-6B891B3FD65D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ammy.Host</RootNamespace>
+    <AssemblyName>Ammy.Host</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Nitra.Runtime">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Nitra-bin\Nitra.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Nitra-bin\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CompilationRequest.cs" />
+    <Compile Include="CompilationResult.cs" />
+    <Compile Include="CompilerMessage.cs" />
+    <Compile Include="CompilerMessageType.cs" />
+    <Compile Include="Host.cs" />
+    <Compile Include="IAmmyCompiler.cs" />
+    <Compile Include="InputFile.cs" />
+    <Compile Include="OutputFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Platforms\Ammy.Sidekick.Common\Ammy.Sidekick.Common.csproj">
+      <Project>{388a94d5-246f-4192-8c3e-89852f3181d6}</Project>
+      <Name>Ammy.Sidekick.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ammy.Platforms\Ammy.Platforms.csproj">
+      <Project>{6e35138d-7436-425c-9e7a-2d5a9b30b3ee}</Project>
+      <Name>Ammy.Platforms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ammy.AstBase\Ammy.AstBase.nproj">
+      <Project>{bd975029-c6fc-4ad4-a456-3368f7bf8452}</Project>
+      <Name>Ammy.AstBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ammy.Syntax\Ammy.Syntax.nproj">
+      <Project>{6ea83c76-9cf6-4119-b81a-b8d876359a69}</Project>
+      <Name>Ammy.Syntax</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ammy.Ast\Ammy.Ast.nproj">
+      <Project>{ec5cdad4-e1f9-4518-90cc-81cf6f9da778}</Project>
+      <Name>Ammy.Ast</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)*.* $(SolutionDir)packages\Ammy.Host.1.0.0\lib\net40</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

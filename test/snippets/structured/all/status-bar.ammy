@@ -1,0 +1,32 @@
+StatusBar "StatusBar" {
+    ItemsPanel: ItemsPanelTemplate {
+        Grid {
+            ColumnDefinitions: [
+                ColumnDefinition { Width: "*" }
+                ColumnDefinition { Width: "Auto" }
+                ColumnDefinition { Width: "3*" }
+            ]
+        }
+    }
+
+    StatusBarItem {
+        Grid.Column: 0
+        Label { "27 Items" }
+    }
+    
+    Separator {}
+    
+    StatusBarItem {
+        Grid.Column: 1
+        Label { "Zoom" }
+    }
+
+    StatusBarItem {
+        Grid.Column: 2
+        ComboBox {
+            ComboBoxItem { "100%" }
+            ComboBoxItem { "75%" }
+            ComboBoxItem { "50%" }
+        }
+    }
+}

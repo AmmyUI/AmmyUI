@@ -1,0 +1,9 @@
+﻿StackPanel "TextBlock" {
+    TextBlock { "Text in a TextBlock" }
+    TextBlock { Run { "Text in a TextBlock" } }
+    TextBlock { "Text in", LineBreak {}, "a TextBlock" }
+    
+    // This doesn't work, since Run.Text is a string and we don't have a converter
+    // TextBlock { Run { "Text in", LineBreak {}, "a TextBlock" } }
+    TextBlock { Run { "Text in" }, LineBreak {}, Run { "a TextBlock" } } }
+}

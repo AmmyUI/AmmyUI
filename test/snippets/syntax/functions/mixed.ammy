@@ -1,0 +1,18 @@
+content size (width, height = 200) {
+    Width: $width
+    Height: $height
+}
+
+type rounded_corners (radius) {
+  Border {
+    CornerRadius: $radius
+    Background: Red
+  }
+}
+
+Button "MyButton7" {
+  size (10, height: 150)
+  rounded_corners (5) {
+    TextBlock { "OK" }
+  }
+}

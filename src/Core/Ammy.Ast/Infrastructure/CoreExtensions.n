@@ -1,0 +1,27 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Infrastructure
+{
+  public module CoreExtensions
+  {
+    public Select[T, TV](this opt : option[T], selector : Func[T, TV]) : option[TV]
+    {
+      if (opt is Some(val)) Some(selector(val))
+      else None()
+    }
+    
+    public Zip[T0, T1](this opt0 : option[T0], opt1 : option[T1]) : option[(T0 * T1)] {
+      match (opt0, opt1) {
+        | (Some(o0), Some(o1)) => Some((o0, o1))
+        | _ => None()
+      }
+    }
+  }
+}

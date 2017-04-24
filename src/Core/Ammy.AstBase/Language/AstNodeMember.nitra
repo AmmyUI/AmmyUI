@@ -1,0 +1,36 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+﻿using Nitra.Declarations;
+using Ammy;
+using Ammy.Symbols;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+
+namespace Ammy.Language
+{
+  abstract ast NodeMember : XamlContainer
+  {
+    in TypeScope           : Scope;
+    in Parent              : NodeMember;
+    in ParentNodeType      : option[TypeSymbol];
+    in ParentPropertyScope : Scope;
+    in ParentVariableAst   : InitAst;    
+    in ParsingContext      : ParsingContext;
+    in Breadcrumbs         : ImmutableList[Breadcrumb];
+    in FunctionRefScope    : TableScope;
+    in RootSymbolId        : string;
+    in IsInsideFrameworkTemplate : bool;
+    in GlobalDeclarationScope : Scope;
+
+  stage 1:
+    in TemplateParameterScope : Scope;
+  }
+}

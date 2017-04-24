@@ -1,0 +1,9 @@
+﻿using System;
+
+mixin Centered() for TextBlock {
+  HorizontalAlignment: Center
+  VerticalAlignment: Center
+}
+
+UserControl "Ammy.WpfTest.Bugs.Redefinition1" {   
+}

@@ -1,0 +1,10 @@
+Button "PaddingMargin" {
+    Padding: [5,40]
+    Margin: 10
+    Content: Button {        
+        "OK"
+
+        Margin: "5, 20, 10, 40"
+        Padding: [5, 20, 10, 100]
+    }
+}

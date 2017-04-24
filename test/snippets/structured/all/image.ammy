@@ -1,0 +1,17 @@
+StackPanel "Image" {
+    Image { Source: "Images/photo.jpg" }
+
+    Image {
+        Source: FormatConvertedBitmap {
+            Source: "Images/photo.jpg"
+            DestinationFormat: PixelFormats.Gray32Float
+        }
+    }
+
+    Image {
+        Source: FormatConvertedBitmap {
+            Source: "Images/photo.jpg"
+            DestinationFormat: "BlackWhite"
+        }
+    }
+}

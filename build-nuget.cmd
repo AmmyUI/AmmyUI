@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass -File "build\build-nugets.ps1"

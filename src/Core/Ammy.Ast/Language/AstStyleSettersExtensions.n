@@ -1,0 +1,26 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  public module AstStyleSettersExtensions
+  {
+    public ParentIsStyle(this _ : StyleSetters, parentType : option[TypeSymbol], context : DependentPropertyEvalContext) : bool
+    {
+      def context = context.ToAmmyContext();
+      if (parentType is Some(type) when type.IsDescendant(context.Types.Style))
+        true
+      else 
+        false
+    }
+  }
+}

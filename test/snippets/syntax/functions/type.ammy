@@ -1,0 +1,13 @@
+type rounded_corners (radius) {
+  Border {
+    TextBlock { "Hello" }
+    CornerRadius: $radius
+    Background: Red
+  }
+}
+
+Button "MyButton" {
+    rounded_corners (5) {
+      Width: 100
+    }
+}

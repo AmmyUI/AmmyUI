@@ -1,3 +1,0 @@
-﻿Application "DataGridSample.App" {
-  StartupUri: "MainWindow.g.xaml"
-}

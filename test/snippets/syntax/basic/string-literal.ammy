@@ -1,0 +1,14 @@
+StackPanel "StringLiteral" {
+  TextBlock { 
+    Text:   "A   
+             B  
+           \"C\" 
+             D" 
+  }
+  TextBlock { 
+            "A   
+             B  
+           \"C\" 
+             D" 
+  }
+}

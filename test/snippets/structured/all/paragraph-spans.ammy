@@ -1,0 +1,22 @@
+FlowDocumentReader "ParagraphSpans" {
+    FlowDocument {
+        Paragraph {
+            Bold { "bold" }
+            Italic { "italic" }
+            Underline { "underline" }
+            Hyperlink { "hyperlink" }
+            Span {
+                "superscript"
+                BaselineAlignment: "Superscript"
+            }
+            Span {
+                "subscript"
+                BaselineAlignment: "Subscript"
+            }
+            Span {
+                "strikethrough"
+                TextDecorations: [ TextDecoration { Location: Strikethrough } ]
+            }
+        }
+    }
+}

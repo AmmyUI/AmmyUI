@@ -1,0 +1,18 @@
+﻿using System.Windows.Input
+
+alias Some(color) {
+  TextBlock {
+    Background: $color
+  }
+}
+
+Window "Ammy.Test.Workbench.MainWindow" {  
+  StackPanel {
+    Style: Style {
+      TargetType: StackPanel
+       
+      #Setter("Background", "Red")
+    }
+    Width: bind Width from $ancestor<MainWindow>
+  }
+}

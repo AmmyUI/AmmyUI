@@ -1,0 +1,261 @@
+﻿using System.Linq;
+using System.Globalization;
+
+using Nitra;
+using Nitra.Runtime;
+using Nitra.Declarations;
+
+using DotNet;
+
+using Ammy;
+using Ammy.Language;
+
+map syntax AmmySyntax.Start -> Start {
+  Top -> Top;
+}
+
+map syntax AmmySyntax.Top -> Top {
+  | WithoutNode -> TopWithoutNode {
+    Usings    -> Usings;
+    GlobalDeclarations -> GlobalDeclarations;
+  }
+  | WithNode -> TopWithNode {
+    Usings   -> Usings;
+    TopNode  -> TopNode;
+    GlobalDeclarations -> GlobalDeclarations;
+  }
+}
+
+map syntax AmmySyntax.TopNode -> TopNode {
+  | WithName -> WithName {
+    GlobalDeclarations -> Declarations;
+    NodeMembers.Item1 -> Members;
+    Key -> Key;
+    match(GenericArgsOpt) { | Some(cl) -> cl.QualifiedReferences.Item1 | None() -> [] } -> GenericArgs;
+    None() -> NodeName;
+    None() -> NodeKey;
+    Name = ParsedValue(Name.Span, Name.Value());
+  }
+  | WithoutName -> WithoutName {
+    GlobalDeclarations -> Declarations;
+    NodeMembers.Item1 -> Members;
+    Key -> Key;
+    match(GenericArgsOpt) { | Some(cl) -> cl.QualifiedReferences.Item1 | None() -> [] } -> GenericArgs;
+    None() -> NodeName;
+    None() -> NodeKey;
+  }
+}
+
+map syntax AmmySyntax.GlobalDeclarations -> GlobalDeclaration* {
+  GlobalDeclarations
+}
+
+map syntax AmmySyntax.GlobalDeclaration -> GlobalDeclaration
+{
+  | ContentFunction -> ContentFunction {
+    ContentFunction.NodeMembers.Item1 -> Members;
+    ContentFunction.FunctionTargetType -> TargetType;
+    ContentFunction.FunctionParameters -> Parameters;
+    ContentFunction.Name -> Name;
+  }
+  | TypeFunction -> TypeFunction {
+    TypeFunction.TypeFunctionContent -> Content;
+    TypeFunction.FunctionParameters  -> Parameters;
+    TypeFunction.Name -> Name;
+  }
+  | Variable -> Variable {
+    Variable.Name  -> Name;
+    Value = ParsedValue(Variable.Value.Span, Variable.Value.Value());
+  }
+}
+
+map syntax AmmySyntax.TypeFunctionContent -> TypeFunctionContent {
+  | Node -> NodeContent {
+    Node -> Node;
+  }
+  | TypeFunctionRef -> TypeFunctionRefContent {
+    TypeFunctionRef -> TypeFunction;
+  }
+}
+
+map syntax AmmySyntax.Node -> Node {
+  GlobalDeclarations -> Declarations;
+  NodeMembers.Item1 -> Members;
+  Key -> Key;
+  match(GenericArgsOpt) { | Some(cl) -> cl.QualifiedReferences.Item1 | None() -> [] } -> GenericArgs;
+  NodeNameOpt -> NodeName;
+  NodeKeyOpt  -> NodeKey;
+}
+
+map syntax AmmySyntax.NodeName -> NodeName {
+  Key = ParsedValue(Name.Span, Name.Value());
+}
+
+map syntax AmmySyntax.NodeKey -> NodeKey {
+  Key = ParsedValue(Key.Span, Key.Value());
+}
+
+map syntax AmmySyntax.NodeMember -> NodeMember {
+  | Property -> Property {
+    PropertyMember.Key -> Key;
+    PropertyMember.Value -> Val;
+    IsCombine = ParsedValue(Span, PropertyMember.Combine.HasValue);
+  }
+  | IncompleteProperty -> IncompleteProperty {
+    Key -> Key;
+  }
+  | TypelessPropertyMember -> TypelessProperty {
+    PropertyName = ParsedValue(PropertyName.Span, PropertyName.Value());
+    PropertyValue = ParsedValue(PropertyValue.Span, PropertyValue.Value());
+  }
+  | Node -> Node
+  | StringLiteral -> StringContent {
+    Val = ParsedValue(StringLiteral.Span, StringLiteral.Value());
+  }
+  | ContentFunctionRef -> ContentFunctionRef {
+    Key               -> FunctionKey;
+    match(FunctionArgumentsOpt) { | Some(cl) -> cl | None() -> [] } -> Arguments;
+    //FunctionArguments -> Arguments;
+    Name = Name(Location(SourceSnapshot.Default.File, NSpan(0)), if (Key.LastReference() != null) Key.LastReference().Value() + Mapping.Id else "missing_ref_" + Mapping.Id);
+  }
+  | TypeFunctionRef -> TypeFunctionRef {    
+    Function.Key         -> FunctionKey;
+    Function.NodeNameOpt -> NodeName;
+    Function.NodeKeyOpt  -> NodeKey;
+    match(Function.Body) { | Some(cl) -> cl.NodeMembers.Item1 | None() -> [] } -> Members;
+    match(Function.Body) { | Some(cl) -> cl.GlobalDeclarations | None() -> [] } -> Declarations;
+    match(Function.FunctionArgumentsOpt) { | Some(cl) -> cl.FunctionArguments.Item1 | None() -> [] } -> Arguments;
+    Name = Name(Location(SourceSnapshot.Default.File, NSpan(0)), if (Function.Key.LastReference() != null) Function.Key.LastReference().Value() + Mapping.Id else "missing_ref_" + Mapping.Id);    
+
+    [] -> GenericArgs;
+  }
+  | StyleSetters -> StyleSetters {
+    PropertyMembers -> Properties;
+  }
+  | ViewModel -> ViewModel {
+    Key -> Key;
+  }
+}
+
+map syntax AmmySyntax.PropertyMember -> Property 
+{
+  Key -> Key;
+  Value -> Val;
+
+  IsCombine = ParsedValue(Span, Combine.HasValue);
+}
+
+map syntax AmmySyntax.Value -> PropertyValue {
+  | StringLiteral -> String { Val = ParsedValue(StringLiteral.Span, StringLiteral.Value()); }
+  | Number    -> Number     { Val = ParsedValue(Number, NumberData); }
+  | True      -> Boolean    { Val = ParsedValue(Span, true); }
+  | False     -> Boolean    { Val = ParsedValue(Span, false); }
+  | Null      -> Null       {}
+  | Reference -> ReferenceValue { Key -> Key; Key -> KeyBase; }
+  | NodeValue -> NodeValue  { 
+    IsCombine = ParsedValue(Span, Combine.HasValue);
+    Node -> Node; 
+  }
+  | ValueList -> ValueList  { Values.Item1 -> Values; }
+  //| Empty     -> Empty      { Key = Reference(Location(File, NSpan(Span.EndPos)), ""); }
+  | Parameter -> Parameter  { Key -> Key; }
+  | Binding   -> Binding    {
+    Binding.Path -> Path;
+    Binding.Source -> BindingSource;
+    Binding.Converter -> Converter;
+    Binding.ConverterBack -> ConverterBack;
+    match(Binding.Settings) { | Some(s) -> s.Item3.Item1 | None() -> [] } -> Settings;
+  }
+  | ResourceWithRef  -> ResourceWithRef {
+    Key -> Key;
+    IsDynamic = ParsedValue(Span, IsDynamicData);
+  }
+  | ResourceWithName -> ResourceWithName {
+    Name = ParsedValue(StringLiteral.Span, StringLiteral.Value());
+    IsDynamic = ParsedValue(Span, IsDynamicData);
+  }
+  | TypeFunctionRef -> TypeFunction {    
+    TypeFunction -> TypeFunction;
+  }
+}
+
+map syntax AmmySyntax.BindingPath -> BindingPath {
+  | StringLiteral -> String {
+    StringValue = ParsedValue(StringLiteral.Span, StringLiteral.Value()); 
+  }
+  | Parameter -> Parameter {
+    Key -> Key;
+  }
+  | QRef -> ReferenceKey { 
+    Key -> Key; 
+  }
+}
+
+map syntax AmmySyntax.TypeFunctionRef -> TypeFunctionRef {
+    Key         -> FunctionKey;
+    NodeNameOpt -> NodeName;
+    NodeKeyOpt  -> NodeKey;
+
+    match(FunctionArgumentsOpt) { | Some(cl) -> cl | None() -> [] } -> Arguments;
+    match(Body) { | Some(cl) -> cl.NodeMembers.Item1 | None() -> [] } -> Members;
+    match(Body) { | Some(cl) -> cl.GlobalDeclarations | None() -> [] } -> Declarations;
+
+    Name = Name(Location(SourceSnapshot.Default.File, NSpan(0)), if (Key.LastReference() != null) Key.LastReference().Value() + Mapping.Id else "missing_ref_" + Mapping.Id);
+
+    [] -> GenericArgs;
+}
+
+map syntax AmmySyntax.BindingSource -> BindingSource
+{
+  | This      -> BindingSourceThis {}
+  | Viewmodel -> BindingSourceViewmodel {}
+  | Template  -> BindingSourceTemplate {}
+  | PreviousData -> BindingSourcePreviousData {}
+  | Ancestor  -> BindingSourceAncestor {
+    Level = if (Level.HasValue) ParsedValue(Level.Value.Item2, int.Parse(GetText(Level.Value.Item2), CultureInfo.InvariantCulture)) 
+            else ParsedValue(NSpan(Type.Span.EndPos + 1, Type.Span.EndPos + 1), -1);
+    Type -> AncestorTypeKey;
+  }
+  | Name      -> BindingSourceName      { Name = ParsedValue(StringLiteral.Span, StringLiteral.Value()); }
+  | Reference -> BindingSourceReference { Key -> Key; }
+  | Resource  -> BindingSourceResource  { ResourceKey -> ResourceKey; }
+}
+
+//map syntax AmmySyntax.MemberList -> NodeMember* 
+//{
+//  NodeMembers.Item1
+//}
+
+map syntax AmmySyntax.NamespaceOrTypeName -> DotNet.QualifiedReference
+{
+  Simple { 
+    Reference -> Name;
+  }
+}
+  
+map syntax AmmySyntax.NamespaceOrTypeName(qualifier : QualifiedReference) -> QualifiedReference
+{
+  Qualified { Reference -> Name; qualifier -> Qualifier; }
+}
+
+map syntax AmmySyntax.QualifiedReference -> DotNet.QualifiedReference 
+{
+  match (this.Names)
+  {
+    | (first :: other, _) -> fold (item in other; acc = first(); acc = item(acc))
+    | ([], _) = AstUtils.CreateMissingQualifiedReference(Names.Location);
+  }
+}
+
+//map syntax AmmySyntax.Usings -> SyntaxModuleUsingDirective* 
+//{
+//  Usings
+//}
+
+map syntax AmmySyntax.Using -> SyntaxModuleUsingDirective
+{
+  | UsingOpen -> SyntaxModuleUsingOpenDirective
+  {
+    NamespaceOrType -> NamespaceOrTypeName;
+  }
+}

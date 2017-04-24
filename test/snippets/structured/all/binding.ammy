@@ -1,0 +1,11 @@
+StackPanel "Binding" {
+    TextBlock {
+        Text: bind SelectedItem.Header from "tv"
+    }
+    TreeView "tv" {
+        TreeViewItem { Header: "1aa" }
+        TreeViewItem { Header: "2aa" }
+        TreeViewItem { Header: "3aa" }
+        TreeViewItem { Header: "4aa" }
+    }
+}

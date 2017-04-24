@@ -1,0 +1,49 @@
+// http://stackoverflow.com/questions/84278/how-do-i-use-wpf-bindings-with-relativesource
+// How do I use RelativeSource with WPF bindings and what are the different use-cases?
+
+UserControl "MyControl" {
+    Resources: [
+      ControlTemplate "ButtonTemplate" {
+          Border {
+              ContentPresenter {
+                  Content: bind Content from $template
+              }
+          }
+      }
+    ]
+
+    TextBlock {
+        Text: bind ActualWidth
+              from $this
+              convert width => width.ToString() + "px"
+    }
+    
+    TextBlock {
+        Text: bind ActualWidth
+              from $previous
+              convert width => width.ToString() + "px"
+    }
+
+    TextBlock {
+        Text: bind ActualWidth
+              from "MyControl"
+              convert width => width.ToString() + "px"
+    }
+
+    TextBlock {
+        Text: bind Title
+              from $ancestor<Window>
+              convert width => width.ToString() + "px"
+    }
+
+    TextBlock {
+        // If there are multiple controls of type UserControl in visual tree
+        Text: bind Width
+              from $ancestor<StackPanel>(2)
+              convert width => width.ToString() + "px"
+    }
+
+    Button {
+        Template: resource "ButtonTemplate"
+    }
+}

@@ -1,0 +1,14 @@
+// http://stackoverflow.com/questions/1268552/how-do-i-get-a-textbox-to-only-accept-numeric-input-in-wpf
+// I'm looking for a simple way to make a standard WPF TextBox accept only the characters that I want.
+using ShowTest.Common;
+using NumericTextBox = TextBox (OnlyNumeric);
+
+template OnlyNumeric {
+    PreviewTextInput: Helpers.OnlyNumeric
+}
+
+UserControl "AcceptNumeric" {
+    NumericTextBox { "Age" }
+    NumericTextBox { "Height" }
+    NumericTextBox { "Weight" }
+}

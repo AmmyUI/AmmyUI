@@ -1,0 +1,45 @@
+﻿using System.Linq;
+using System.Globalization;
+
+using Nitra;
+using Nitra.Runtime;
+using Nitra.Declarations;
+
+using DotNet;
+
+using Ammy;
+using Ammy.Language;
+
+map syntax AmmySyntax.FunctionParameters -> FunctionParameter* {
+  FunctionParameters.Item1
+}
+
+map syntax AmmySyntax.FunctionParameter -> FunctionParameter {
+  Name = Name(Location, NameData);
+  ArgumentValueOpt -> DefaultValue;
+}
+
+map syntax AmmySyntax.FunctionTargetType -> QualifiedReference {
+  Type
+}
+
+map syntax AmmySyntax.FunctionArguments -> FunctionArgument* {
+  FunctionArguments.Item1
+}
+
+map syntax AmmySyntax.ArgumentValue -> ArgumentValue {
+  | None  -> None  {}
+  | Value -> Value {
+    Value -> Value;
+  }
+}
+
+map syntax AmmySyntax.FunctionArgument -> FunctionArgument {
+  | Simple -> SimpleFunctionArgument {
+    ArgumentValue -> Value;
+  }
+  | Named -> NamedFunctionArgument {
+    Name  -> ArgumentName;
+    ArgumentValue -> Value;
+  }
+}

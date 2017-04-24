@@ -1,0 +1,20 @@
+Button "ControlTemplate" {
+  Resources: [
+    Style "A" {
+        Setter {
+            Property: Control.Template
+            Value: ControlTemplate {        
+                Border { 
+                    Height: 18
+                    Background: "#00ffffff"
+                    Border {  
+                        Background: "White", 
+                        VerticalAlignment: "Center",
+                        Height: 2
+                    }
+                }
+            }
+        }
+    }
+  ]
+}

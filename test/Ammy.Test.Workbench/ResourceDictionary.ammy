@@ -1,0 +1,7 @@
+﻿mixin Setter(property, value, targetName=none) for Style {
+  Setter { Property: $property, Value: $value, TargetName: $targetName }
+}
+
+
+ResourceDictionary {
+}

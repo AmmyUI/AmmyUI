@@ -1,0 +1,26 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+namespace Ammy.Infrastructure
+{   
+  [Record]
+  public variant CompilationResult
+  {
+    | Success {
+      Code : string;
+      Xml  : string;
+      File : FileEvalPropertiesData;
+    }
+    | Fail {
+      Errors : string;
+    }
+  }
+}

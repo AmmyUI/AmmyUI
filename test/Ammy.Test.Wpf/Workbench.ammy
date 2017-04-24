@@ -1,0 +1,28 @@
+﻿Window "Ammy.WpfTest.Workbench" {
+  StackPanel { 
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => 1 + (double.MinValue.ToString("0.0"))
+    }
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => Utils.IntToString((int)w)
+    }
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => ((int)w).ToString()
+    }
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => "ASDFGDFG " + w.ToString() + " Hello"
+    }
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => w.ToString()
+    }
+    TextBlock { 
+      Text: bind ActualWidth from $this
+            convert (double w) => ((1 + 2) * 8).ToString()
+    }
+  }
+}

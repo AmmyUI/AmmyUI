@@ -1,0 +1,15 @@
+DockPanel "DockPanel" {
+    Button {
+        "OK"
+
+        DockPanel.Dock: Top
+        Background: Brushes.Red    
+    }
+
+    Button {
+        "Cancel"
+
+        DockPanel.Dock: Left
+        Background: Brushes.Orange
+    }
+}

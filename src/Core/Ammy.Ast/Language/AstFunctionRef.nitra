@@ -1,0 +1,162 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+﻿using Nitra;
+using Nitra.Declarations;
+
+using DotNet;
+
+using Ammy;
+using Ammy.Xaml;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  abstract declaration FunctionRef : NodeMember 
+  {
+    symbol {
+      in Function        : FunctionSymbol;
+      in Parameters      : ImmutableArray[FunctionParameterSymbol];
+      in ParameterValues : List[XamlValue]; // array is not supported in symbols
+      in RefId           : string;
+
+      out FunctionXamlTemplate : XamlNode = Function.XamlTemplate;
+    }
+
+    Arguments : FunctionArgument*;
+    Arguments.IndexIn = 0;
+    Arguments.TypeScope = TypeScope;
+    Arguments.RootSymbolId = RootSymbolId;
+    Arguments.TemplateParameterScope = TemplateParameterScope;
+    Arguments.GlobalDeclarationScope = GlobalDeclarationScope;
+
+    FunctionKey : QualifiedReference;
+    FunctionKey.Scope = GlobalDeclarationScope;
+    
+    ContainingTable = FunctionRefScope;
+
+    Symbol.Parameters      = Arguments.FunctionParameter;
+    Symbol.ParameterValues = Arguments.Xaml.ToList();
+    Symbol.RefId           = this.CreateId(Symbol.Function.Name, context); 
+
+    when (this.NamedArgumentsPrecedePositional(Arguments))
+      Error (context, "Named arguments cannot precede positional");
+  }
+
+  declaration ContentFunctionRef : FunctionRef 
+  {
+    symbol {
+      Kind = "content function ref";
+    }
+
+    Arguments.ExpectedParameters = FunctionRef.Symbol.Parameters;
+
+  stage 1:
+    out FunctionRef    : Ref[GlobalDeclaration.ContentFunctionSymbol] = FunctionKey.Ref.Resolve();
+
+    Xaml            = this.FunctionRefXaml(Symbol, Symbol.Function, Symbol.Parameters, Symbol.ParameterValues, [], FunctionRef.Symbol.XamlTemplate, RootSymbolId, context);
+    Symbol.Function = FunctionRef.Symbol;
+    
+    when (this.AnyRequiredParametersNotSupplied(FunctionRef.Symbol.Parameters, Arguments.FunctionParameter))
+      Error (context, "Required parameters not supplied: " + this.RequiredParametersNotSupplied(FunctionRef.Symbol.Parameters, Arguments.FunctionParameter).Values());
+  }
+
+  declaration TypeFunctionRef : FunctionRef, NodeBase 
+  {
+    symbol {
+      Kind = "type function ref";
+    }
+
+    Arguments.ExpectedParameters = FunctionRef.Symbol.Parameters;
+    Type                         = FunctionRef.Symbol.NodeType;
+
+  stage 1:
+    out FunctionRef    : Ref[GlobalDeclaration.TypeFunctionSymbol] = FunctionKey.Ref.Resolve();
+
+    Xaml            = this.FunctionRefXaml(Symbol, Symbol.Function, Symbol.Parameters, Symbol.ParameterValues, Members.Xaml, FunctionRef.Symbol.XamlTemplate, RootSymbolId, context);
+    Symbol.Function = FunctionRef.Symbol;
+    
+    when (this.AnyRequiredParametersNotSupplied(FunctionRef.Symbol.Parameters, Arguments.FunctionParameter))
+      Error (context, "Required parameters not supplied: " + this.RequiredParametersNotSupplied(FunctionRef.Symbol.Parameters, Arguments.FunctionParameter).Values());
+  }
+
+  abstract ast ArgumentValue
+  {
+    in TypeScope : Scope;
+    in RootSymbolId : string;
+    in TemplateParameterScope : Scope;
+    in GlobalDeclarationScope : Scope;
+
+  stage 1:
+    out Xaml : XamlValue;
+
+    | None {
+      Xaml = XamlValue.None();
+    }
+    | Value {
+      Value : PropertyValue;
+      Value.TypeScope = TypeScope;
+      Value.TemplateParameterScope = TemplateParameterScope;
+      Value.GlobalDeclarationScope = GlobalDeclarationScope;
+      Value.RootSymbolId           = RootSymbolId;
+      Value.Assignee               = this;
+      Value.ExpectedType           = context.GetObjectType();
+      Xaml = Value.Xaml;
+
+      //when (Value is PropertyValue.ReferenceValue)
+      //  Error (context, "Reference is not allowed as mixin argument");
+
+      when (Value is PropertyValue.TypeFunction)
+        Error (context, "Mixin is not allowed as mixin argument");
+
+      when (Value is PropertyValue.NodeValue)
+        Error (context, "Node is not allowed as mixin argument");
+    }
+  }
+
+  abstract ast FunctionArgument 
+  {
+    Value : ArgumentValue;
+    Value.TypeScope = TypeScope;
+    Value.RootSymbolId = RootSymbolId;
+    Value.TemplateParameterScope = TemplateParameterScope;
+    Value.GlobalDeclarationScope = GlobalDeclarationScope;
+
+    in ExpectedParameters : TableScope;
+    in TemplateParameterScope : Scope;
+    in GlobalDeclarationScope : Scope;
+    in TypeScope : Scope;
+    in RootSymbolId : string;
+
+    out Ref               : Ref[FunctionParameterSymbol];
+    out FunctionParameter : FunctionParameterSymbol = Ref.Symbol;
+
+    inout Index : int;
+    IndexOut = IndexIn + 1;
+
+  stage 1:
+
+    out Xaml : XamlValue = Value.Xaml;
+  }
+
+  ast SimpleFunctionArgument : FunctionArgument 
+  {
+    Ref = this.ResolveByIndex(IndexIn, ExpectedParameters);
+  }
+
+  ast NamedFunctionArgument : FunctionArgument 
+  {
+    ArgumentName : Reference;
+    ArgumentName.Scope = ExpectedParameters;
+
+    Ref = ArgumentName.Ref.Resolve();
+  }
+}

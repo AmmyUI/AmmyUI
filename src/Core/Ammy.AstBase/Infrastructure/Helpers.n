@@ -1,0 +1,43 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+using Ammy.Symbols;
+
+namespace Ammy.Infrastructure
+{
+  public module Helpers
+  {
+    public static NoLocation : Location       = Location(SourceSnapshot.Default.File, NSpan(0));
+    public static NoFile : ProjectSystem.File = SourceSnapshot.Default.File;
+    public static NoSpan : NSpan              = NSpan(0);
+    
+    public DefaultPropertySymbol(qr : QualifiedReference, context : DependentPropertyEvalContext) : DefaultPropertySymbol
+    {
+      def (_qualifier, name) =  qr.SplitReference();
+      def name = Name(Helpers.NoLocation, name);
+      def decl = ExternalDeclaration.[DefaultPropertySymbol](name);
+      def sym = decl.CreateSymbol() :> DefaultPropertySymbol;
+      sym.AddDeclaration(decl);
+      sym.Type = context.ToAmmyContext().Types.Object;
+      sym.FullName = qr.FullName();
+      sym.SpanClass = DotNetLang.PropertySpanClass;
+      sym.Kind = "default property";
+      sym.Scope = EmptyScope.Instance;
+      sym;
+    }
+    
+    public DefaultPropertySymbol(rf : Reference, context : DependentPropertyEvalContext) : DefaultPropertySymbol
+    {
+      DefaultPropertySymbol(QualifiedReference.Simple(rf.Location, rf, false), context)
+    }
+  }
+}

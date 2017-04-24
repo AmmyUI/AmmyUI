@@ -1,0 +1,50 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+using Nitra.Declarations;
+using Ammy.Xaml;
+using Ammy.Infrastructure;
+using Ammy.Backend;
+
+namespace Ammy.Language
+{
+  public module PropertyExtensions
+  {
+    public GetTargetTypeScopeIfStyle(this _ : Property, member : MemberSymbol, parentPropertyScope : Scope) : Scope
+    {
+      match (member) {
+        | x is Member.PropertySymbol 
+          when x.Name == "Style" && x.Type.FullName == "System.Windows.Style" => parentPropertyScope;
+        | _ => EmptyScope.Instance;
+      }
+    }
+    
+    public BuildXaml(this property : Property, symbol : MemberSymbol, value : XamlValue, parentNodeType : option[TypeSymbol], rootSymbolId : string, context : DependentPropertyEvalContext) : XamlElement
+    {
+      def context = context.ToAmmyContext();
+      def isCombine = if (property.IsCombine.HasValue) property.IsCombine.Value else false;
+      
+      match (parentNodeType) {
+        | Some(parent) when parent.IsDescendant(symbol.DeclaredIn) => XamlAttribute(symbol.Name, value, property.Location, isCombine);
+        | _ => 
+          def ns = context.GetNamespaceAliasFor(symbol.DeclaredIn, rootSymbolId);
+          XamlAttribute(ns + symbol.DeclaredIn.Name + "." + symbol.Name, value, property.Location, isCombine);
+      }
+    }
+    
+    public BuildTypelessPropertyXaml(this property : TypelessProperty) : XamlElement
+    {
+      def propName = if (property.PropertyName.HasValue) property.PropertyName.Value else "";
+      def propVal = if (property.PropertyValue.HasValue) property.PropertyValue.Value else "";
+      
+      XamlAttribute(propName, XamlValue.String(propVal), property.Location)
+    }
+  }
+}

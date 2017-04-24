@@ -1,0 +1,46 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.Language;
+using Ammy.InitAst;
+
+namespace Ammy.Infrastructure
+{
+  public module EnumerableExtensions
+  {
+    public GetResultsOnly(this _enumerable : IEnumerable[AstValueContainer]) : IEnumerable[InitAst]
+    {
+      //enumerable.Select(i => i.AstValue)
+      //          .GetResultsOnly();
+      Enumerable.Empty.[InitAst]()
+    }
+    
+    public GetResultsOnly(this enumerable : IEnumerable[BuildResult]) : IEnumerable[InitAst]
+    {
+      enumerable.OfType.[BuildResult.Result]()
+                .Select(res => res.Ast);
+    }
+    
+    public ToSeqIgnoreErrors(this enumerable : IEnumerable[BuildResult]) : BuildResult
+    {
+        BuildResult.Result(InitAst.Seq(enumerable.GetResultsOnly().NToList()))
+    }
+    
+    public ToSeqOrError(this enumerable : IEnumerable[BuildResult]) : BuildResult
+    {
+      def results = enumerable.ToList();
+      def error = results.FirstOrDefault(r => r is BuildResult.Error);
+      
+      if (error != null)
+        error
+      else
+        BuildResult.Result(InitAst.Seq(results.GetResultsOnly().NToList()))
+    }
+  }
+}

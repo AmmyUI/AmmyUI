@@ -1,0 +1,31 @@
+Menu "Menu" { 
+  ItemsPanel: ItemsPanelTemplate {
+    StackPanel {}
+  }
+  
+  MenuItem { 
+    Header: "_File"
+
+    MenuItem {
+     Header: "_New..."
+
+     "From the Library of Wow! eBook"
+
+     MenuItem { 
+       Header: "_Open..."
+
+       Separator {}
+       MenuItem {
+         Header: "Sen_d To"
+         MenuItem {
+           Header: "Mail Recipient"
+           
+           MenuItem { 
+             Header: "My Documents"
+         }
+       }
+    }
+
+    MenuItem { Header: "_Edit" } 
+    MenuItem { Header: "_View" }
+}

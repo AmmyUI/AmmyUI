@@ -1,0 +1,45 @@
+using System;
+using ShowTest.Common.Examples;
+
+DataGrid "DataGrid" {
+  RowDetailsTemplate: DataTemplate {
+    TextBlock {
+      "Details go here"
+      Margin: 10
+      FontWeight: Bold
+    }
+  }
+  Resources: [
+      ObjectDataProvider Key="genderEnum" {
+          ObjectType: Enum
+          MethodName: "GetValues"
+          MethodParameters: [ Gender ]
+      }
+  ]
+  Columns: [
+      DataGridTextColumn { Header: "First Name1", Binding: bind FirstName }
+      DataGridTextColumn { Header: "Last Name2", Binding: bind LastName }
+      DataGridHyperlinkColumn {  Header: "Website", Binding: bind Website }
+      DataGridCheckBoxColumn { Header: "Billionaire?", Binding: bind IsBillionaire }
+      DataGridComboBoxColumn {
+          Header: "Gender"
+          SelectedItemBinding: bind Gender
+          ItemsSource: bind from $resource genderEnum
+      }
+  ]
+  
+  Record {
+    FirstName: "Adam"
+    LastName: "Nathan"
+    Website: "http://adamnathan.net"
+    Gender: "Male"
+  }
+  
+  Record {
+    FirstName: "Bill"
+    LastName: "Gates"
+    Website: "http://twitter.com/billgates"
+    Gender: Female
+    IsBillionaire: true
+  }
+}

@@ -1,0 +1,211 @@
+﻿using Nemerle;
+using Nemerle.Imperative;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Ammy;
+using Ammy.Xaml;
+using Ammy.Backend;
+using Ammy.Symbols;
+using Ammy.Infrastructure;
+using DotNet;
+
+namespace Ammy.Language
+{
+  module AstTopExtensions
+  {
+    public BuildXaml(this top : TopWithNode, nodeType : TypeSymbol, members : ImmutableArray[XamlElement], rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
+    {
+      def context = context.ToAmmyContext();
+      def node = top.TopNode;
+      def ns = context.GetNamespaceAliasFor(nodeType, rootSymbolId);
+      def isAmmySidekickPresent = context.Types.Ammy != null;
+      def register = if (context.NeedUpdate && isAmmySidekickPresent && nodeType.IsDescendant(context.Types.DependencyObject)) {
+                       def outputFileSuffix = context.Platform.OutputFileSuffix;
+                       def filename = System.IO.Path.ChangeExtension(node.Source.File.FullName, outputFileSuffix + ".xaml")
+                                                    .Replace("\\", "/")
+                                                    .ToRelativeFile(context.ProjectDir);
+                       def alias = context.GetNamespaceAliasFor(context.Types.Ammy, rootSymbolId);
+                       def value = $<#/$(context.AssemblyName);component/$filename#>;
+                       
+                       [XamlAttribute(alias + context.Types.Ammy.Name + ".Register", XamlValue.String(value), node.Location)]
+                     } else [];
+                     
+      def clss = 
+        match (node) {
+          | WithName as wn when wn.Name.HasValue && wn.IsNamespaceEvaluated && wn.Namespace.IsFullNameEvaluated
+            && !string.IsNullOrWhiteSpace(context.Platform.XPrefix) => 
+            
+            def owner = wn.Namespace.Symbol;
+            def name = wn.Name.Value.Split('.').Last();
+            def className = if (!string.IsNullOrWhiteSpace(owner.FullName)) owner.FullName + "." + name else name;
+          
+            [XamlAttribute("x:Class", XamlValue.String(className), Helpers.NoLocation)] 
+          | _ => []
+        }
+      
+      def nss = context.Platform.TopNodeAttributes
+                       .Select(a => XamlAttribute(a.Key, XamlValue.String(a.Value), Helpers.NoLocation))
+                       .ToArray();
+      
+      def openedNss = context.GetOpenedNamespaces(rootSymbolId);
+      
+      XamlNode(ns + nodeType.Name, node.Location, clss.Concat(nss)
+                                                      .Concat(openedNss)
+                                                      .Concat(members)
+                                                      .Concat(register));
+    }
+    
+    public ResolveNamespace(this topNode : TopNode, nodeName : ParsedValue[string], rootNamespace : NamespaceSymbol, context : DependentPropertyEvalContext) : Ref[NamespaceSymbol]
+    {
+      def context = context.ToAmmyContext();
+      
+      if (nodeName.HasValue) {
+        def nodeFullName = nodeName.Value;
+        def split = nodeFullName.Split('.').NToList();
+        
+        def getProjectRootNamespace () {
+          if (!string.IsNullOrEmpty(context.RootNamespace)) {
+            def reference = Reference(topNode.Location, context.RootNamespace);
+            match (rootNamespace.Scope.Bind.[NamespaceSymbol](reference)) {
+              | x is Ref[NamespaceSymbol].Some => x.Symbol
+              | _ => CreateNamespaceSymbol(topNode.Location, context.RootNamespace, rootNamespace, context)
+            }
+          } else {
+            rootNamespace
+          }
+        }
+        
+        def resolveNamespace(nsList : list[string], parentNs : NamespaceSymbol) : NamespaceSymbol {
+          match (nsList) {
+            | _typeName :: [] => parentNs
+            | ns        :: lst => 
+              def reference = Reference(topNode.Location, ns);              
+              def namespaceSymbol = match (parentNs.Scope.Bind.[NamespaceSymbol](reference)) {
+                | x is Ref[NamespaceSymbol].Some => x.Symbol
+                | _ => CreateNamespaceSymbol(topNode.Location, ns, parentNs, context)
+              }
+              
+              resolveNamespace(lst, namespaceSymbol);
+            | [] => assert2(false); null
+          }
+        }
+        
+        def projectRootNamespace = getProjectRootNamespace();
+        def parentNamespace = if (split.Length > 1) rootNamespace else projectRootNamespace;
+        
+        Ref.Some(Helpers.NoLocation, resolveNamespace(split, parentNamespace))
+      } else {
+        Ref.Unresolved(Helpers.NoLocation, "", ResolutionSource.Unknown())
+      }
+    }
+    
+    public CreateOutputSymbol(this topNode : TopNode, ownerNamespace : NamespaceSymbol, nodeName : ParsedValue[string], context : DependentPropertyEvalContext) : TopClassSymbol
+    {
+      def name = if (nodeName.HasValue) nodeName.Value else "";
+      def symbolName = name.Split('.').Last();
+      def fullName = if (string.IsNullOrWhiteSpace(ownerNamespace.FullName)) symbolName 
+                     else ownerNamespace.FullName + "." + symbolName;
+      
+      mutable lightList = LightList();
+      ownerNamespace.MemberTable.FindMany.[TopClassSymbol](ts => ts.FullName == fullName, ref lightList);
+            
+      when (lightList.Count > 0) {
+        // Problem is:
+        // .cs file defines partial type without base type since it can be added by XAML compiler later
+        // we need to append base type, but can't. so, reset all properties and create new basetypeset
+        def hasParentTypes = lightList[0].BaseTypeSet.ParentTypes.Any(t => t is TopClassSymbol);
+        when (!hasParentTypes) {          
+          def declaredIn = lightList[0].DeclaredIn;
+          def isPartial = lightList[0].IsPartial;
+          def kind = lightList[0].Kind;
+          def memberTable = lightList[0].MemberTable;
+          def nestedTypes = lightList[0].NestedTypes;
+          def typeParameters = lightList[0].TypeParameters;
+          def typeParametersCount = lightList[0].TypeParametersCount;
+          def flags = lightList[0].Flags;
+          def _scope = lightList[0].Scope;
+          
+          lightList[0].ResetProperties();
+          
+          lightList[0].BaseTypeSet = BaseTypeReferenceSet(context);
+          lightList[0].DeclaredIn = declaredIn;
+          lightList[0].IsPartial = isPartial;
+          lightList[0].Kind = kind;
+          lightList[0].MemberTable = memberTable;
+          lightList[0].NestedTypes = nestedTypes;
+          lightList[0].TypeParameters = typeParameters;
+          lightList[0].TypeParametersCount = typeParametersCount;
+          lightList[0].Flags = flags;
+          //lightList[0].Scope = scope;
+          
+          lightList[0].EvalProperties(context);
+        }
+        return lightList[0];
+      }
+      
+      def symbol = TopNodeDeclaration.[TopClassSymbol](topNode.Location, symbolName).DefineSymbol(ownerNamespace.MemberTable);
+      
+      symbol.BaseTypeSet = BaseTypeReferenceSet(context);
+      symbol.DeclaredIn = ownerNamespace;
+      symbol.IsPartial = true;
+      symbol.Kind = Kind.TopNode;
+      symbol.MemberTable = TableScope(symbol, "MemberTable");
+      symbol.NestedTypes = List();
+      symbol.TypeParameters = ImmutableArray.Create();
+      symbol.TypeParametersCount = 0;
+      
+      symbol.EvalProperties(context);
+      
+      symbol
+    }
+    
+    private CreateNamespaceSymbol(location : Location, name : string, parentNamespaceSymbol : NamespaceSymbol, context : DependentPropertyEvalContext) : NamespaceSymbol
+    {
+      def symbol = TopNodeDeclaration.[NamespaceSymbol](location, name).DefineSymbol(parentNamespaceSymbol.MemberTable);
+      
+      symbol.DeclaredIn = parentNamespaceSymbol;
+      symbol.MemberTable = TableScope(symbol, "MemberTable");
+      
+      symbol.EvalProperties(context);
+      
+      symbol
+    }
+    
+    /*public GetTopNodeFullName(this _ : TopWithNode, nodeName : NodeName.IAstOption, ns : NamespaceSymbol) : string
+    {
+      if (nodeName.HasValue) {
+        def name = nodeName.Value.Key.Value.Split('.').Last();
+        ns.FullName + '.' + name
+      } else {
+        ""
+      }
+    }*/
+    
+    public GetFlags(this _ : TopNode, node : TypeSymbol, context : DependentPropertyEvalContext) : ModifierSet
+    {
+      match (node) { 
+        | x is ModifierHostSymbol when x.IsFlagsEvaluated => x.Flags 
+        | _ => ModifierSet(context);
+      };
+    }
+  }
+  
+  class TopNodeDeclaration[TSymbol] : ExternalDeclaration[TSymbol]
+    where TSymbol: DeclarationSymbol
+  {
+    public override IsParsed : bool { get { true } }
+    
+    public this(location : Location, name : string) {
+      base(location, name)
+    }
+  }
+}

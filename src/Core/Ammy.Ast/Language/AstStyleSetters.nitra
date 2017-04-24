@@ -1,0 +1,37 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.InitAst;
+using Ammy.Scopes;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  ast StyleSetters : NodeMember
+  {
+    Properties : Property*;
+    Properties.Parent              = Parent;
+    Properties.FunctionRefScope    = FunctionRefScope;
+    Properties.GlobalDeclarationScope = GlobalDeclarationScope;
+    Properties.ParentVariableAst   = ParentVariableAst;
+    Properties.ParsingContext      = ParsingContext;
+    Properties.ParentPropertyScope = PropertyScope(context, false, TypeScope.HideWith(ParsingContext.TargetType.Scope));
+    Properties.ParentNodeType      = ParentNodeType;
+    Properties.RootSymbolId        = RootSymbolId;
+    Properties.TypeScope           = TypeScope;
+    Properties.Breadcrumbs         = Breadcrumbs;
+    Properties.IsInsideFrameworkTemplate = IsInsideFrameworkTemplate;
+
+    //AstValue = BuildResult.Ignore();
+    Xaml     = XamlList(Properties.Xaml);
+
+    //when (!this.ParentIsStyle(ParentNodeType, context))
+    //  Error(context, "Setters are not allowed outside Style element");
+  }
+}

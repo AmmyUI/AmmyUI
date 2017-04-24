@@ -1,0 +1,29 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+namespace Ammy
+{ 
+  interface IAliasSymbol 
+  {
+    RealSymbol : DeclarationSymbol { get; set; }
+  }
+  
+  public sealed class ClassAliasSymbol : TopClassSymbol, IAliasSymbol
+  {
+    public RealSymbol : DeclarationSymbol { get; set; }
+  }
+  
+  public sealed class StructAliasSymbol : TopStructSymbol, IAliasSymbol
+  {
+    public RealSymbol : DeclarationSymbol { get; set; }
+  }
+}

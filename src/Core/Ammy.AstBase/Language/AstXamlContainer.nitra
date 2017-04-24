@@ -1,0 +1,27 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ammy.Xaml;
+using Ammy.Infrastructure;
+using Nitra;
+
+namespace Ammy.Language
+{ 
+  abstract ast XamlContainer 
+  {
+  stage 1:
+    out Xaml : XamlElement;
+
+  stage 4:
+    out XamlGuard : object = object();
+
+    when (XamlGuard != null && !this.IsXamlEvaluated && !context.IsMissingXamlMarked())
+      Error(context, "XAML not evaluated: " + this.GetAstDescription(context));
+  }
+}

@@ -1,0 +1,15 @@
+/*
+<Style.Triggers>
+    <DataTrigger Binding="{Binding Items.Count, RelativeSource={RelativeSource Self}}" Value="0">
+        <Setter Property="Background">
+            <Setter.Value>
+                <VisualBrush Stretch="None">
+                    <VisualBrush.Visual>
+                        <TextBlock Text="We did't find any matching records for your search..." FontSize="16" FontWeight="SemiBold" Foreground="LightCoral"/>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Setter.Value>
+        </Setter>
+    </DataTrigger>
+</Style.Triggers>
+*/

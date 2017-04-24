@@ -1,0 +1,7 @@
+PageFunction<string> "HyperlinkInTextblock" {
+    TextBlock {
+        "Click "
+        Hyperlink { "here", NavigateUri: "PhotoPage.xaml" }
+        " to view the photo."    
+    }
+}

@@ -1,0 +1,9 @@
+using System
+alias Grid_0() {
+  Grid {
+    DockPanel.Dock: Right
+    Width:  100
+  }
+}   
+
+

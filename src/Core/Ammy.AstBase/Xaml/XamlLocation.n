@@ -1,0 +1,19 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Xaml
+{
+  [Record]
+  public class XamlLocation
+  {
+    public Row    : int { get; private set; }
+    public Column : int { get; private set; }
+    public Position : int { get; private set; }
+  }
+}

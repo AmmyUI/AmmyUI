@@ -1,0 +1,33 @@
+using ShowTest.Common.ViewModels;
+
+Window "Binding" {
+  viewmodel ShowTest.Common.ViewModels.TestViewModel
+  Width: bind LastName
+         convert     name  => name.Length
+         convertback width => width.ToString()
+         set [
+            BindingGroupName: "BindingGroup1",
+            BindsDirectlyToSource: true,
+            ConverterCulture: "en-us",
+            ConverterParameter: 5,
+            //Delay: 200,
+            ElementName: "A",
+            FallbackValue: 50,
+            IsAsync: false,
+            Mode: OneWay,
+            NotifyOnSourceUpdated: true,
+            NotifyOnTargetUpdated: false,
+            NotifyOnValidationError: true,
+            Path: "FirstName",
+            RelativeSource: RelativeSource { },
+            Source: null,
+            StringFormat: "",
+            TargetNullValue: 0,
+            UpdateSourceExceptionFilter: TestViewModel.ExceptionFilter,
+            UpdateSourceTrigger: PropertyChanged,
+            ValidatesOnDataErrors: true, 
+            ValidatesOnExceptions: false,
+            //ValidatesOnNotifyDataErrors: true,
+            XPath: ""
+         ]
+}

@@ -1,0 +1,16 @@
+StackPanel "ResourcesMergedDict" {
+    Resources: ResourceDictionary {
+        MergedDictionaries: [
+            ResourceDictionary { Source: "Dictionary1.xaml" }
+            ResourceDictionary { Source: "Dictionary2.xaml" }
+        ]
+    }
+    Button { 
+        "Blue"
+        Background: resource "BlueBrushFromDictionary1" 
+    }
+    Button { 
+        "Red"
+        Background: resource "RedBrushFromDictionary2"
+    }
+}

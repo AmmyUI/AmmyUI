@@ -1,0 +1,98 @@
+﻿using System.Linq;
+using System.Collections.Immutable;
+
+﻿using Nitra;
+using Nitra.Declarations;
+using DotNet;
+using Ammy;
+using Ammy.Xaml;
+using Ammy.Symbols;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language 
+{
+  ast Start
+  {
+    Top : Top;
+  }
+
+  abstract ast Top
+  {
+    GlobalDeclarations : GlobalDeclaration*;
+    GlobalDeclarations.GlobalDeclarationScope = GlobalDeclarationScope;
+    GlobalDeclarations.ContainingTable = GlobalDeclarationScope;
+    GlobalDeclarations.TypeScope       = RootTypeScope.HideWith(Usings.OpeningOut);
+      
+    in GlobalDeclarationScope  : TableScope;
+    in RootTypeScope           : Scope;
+    in RootNamespace           : NamespaceSymbol;
+
+    Usings : SyntaxModuleUsingDirective*;
+    Usings.CurrentScope = RootTypeScope;
+    Usings.OpeningIn    = EmptyScope.Instance;
+    Usings.TypeScope     = RootTypeScope.HideWith(Usings.OpeningOut);
+  }
+
+  ast TopWithoutNode : Top
+  {
+  }
+
+  ast TopWithNode : Top, XamlContainer
+  {
+    TopNode : TopNode;
+
+    TopNode.ParentNodeType    = None();
+    TopNode.IsTopNode         = true;
+    TopNode.TypeScope         = FullTypeScope;
+    TopNode.Parent            = null;
+    TopNode.ParentVariableAst = null;
+    TopNode.ParsingContext    = context.CreateParsingContext();
+    TopNode.IsInsideFrameworkTemplate = false;
+    TopNode.Breadcrumbs       = ImmutableList.Create();
+    TopNode.Key.Scope         = RootTypeScope.UnionWith(Usings.OpeningOut);
+    TopNode.FunctionRefScope  = TableScope(null, "FunctionRefs");
+    TopNode.ParentPropertyScope = EmptyScope.Instance;
+    TopNode.TemplateParameterScope = EmptyScope.Instance;
+    TopNode.GlobalDeclarationScope = GlobalDeclarationScope;
+    TopNode.RootNamespace = RootNamespace;
+    
+    //out TopNodeFullName : string = this.GetTopNodeFullName(TopNode.NodeName, Namespace.Symbol);
+
+  stage 1:
+    
+    Xaml = this.BuildXaml(TopNode.Type, TopNode.Members.Xaml, TopNode.RootSymbolId, context);
+
+  stage 2:
+    out FullTypeScope : Scope = RootTypeScope.UnionWith(TopNode.LocalScope)
+                                             .UnionWith(Usings.OpeningOut)
+                                             .UnionWith(GlobalDeclarationScope);
+
+    when (TopNode.Type.IsSealed())
+      Error(context, $"Can't use `sealed` type `$(TopNode.Type.FullName)` as top node");
+  }
+
+  abstract ast TopNode : NodeAbstract
+  {
+    out LocalScope : Scope;
+    in RootNamespace : NamespaceSymbol;
+
+    | WithName {
+      Name : string;
+
+      out OutputSymbol : TopClassSymbol = this.CreateOutputSymbol(Namespace.Symbol, Name, context);
+      OutputSymbol.BaseTypeSet |= Type;
+      OutputSymbol.Flags = this.GetFlags(Type, context);
+      OutputSymbol.Scope = Type.Scope.HideWith(OutputSymbol.MemberTable);
+
+      out Namespace : Ref[NamespaceSymbol] = this.ResolveNamespace(Name, RootNamespace, context);
+      
+      RootSymbolId = Source.File.FullName + (if (Name.HasValue) Name.Value else "");
+      LocalScope = Namespace.Symbol.Scope;
+    }
+    | WithoutName {
+      RootSymbolId = Source.File.FullName + Key.FullName();
+      LocalScope = EmptyScope.Instance;
+    }
+  }
+}

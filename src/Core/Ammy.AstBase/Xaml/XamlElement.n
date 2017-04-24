@@ -1,0 +1,36 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Text;
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+
+namespace Ammy.Xaml
+{
+  public class XamlElement
+  {
+    public OriginalLocation : Location     { get; protected set; }
+    public Start            : XamlLocation { get; protected set; }
+    public End              : XamlLocation { get; protected set; }
+    
+    public this() {}
+    
+    public Build() : string
+    {
+      Build(XamlLocation(0, 0, 0), 0)
+    }
+    
+    public virtual Build(_location : XamlLocation, _indent : int) : string
+    { 
+      // Can't make XamlElement abstract, since we need it in a symbol which requires a default constructor
+      throw InvalidOperationException("XamlElement should not be instantiated")
+    }
+  }
+}

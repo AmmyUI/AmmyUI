@@ -1,0 +1,47 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+
+using Ammy.InitAst;
+using Ammy.Language;
+using Ammy.Infrastructure;
+
+namespace Ammy.Converters
+{
+  /*
+  module ConverterRegistry
+  {
+    public TryConvert(val : PropertyValue, toType : TypeSymbol, context : DependentPropertyEvalContext) : option[BuildResult]
+    {
+      def context = context.ToAmmyContext();
+      
+      match(val, toType) {
+        | (num is PropertyValue.Number, _) when toType.IsDescendant(context.Types.Thickness) 
+            => ThicknessConverter.Convert(num, context)
+        
+        | (lst is PropertyValue.ValueList, _) when toType.IsDescendant(context.Types.Thickness) =>
+          def numbers = lst.Values
+                           .OfType.[PropertyValue.Number]()
+                           .Select(num => double.Parse(num.Val.Value))
+                           .ToArray();
+                           
+          def areAllNumbers = numbers.Length == lst.Values.Count;
+          
+          if (areAllNumbers)
+            ThicknessConverter.Convert(numbers, context)
+          else 
+            None()
+
+        | _ => None()
+      }
+    }
+  }
+  */
+}

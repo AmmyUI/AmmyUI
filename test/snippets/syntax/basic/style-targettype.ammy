@@ -1,0 +1,10 @@
+﻿Window "StyleTargetType" {
+  Resources: [ 
+    Style {
+      TargetType: RepeatButton
+      BasedOn: resource "ABC"
+      Setter { Property: Interval, Value: "true" }
+      Setter { Property: RepeatButton.Clip, Value: "true" }
+    }
+  ]
+}

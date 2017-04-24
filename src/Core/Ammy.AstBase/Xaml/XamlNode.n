@@ -1,0 +1,292 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Text;
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Nitra.ProjectSystem;
+
+namespace Ammy.Xaml
+{
+  public class XamlNode : XamlElement
+  { 
+    public Name             : string                        { get; private set; }
+    public ChildNodes       : ImmutableArray[XamlNode]      { get; private set; }
+    public Attributes       : ImmutableArray[XamlAttribute] { get; private set; }
+    public Value            : XamlValue                     { get; private set; }
+    public Children         : ImmutableArray[XamlElement]   { get; private set; }
+    public CombineChildren  : bool                          { get; set; }
+    public IsAttributeNode  : bool                          { get; private set; }
+    //public IsCombinableNode : bool                          { get; set; }    
+    public Errors           : IEnumerable[CompilerMessage] { get { _errors.Concat(ChildNodes.SelectMany(cn => cn.Errors)) }  }
+    private _errors         : List[CompilerMessage] = List();
+    private _orderedChildren : array[XamlElement];
+    
+    public this(){}
+    public this(name : string, originalLocation : Location, children : IEnumerable[XamlElement], combineChildren : bool = false, isAttributeNode = false)
+    {
+      Name = name;
+      OriginalLocation = originalLocation;
+      Children = children.ToImmutableArray();
+      CombineChildren = combineChildren;
+      IsAttributeNode = isAttributeNode;
+      //IsCombinableNode = isCombinableNode;
+      
+      def flattenChildren(childList) {
+        childList.SelectMany(c => match (c) {
+          | XamlList(Elements = els) => flattenChildren(els)
+          | XamlEmpty
+          | XamlAttribute(Value = XamlValue.None) => []
+          | _ => [c]
+        })
+      }
+      
+      // Flatten child elements
+      _orderedChildren = flattenChildren(children).ToArray();
+      
+      def getChildIndex(child) {
+        Array.IndexOf(_orderedChildren, child)
+      }
+      
+      def nodes = List();
+      def attrs = List();
+      def values = List();  
+              
+      /*
+        <Parent.Style>
+          <Style /> //marked with combine
+        </Parent.Style>
+        <Parent.Style>
+          <Style /> //marked with combine
+        </Parent.Style>
+          
+        or 
+          
+        <Grid.RowDefinitions> //marked with combine
+          <RowDifinition />
+        </Grid.RowDefinitions>
+        <Grid.RowDefinitions> //marked with combine
+          <RowDifinition />
+        </Grid.RowDefinitions>
+      */
+      def combineNodes (nodesToCombine, mergeOrdered) {
+        def result = List();
+        def contentNodes = List();
+        def combineGroups = nodesToCombine.Where(c => c.CombineChildren || (c.IsAttributeNode && c.ChildNodes.Any(gc => gc.CombineChildren)))
+                                          .GroupBy(c => c.Name)
+                                          .Select(g => (g.Key, g.ToList()))
+                                          .ToList();
+        
+        foreach (node in nodesToCombine) {
+          // is in combination group
+          if (combineGroups.Any((_, lst) => lst.Any(l => l.Equals(node)))) {
+            def (_, group) = combineGroups.FirstOrDefault((_, lst) => lst.Any(l => l.Equals(node)));
+            
+            // Combine into last node
+            when (group.Last().Equals(node)) {
+              def allChildren = group.SelectMany(v => v.Children);
+              def childNodes = allChildren.OfType.[XamlNode]().ToList();
+              def otherChildren = allChildren.Where(c => !(c is XamlNode));
+              def combinedGrandChildren = combineNodes(childNodes, false);
+              def res = XamlNode(node.Name, node.OriginalLocation, otherChildren.Concat(combinedGrandChildren), true);
+              
+              when (mergeOrdered) {
+                def index = getChildIndex(node);
+              
+                // Maintain ordering, but remove previously merged nodes
+                foreach (toRemove in group)
+                  _orderedChildren[getChildIndex(toRemove)] = null;
+                
+                _orderedChildren[index] = res;
+              }
+              //if (node.IsAttributeNode)
+                result.Add(res)
+              //else
+              //  contentNodes.Add(res)
+            }
+          } else {
+              // Add non-attribute (content) nodes after attribute nodes
+              //if (node.IsAttributeNode)
+                result.Add(node)
+              //else
+              //  contentNodes.Add(node)
+          }
+        }
+        
+        foreach (contentNode in contentNodes)
+          result.Add(contentNode);
+        
+        result
+      }
+      
+      def sortChildren(elementList : IEnumerable[XamlElement]) {
+        foreach (child in elementList) {
+          | node is XamlNode => 
+            nodes.Add(node)
+            
+          | XamlAttribute(Value = XamlValue.String) as attr => 
+            attrs.Add(attr);
+          
+          | XamlAttribute(Value = XamlValue.Node(node)) as attr =>
+            if (attr.Name.Contains('.'))
+              nodes.Add(XamlNode(attr.Name, attr.OriginalLocation, [node], attr.IsCombine, true));
+            else
+              nodes.Add(XamlNode(Name + "." + attr.Name, attr.OriginalLocation, [node], attr.IsCombine, true));
+              
+            // Replace with new child
+            _orderedChildren[getChildIndex(child)] = nodes.Last();
+            
+          | XamlAttribute(Value = XamlValue.List as val) as attr =>
+            if (attr.Name.Contains('.'))
+              nodes.Add(XamlNode(attr.Name, attr.OriginalLocation, [val], attr.IsCombine, true));
+            else
+              nodes.Add(XamlNode(Name + "." + attr.Name, attr.OriginalLocation, [val], attr.IsCombine, true));
+              
+            // Replace with new child
+            _orderedChildren[getChildIndex(child)] = nodes.Last();
+            
+          | XamlValue as val => values.Add(val);
+          | _ => assert2(false);
+        }
+      }
+      
+      sortChildren(_orderedChildren);
+      
+      ChildNodes = combineNodes(nodes, true).ToImmutableArray();    
+      
+      def mergeAttributes (attrs) {
+        def result = List();
+        foreach (attrGroup in attrs.GroupBy(a => a.Name)) {
+          // Can't show error here, since we should be able to override attributes from mixins
+          // Need to handle multiple assignments on AST level
+          result.Add(attrGroup.Last())
+        }
+        result
+      }
+      Attributes = mergeAttributes(attrs).ToImmutableArray();
+      
+      when (values.Count > 0) {
+        Value = if (values.Count > 1) XamlValue.List(values.ToArray()) 
+                else values[0];
+      }
+    }
+    
+    public AppendChildren(elements : IEnumerable[XamlElement]) : XamlNode 
+    {
+      XamlNode(Name, OriginalLocation, Children.Concat(elements), CombineChildren, IsAttributeNode)
+    }
+    
+    public RemoveAttribute(attributeFilter : Func[string, bool]) : XamlNode 
+    {
+      def attributes = Attributes.Where(a => !attributeFilter(a.Name));
+      def value = if (Value != null) [Value] else [];
+      def children = ChildNodes.Concat(attributes)
+                               .Concat(value);
+      
+      XamlNode (Name, OriginalLocation, children, CombineChildren, IsAttributeNode); 
+    }
+    
+    public ReplaceAttributeValue(nodeNameSelector : Func[string, string], attributeSelector : Func[XamlAttribute, option[XamlAttribute]]) : XamlNode
+    {
+      def newChildren = List.[XamlElement]();
+      def newAttributes = List.[XamlElement]();
+      
+      foreach (child in ChildNodes)
+        newChildren.Add(child.ReplaceAttributeValue(nodeNameSelector, attributeSelector));
+      
+      foreach (attr in Attributes) {
+        match (attributeSelector(attr)) {
+          | Some(newAttr) => newAttributes.Add(newAttr)
+          | _ => {}
+        }
+      }
+      
+      def newValue = if (Value != null) Value.ReplaceAttributeValue(nodeNameSelector, attributeSelector) else Value;
+      
+      XamlNode(nodeNameSelector(Name), OriginalLocation, newChildren.Concat(newAttributes)
+                                                                    .Concat(if (newValue != null) [newValue] else []), CombineChildren, IsAttributeNode);
+    }
+    
+    public override Build(location : XamlLocation, indent : int) : string 
+    {
+      Start = location;
+      
+      when (Value is XamlValue.None) {
+        End = Start;
+        return "";
+      }
+      
+      def nl = Environment.NewLine;
+      def indentStr = String(' ', indent);
+      def builder = StringBuilder();
+      def opening = $<#$indentStr<$Name#>;
+      
+      _ = builder.Append(opening);
+      
+      mutable currentLoc = XamlLocation(Start.Row, Start.Column + opening.Length, Start.Position + opening.Length);
+      
+      foreach (attr in Attributes.Where(a => !(a.Value is XamlValue.None))) {
+        _ = builder.Append(attr.Build(currentLoc, 0));
+        currentLoc = attr.End;
+      }
+      
+      if (Value == null && ChildNodes.Length == 0) {
+        _ = builder.Append("/>");
+        
+        End = XamlLocation(currentLoc.Row, currentLoc.Column + 2, currentLoc.Position + 2);
+      } else {
+        _ = builder.Append(">");
+        
+        foreach (child in _orderedChildren) {
+            match (child) {
+              | XamlValue as val => 
+                _ = builder.Append(val.Build(currentLoc, indent));
+                currentLoc = Value.End;
+              | XamlNode as node => 
+                currentLoc = XamlLocation(currentLoc.Row + 1, location.Column + indent, currentLoc.Position + indent + nl.Length);
+                _ = builder.Append(nl + node.Build(currentLoc, indent + 2));
+                currentLoc = node.End;
+              | _ => ()
+            }
+        }
+        
+        /*
+        when (Value != null) {
+          _ = builder.Append(Value.Build(currentLoc, indent));
+          currentLoc = Value.End;
+        }
+      
+        foreach (childNode in ChildNodes) {
+          currentLoc = XamlLocation(currentLoc.Row + 1, location.Column + indent, currentLoc.Position + indent + nl.Length);
+          _ = builder.Append(nl + childNode.Build(currentLoc, indent + 2));
+          currentLoc = childNode.End;
+        }*/
+            
+        def (closing, rowIncrement) = 
+          if (Start.Row == currentLoc.Row)
+            ($<#</$Name>#>, 0);
+          else
+            ($<#$nl$indentStr</$Name>#>, 1);
+      
+        _ = builder.Append(closing);
+        
+        End = XamlLocation(currentLoc.Row + rowIncrement, currentLoc.Column + closing.Length, currentLoc.Position + closing.Length + indent + nl.Length);
+      }
+      
+      builder.ToString();
+    }
+    
+    public override ToString() : string
+    {
+      "Node: " + Name;
+    }
+  }
+}

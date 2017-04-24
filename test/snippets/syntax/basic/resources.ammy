@@ -1,0 +1,8 @@
+﻿StackPanel "Resources" {
+    Resources: [
+      Style "SomeStyle" {
+        BasedOn: resource "ABC"
+      }
+    ]
+    Width: resource dyn "StackPanelWidth"
+}

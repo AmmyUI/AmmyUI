@@ -1,0 +1,17 @@
+content size (w, h) {
+    Width: $w
+    Height: $h
+}
+
+content opacity (val) {
+    Opacity: $val
+}
+
+Border "MyButton" {    
+  Button {
+    "OK"
+
+    size (w: 30, h: 30)
+    opacity (0.5)
+  }
+}

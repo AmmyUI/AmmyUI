@@ -1,0 +1,3 @@
+﻿Application "$rootnamespace$.$safeitemname$" {
+  StartupUri: "MainWindow.g.xaml"
+}

@@ -1,0 +1,23 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+
+using Nitra.Declarations;
+
+namespace Ammy.Backend
+{
+  [Record]
+  public class DependencyPropertySymbol : Member.PropertySymbol
+  {
+    public HasProperty : bool { get; set; }
+    public HasSetMethod : bool { get; set; }
+    public DependencyPropertyName : string { get; set; }
+  }
+}

@@ -1,0 +1,19 @@
+FlowDocumentReader "ParagraphInline" {
+    FlowDocument {
+        Paragraph {
+            "a"
+            Bold { 
+                "b"
+                Italic { 
+                    "c"
+                    Underline {
+                        "d"
+                        Hyperlink {
+                            "e"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

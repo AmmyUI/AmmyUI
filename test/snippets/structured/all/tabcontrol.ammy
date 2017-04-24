@@ -1,0 +1,5 @@
+TabControl "TabControl" {
+    TextBlock { "Content for Tab 1." }
+    TextBlock { "Content for Tab 2." }
+    TextBlock { "Content for Tab 3." }
+}

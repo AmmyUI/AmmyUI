@@ -1,0 +1,12 @@
+using System;
+
+mixin Centered() for TextBlock {
+  HorizontalAlignment: Center
+  VerticalAlignment: Center
+}
+
+Window "kj" {  
+  Title: bind Xaml
+         convert (string str) => !string.IsNullOrEmpty(str) ? "" : "" 
+         set [UpdateSourceTrigger: LostFocus]
+}

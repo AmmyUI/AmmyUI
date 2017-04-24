@@ -1,0 +1,45 @@
+﻿UserControl "AmmySEA.Views.QuestionBlockListView" {
+  Padding: 3
+
+  ScrollViewer {
+    @GridItemsControl() {
+      ItemsSource: bind QuestionBlocks
+      ItemTemplate: DataTemplate {
+        Grid {
+          #TwoRows(30, "*")
+          
+          Margin: [15, 10]
+          Width: 420
+
+          @StackPanelHorizontal() {
+            Border {
+              Width: 50
+
+              @ImageCached(bind Site.favicon_url) {}
+            }
+
+            TextBlock {
+              Text: bind Site.name
+              FontSize: 18
+              Foreground: $normalFontColor
+              VerticalAlignment: Center
+            }
+          }
+
+          ItemsControl {
+            #Cell(1, 0)
+            Margin: "0,5,0,0"
+            ItemsSource: bind Questions
+            ItemsPanel: ItemsPanelTemplate {
+              StackPanel {
+              }
+            }
+            ItemTemplate: DataTemplate {
+              QuestionBlockView {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

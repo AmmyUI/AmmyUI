@@ -1,0 +1,140 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.Language;
+using Ammy.Symbols;
+using Ammy.Backend;
+using Ammy.Scopes;
+
+namespace Ammy.Infrastructure
+{
+  public module MoreSymbolExtensions
+  {
+    
+    public GetAddMethodTypes(this hostType : TypeSymbol) : List[TypeSymbol]
+    {
+      mutable adders : LightList[Member.MethodSymbol];
+      hostType.Scope.FindMany(s => (s : object) is Member.MethodSymbol, ref adders);
+      def adderTypes = List();
+      
+      foreach (adder when adder.Name == "Add" in adders) {
+        def parms = adder.ParameterScope
+                         .GetSymbols()
+                         .OfType.[FormalParameterSymbol]()
+                         .ToArray();
+
+        when (parms.Length != 1) continue;
+
+        def getParameterType(parmType, host) 
+        {
+          match(parmType, host) {
+            | (ts is TypeParameterSymbol, c is ConstructedTypeSymbol) when c.Args.Length > 0 => 
+              def typeParmIndex = c.TypeInfo
+                                   .TypeParameters
+                                   .Where(tp => tp.FullName == ts.FullName)
+                                   .Select((_, idx) => idx)
+                                   .ToList();
+              if (typeParmIndex.Count > 0)
+                c.Args[typeParmIndex[0]]
+              else
+                c.Args[0]
+            | (TypeParameterSymbol, ts is SupportsInheritanceTypeSymbol) when ts.BaseTypeSet.ParentTypes.Any()  =>
+              def parameters = ts.BaseTypeSet.ParentTypes.Select(pt => getParameterType(parmType, pt));
+              def parm = parameters.FirstOrDefault(p => !(p is TypeParameterSymbol));
+              
+              parm ?? parmType
+            | (parmType, _) => parmType
+          }
+        }
+        
+        adderTypes.Add(getParameterType(parms[0].Type, hostType));
+        //when (adderType.IsDescendant()
+        //  return Some(adder)
+      }
+          
+      adderTypes
+    }
+    
+    public HasCompatibleAddMethod(this hostType : TypeSymbol, childType : TypeSymbol, _context : DependentPropertyEvalContext) : bool
+    {
+      hostType.GetAddMethodTypes()
+              .Any(type => childType.IsDescendant(type));
+    }
+    
+    public HasContentProperty(this type : TypeSymbol) : bool
+    {
+      match (GetContentProperty(type)) {
+        | Some => true
+        | None => false
+      }
+    }
+    
+    public GetContentProperty(this type : TypeSymbol) : option[Member.PropertySymbol]
+    {      
+      match(type.GetAttribute("ContentPropertyAttribute")) {
+        | Some(a) => 
+          if (a.ConstructorArguments.Count >= 1) {
+            def arg = a.ConstructorArguments[0];
+            type.GetProperty(arg.Value.ToString())
+          } else None()
+        | None =>  
+          match (type) {
+            | x is SupportsInheritanceTypeSymbol => 
+              foreach (baseType in x.BaseTypeSet.ParentTypes) {
+                def contentProperty = baseType.GetContentProperty();
+                
+                when (contentProperty.IsSome)
+                  return contentProperty;
+              }
+
+              None()
+            | _ => None()
+          }
+      }
+    }
+    
+    public GetCollectionItemTypes(this collection : TypeSymbol, context : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      def context = context.ToAmmyContext();
+      match (collection) {
+        | _ when collection.IsDescendant(context.Types.IDictionary) => 
+          // TODO: type check for dictionary
+          context.Types.Object
+        | _ when collection.IsDescendant(context.Types.Collection) =>
+          def types = collection.GetAddMethodTypes();
+          
+          // TODO: Think this through
+          // Do we actually need to know Adder types for array values?
+          assert2(types.Count >= 1);
+          
+          types[0]
+        | _ when collection.IsDescendant(context.Types.IList) => context.Types.Object
+        | _ => collection
+      }
+    }
+    
+    public GetProperty(this type : TypeSymbol, propertyName : string) : option[Member.PropertySymbol] 
+    {
+      def scope = PropertyScope(type.Scope);
+      def result = scope.Bind.[Member.PropertySymbol](Reference(Helpers.NoLocation, propertyName));
+      
+      if (result is Ref[Member.PropertySymbol].Some)
+        Some(result.Symbol)
+      else
+        None()
+    }
+  }
+}

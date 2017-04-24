@@ -1,0 +1,48 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Text;
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+
+namespace Ammy.Xaml
+{
+  public class XamlAttribute : XamlElement
+  {
+    public Name  : string    { get; protected set; }
+    public Value : XamlValue { get; private set; }
+    public IsCombine : bool  { get; private set; }
+    
+    public this(name : string, value : XamlValue, originalLocation : Location, isCombine : bool = false) 
+    {
+      Name = name;
+      Value = value;
+      OriginalLocation = originalLocation;
+      IsCombine = isCombine;
+    }
+        
+    public override Build(location : XamlLocation, _indent : int) : string 
+    {
+      Start = location;
+      
+      def value = Value.Build(XamlLocation(location.Row, location.Column + Name.Length + 2, location.Position + Name.Length + 2), 0);
+      def result = $<# $Name="$value"#>;
+      
+      End = XamlLocation(Start.Row, Start.Column + result.Length, Start.Position + result.Length);
+      
+      result
+    }
+    
+    public override ToString() : string
+    {
+      "Attribute: " + Name;
+    }
+  }
+}

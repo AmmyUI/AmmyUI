@@ -1,0 +1,12 @@
+﻿UserControl "Ammy.WpfTest.Mixins.AddTriggersSetters" {
+  Style: Style {
+    TargetType: UserControl
+
+    #Setter("Background", "Red")
+    #Setter("Visibility", Visibility.Visible)
+  }
+
+  TextBox {
+    
+  }
+}

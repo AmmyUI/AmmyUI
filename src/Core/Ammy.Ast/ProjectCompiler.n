@@ -1,0 +1,104 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Text;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+
+using Nitra;
+using Nitra.Declarations;
+using Nitra.Internal;
+using Nitra.ProjectSystem;
+using DotNet;
+
+using Ammy;
+using Ammy.Language;
+using Ammy.InitAst;
+using Ammy.Infrastructure;
+using Ammy.Frontend;
+
+namespace Ammy
+{
+  public module ProjectCompiler
+  { 
+    public CreateFiles(files : ImmutableArray[FileEvalPropertiesData], projectDir : string, codeFrontend : IAmmyFrontend, context : AmmyDependentPropertyEvalContext) : void 
+    {
+      foreach (file in files) {
+        def top = (file.Ast :> Language.Start).Top;
+        
+        when (top is TopWithNode as withNode) {
+          
+          def typeName = match (withNode.TopNode.NodeName.HasValue) {
+            | true => withNode.TopNode.NodeName.Value.Key.Value
+            | _ => Path.GetFileNameWithoutExtension(file.FullName)
+                       .Replace('.', '_')
+                       .Replace('-', '_')
+                       .Replace(' ', '_')
+          };
+          
+          match(Compile(file, withNode, codeFrontend, typeName, context)) {
+            | result is CompilationResult.Success => CreateFile(result, file, projectDir);
+            | _ => {}
+          }
+        }
+      }
+    }
+    
+    public Compile(file : FileEvalPropertiesData, topWithNode : TopWithNode, codeFrontend : IAmmyFrontend, typeName : string, context : AmmyDependentPropertyEvalContext) : CompilationResult
+    {
+      //def xmlFrontend = XmlFrontend();
+      
+      //Build.Reset();
+      
+      def errors = file.GetCompilerMessage()
+                       .Where(msg => msg.Type == CompilerMessageType.Error)
+                       .ToList();
+      
+      when (errors.Count > 0)
+        return CompilationResult.Fail(file.GetCompilerMessagesString());
+                       
+      //when (!topWithNode.IsAstValueEvaluated)
+      //  return CompilationResult.Fail("Top node AST not evaluated: " + topWithNode.ToString());
+        
+      //when (!(topWithNode.AstValue is BuildResult.Result))
+      //  return CompilationResult.Fail(file.GetCompilerMessagesString());
+      
+      def xml = "";//xmlFrontend.Compile(file, topWithNode, typeName, context); 
+      def code = codeFrontend.Compile(file, topWithNode, typeName, context);
+      
+      CompilationResult.Success(code, xml, file)
+    }
+    
+    public CreateFile(compilationResult : CompilationResult.Success, file : FileEvalPropertiesData, projectDir : string) : void 
+    {
+      try {
+        mutable fname = file.FullName;
+
+        while (fname.StartsWith("..\\"))
+            fname = fname.Substring(3);
+          
+        def generatedFilename = Path.ChangeExtension(fname, "g.cs");
+        def fullName = Path.Combine(projectDir, generatedFilename);
+        def directory = Path.GetDirectoryName(fullName);
+          
+        when (!Directory.Exists(directory))
+          _ = Directory.CreateDirectory(directory);
+          
+        File.WriteAllText(fullName, compilationResult.Code);
+      } catch {
+        e => 
+        Debug.WriteLine("Couldn't generate source: " + e.Message);
+        Console.WriteLine("Couldn't generate source: " + e.Message);
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+Button "Alignment" {
+    "OK"
+
+    Width: 200
+
+    HorizontalAlignment: Right
+    VerticalAlignment: Top
+    HorizontalContentAlignment: Left
+    VerticalContentAlignment: Stretch
+}

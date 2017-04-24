@@ -1,0 +1,94 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+using Nemerle.Imperative;
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Nitra.Serialization2;
+using DotNet;
+
+using Ammy.Infrastructure;
+using Ammy.Symbols;
+
+namespace Ammy.Scopes
+{
+  public class NodeScope : Scope
+  {
+    public override AllSymbols : Seq[DeclarationSymbol]  { get { _scope.AllSymbols } }
+    
+    private _scope : Scope;
+    private _context : AmmyDependentPropertyEvalContext;
+    
+    public this(context : DependentPropertyEvalContext, scope : Scope)
+    {
+      _scope = scope;
+      _context = context.ToAmmyContext();
+    }
+    
+    public this(scope : Scope)
+    {
+      _scope = scope;
+      _context = null;
+    }
+
+    private Filter(symbol : DeclarationSymbol) : bool
+    {
+      !(symbol is TopDelegateSymbol) && !symbol.IsAbstract()      
+    }
+    
+    private GetSymbolPriority(symbol : DeclarationSymbol) : int
+    {
+      | ts is SupportsInheritanceTypeSymbol when ts.IsBaseTypeSetEvaluated && ts.IsDescendant(_context.Types.DependencyObject) 
+          => 100
+      | _ => 50
+    }
+    
+    public override FindMany[TSymbol](predicate : Predicate[TSymbol], results : ref LightList[TSymbol]) : void
+    {
+      _scope.FindMany(fun(symbol : TSymbol) { Filter(symbol) && predicate(symbol) }, ref results)
+    }
+    
+    public override BindMany[TSymbol](reference : Reference, results : ref LightList[TSymbol]) : void
+    {
+      mutable notFiltered = LightList();
+      _scope.BindMany(reference, ref notFiltered);
+      
+      def lst = notFiltered.ToNList();
+      def res = lst.Where(Filter)
+                   .OrderByDescending(GetSymbolPriority)
+                   .OfType.[TSymbol]();
+
+      foreach (s in res)
+        results.Add(s);
+    }
+
+    public override MakeCompletionList(prefix : string) : Seq[DeclarationSymbol]
+    {
+      _scope.MakeCompletionList(prefix)
+            .Where(Filter)
+            .OrderByDescending(GetSymbolPriority);
+    }
+
+    public override ToString() : string
+    {
+      "NodeScope " + _scope
+    }
+
+    public override Serialize(writer : BinaryWriter, metadataWriter : MetadataWriter) : void
+    {
+      metadataWriter.WriteObject(_scope, writer);
+    }
+
+    public static Deserialize(reader : BinaryReader, metadataReader : MetadataReader) : this
+    {
+      def scope = metadataReader.ReadObject(reader);
+      NodeScope(scope)
+    }
+  }
+}

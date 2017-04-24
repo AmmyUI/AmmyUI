@@ -1,0 +1,143 @@
+﻿using Nemerle.Imperative;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Resources;
+using System.Text;
+
+namespace Ammy
+{
+  //[DebuggerStepThroughAttribute]
+  public module Util
+  {
+    [DebuggerStepThroughAttribute]
+    public FoldThrough[TElem, TValue](elems : IEnumerable[TElem], mutable value : TValue, func : TElem * TValue -> TValue) : TValue
+    {
+      foreach (elem in elems)
+        value = func(elem, value);
+      
+      value
+    }
+    
+    
+    [DebuggerStepThroughAttribute]
+    private HexDigit(c : char) : int
+    {
+      | c when '0' <= c && c <= '9' => c : int - '0' : int
+      | c when 'a' <= c && c <= 'f' => c : int - 'a' : int + 10
+      | c when 'A' <= c && c <= 'F' => c : int - 'A' : int + 10
+      | _ => assert3(false)
+    }
+
+    [DebuggerStepThroughAttribute]
+    private DecDigit(c : char) : int
+    {
+      | c when '0' <= c && c <= '9' => c : int - '0' : int
+      | _ => assert3(false)
+    }
+
+    [DebuggerStepThroughAttribute]
+    public HexToChar(parseTree : Nitra.ParseTree, startPos : int, endPos : int) : char
+    {
+      unchecked HexToInt(parseTree, startPos, endPos) :> char
+    }
+
+    [DebuggerStepThroughAttribute]
+    public HexToInt(parseTree : Nitra.ParseTree, startPos : int, endPos : int) : int
+    {
+      assert2(startPos < endPos);
+
+      def text = parseTree.Location.Source.OriginalText;
+      mutable result = HexDigit(text[startPos]);
+
+      for (mutable i = startPos + 1; i < endPos; i++)
+        unchecked result = (result << 4) + HexDigit(text[i]);
+
+      result
+    }
+
+    [DebuggerStepThroughAttribute]
+    public DecToInt(parseTree : Nitra.ParseTree, startPos : int, endPos : int) : int
+    {
+      assert2(startPos < endPos);
+
+      def text = parseTree.Location.Source.OriginalText;
+      mutable result = DecDigit(text[startPos]);
+
+      for (mutable i = startPos + 1; i < endPos; i++)
+        unchecked result = result * 10 + DecDigit(text[i]);
+
+      result
+    }
+
+    [DebuggerStepThroughAttribute]
+    public static UnescapeChar(c : char) : char
+    {
+      | '\'' => '\'' | '\"' => '\"' | '\\' => '\\' | '0'  => '\0'
+      | 'a'  => '\a' | 'b'  => '\b' | 'f'  => '\f' | 'n'  => '\n'
+      | 'r'  => '\r' | 't'  => '\t' | 'v'  => '\v' | c    => c
+    }
+
+    [DebuggerStepThroughAttribute]
+    public EscapeChar(ch : char) : string
+    {
+      | '\0' => @"'\0'"
+      | '\t' => @"'\t'"
+      | '\n' => @"'\n'"
+      | '\r' => @"'\r'"
+      | '\\' => @"'\\'"
+      | '\'' => @"'\''"
+      | x when x == char.MaxValue  => @" char.MaxValue"
+      | c when char.IsLetter(c)
+      | c when char.IsDigit(c)
+      | c when char.IsPunctuation(c)
+      | c when char.IsSeparator(c)
+      | c when char.IsSymbol(c)      => $"'$c'"
+      | c =>
+        def c = c : uint;
+        string.Format(<#'\u{0,4:X}'#>, c).Replace(' ', '0');
+    }
+
+    [DebuggerStepThroughAttribute]
+    public EscapeStringChar(ch : char) : string
+    {
+      | '\0' => @"\0"
+      | '\t' => @"\t"
+      | '\n' => @"\n"
+      | '\r' => @"\r"
+      | '\\' => @"\\"
+      | '\'' => @"\'"
+      | c when char.IsLetter(c)
+      | c when char.IsDigit(c)
+      | c when char.IsPunctuation(c)
+      | c when char.IsSeparator(c)
+      | c when char.IsSymbol(c)      => $"$c"
+      | c =>
+        def c = c : uint;
+        string.Format(<#\u{0,4:X}#>, c).Replace(' ', '0');
+    }
+
+    public IsIdentifier(str : string) : bool
+    {
+      if (str.Length == 0)
+        false
+      else
+      {
+        def ch = str[0];
+
+        if (ch == '_' || char.IsLetter(ch))
+        {
+          foreach (ch in str)
+            unless (ch == '_' || char.IsLetterOrDigit(ch))
+              return false;
+          true
+        }
+        else
+          false
+      }
+    }
+  }
+}

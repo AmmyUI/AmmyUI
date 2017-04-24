@@ -1,0 +1,4 @@
+using panel = StackPanel (A);
+
+panel "AliasWithTemplate" {
+}

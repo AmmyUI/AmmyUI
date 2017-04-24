@@ -1,0 +1,8 @@
+﻿using System.Windows.Interactivity
+
+UserControl "Ammy.WpfTest.Bugs.BlendInteraction" {
+  ListView { 
+    Interaction.Triggers: [
+    ]
+  }
+}

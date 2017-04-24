@@ -1,0 +1,61 @@
+﻿using System.Linq;
+﻿using Nitra;
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy;
+using Ammy.Converters;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Scopes;
+using Ammy.Xaml;
+
+namespace Ammy.Language
+{
+  ast Property : NodeMember 
+  {
+    Key : QualifiedReference;
+    Key.Scope = ParentPropertyScope;
+    Key.NameScopeFactory = GetScope.CreatePropertyNameScopeFactory(context);
+
+    Val : PropertyValue;
+    Val.TypeScope = TypeScope;
+    Val.ParentProperty = this;
+    Val.ExpectedType = Type;
+    Val.RootSymbolId = RootSymbolId;
+    Val.TemplateParameterScope = TemplateParameterScope; 
+    Val.GlobalDeclarationScope = GlobalDeclarationScope; 
+    Val.Assignee = this;
+
+    IsCombine : bool;
+    
+    out PropertyPathAst : InitAst;
+    PropertyPathAst = InitAst.Property(ParentVariableAst, Key.FullName());
+    
+    Xaml = this.BuildXaml(Ref.Symbol, Val.Xaml, ParentNodeType, RootSymbolId, context);
+
+  stage 1:
+
+    out Ref : Ref[MemberSymbol] = Key.Ref.Resolve(Resolvers.Property);
+    out Type : TypeSymbol = Ref.Symbol.GetPropertyType();
+  }
+
+  ast IncompleteProperty : NodeMember {
+    Key : QualifiedReference;
+    Key.Scope = ParentPropertyScope;
+    Key.NameScopeFactory = GetScope.CreatePropertyNameScopeFactory(context);
+
+    //AstValue = BuildResult.Ignore();
+    Xaml = XamlEmpty();
+
+    when (true)
+      Error(context, "Incomplete property or node definition");
+  }
+
+  ast TypelessProperty : NodeMember {
+    PropertyName : string;
+    PropertyValue : string;
+
+    Xaml = this.BuildTypelessPropertyXaml();
+  }
+}

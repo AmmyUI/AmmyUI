@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectSupport Caption="" TypeFullName="" Path="" />
+  <Languages>
+    <Language Name="AmmyLanguage" Path="C:\Projects\Ammy\src\Ammy.Syntax\bin\Debug\Ammy.Syntax.dll">
+      <DynamicExtensions />
+    </Language>
+  </Languages>
+  <References>
+    <Reference>FullName:mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Reference>
+    <Reference>FullName:System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Reference>
+    <Reference>FullName:System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</Reference>
+    <Reference>FullName:PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35</Reference>
+    <Reference>FullName:WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35</Reference>
+    <Reference>FullName:PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35</Reference>
+    <Reference>File:..\Ammy.Test.Common\bin\Debug\AmmyTest.Common.dll</Reference>
+    <Reference>File:..\..\src\Ammy.Sidekick.Common\bin\Debug\AmmySidekick.dll</Reference>
+    <Reference>File:..\..\packages\MahApps.Metro.1.4.1\lib\net45\MahApps.Metro.dll</Reference>
+  </References>
+</Config>

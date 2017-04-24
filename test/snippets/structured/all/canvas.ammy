@@ -1,0 +1,18 @@
+Canvas "Canvas" {
+    Height: 50
+
+    Button {
+        "1"
+        Canvas.Left: 18
+        Canvas.Top: 10
+    }
+
+    Button {
+        "2"
+        Canvas.Right: 100
+        Canvas.Bottom: 15
+        Canvas.ZIndex: 1
+        Width: 20
+        Height: 20
+    }
+}

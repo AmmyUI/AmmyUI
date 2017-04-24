@@ -1,0 +1,10 @@
+Window "ScrollViewer" {
+    ScrollViewer {
+        VerticalScrollBarVisibility: Visible
+
+        StackPanel {
+            TextBlock { "A" }
+            TextBlock { "B" }
+         }
+    }
+}

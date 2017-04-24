@@ -1,0 +1,10 @@
+ListBox "ContextMenu" {
+    "Item 1"
+
+    ContextMenuService.ShowOnDisabled: true
+    
+    ContextMenu: ContextMenu {
+        MenuItem { Header: "_Edit" } 
+        MenuItem { Header: "_View" }
+    }
+}

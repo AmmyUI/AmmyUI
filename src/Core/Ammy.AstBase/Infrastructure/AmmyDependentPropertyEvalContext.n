@@ -1,0 +1,184 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Extensions;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+using Ammy.Xaml;
+using Ammy.Backend;
+using Ammy.Language;
+using Ammy.InitAst;
+using Ammy.Platforms;
+
+namespace Ammy.Infrastructure
+{
+  public class AmmyDependentPropertyEvalContext : DependentPropertyEvalContext
+  {
+    public TypeMap : Dictionary[string, TypeSymbol] = Dictionary();
+    public Types : PlatformTypes { get; set; }
+    public Scopes : SpecialScopes = SpecialScopes();
+    
+    public Fields : ListDictionary[CodeFieldInfo] = ListDictionary();
+    public OpenedNamespaces : ListDictionary[OpenedNamespace] = ListDictionary();
+    public FunctionCalls : Dictionary[string, FunctionCall] = Dictionary();
+    
+    public Platform      : IAmmyPlatform { get; set; }
+    public ProjectDir    : string { get; set; }
+    public RootNamespace : string { get; set; }
+    public AssemblyName  : string { get; set; }
+    public OutputPath    : string { get; set; }
+    public NeedUpdate    : bool { get; set; }
+    public MissingXamlMarked : bool { get; set; }
+    public SourceFiles : array[string] { get; set; }
+    public SourceCodeProject : ISourceCodeProject { get; set; }
+    
+    public mutable ParsingContexts : ImmutableList[ParsingContext] = ImmutableList.Create();
+    
+    private _lock = object();
+    private _counters : ConcurrentDictionary[string, long] = ConcurrentDictionary();
+    private _bindingConverters : ConcurrentDictionary[string, int] = ConcurrentDictionary();
+        
+    public this ()
+    {
+      Types = PlatformTypes();
+      SourceFiles = array[];
+    }
+    
+    public ResetCounterValues() : void
+    {
+      _counters.Clear();
+    }
+    
+    public GetCounterValue(counterId : string) : long
+    {
+      _counters.AddOrUpdate(counterId, 0, (_key, val : long) => val + 1);
+    }
+    
+    public GetNamespaceAliasFor(typeSymbol : TypeSymbol, filename : string) : string 
+    {
+      def typeSymbol = typeSymbol.ResolveAlias();
+      
+      match(typeSymbol) {
+        | nsm is NamespaceMemberDeclarationSymbol =>
+          def ns = nsm.DeclaredIn;
+          if (Platform.DefaultNamespaces.Contains(ns.FullName)) {
+            ""
+          } else {
+            def typeDeclaration = typeSymbol.FirstDeclarationOrDefault;
+            def xamlNsName = 
+              if (typeSymbol.Kind != Kind.TopNode && typeDeclaration is IAssemblyTypeDeclaration)
+                ns.FullName + ";assembly=" + (typeDeclaration :> IAssemblyTypeDeclaration).Assembly.GetName().Name;
+              else
+                ns.FullName;
+                
+            AddNamespaceAliasFor(filename, xamlNsName) + ":"
+          }
+          
+        | _ => ""
+      }
+    }
+    
+    public AddNamespaceAliasFor(symbolId : string, xamlNsName : string) : string
+    {            
+      def openedNamespaces = OpenedNamespaces.Get(symbolId);            
+      def foundNs = openedNamespaces.FirstOrDefault(os => os.FullName == xamlNsName);
+              
+      if (foundNs == null) {
+        def alias = "ns" + openedNamespaces.Count;
+        OpenedNamespaces.Add(symbolId, OpenedNamespace(xamlNsName, alias));
+        alias
+      } else {
+        foundNs.Alias
+      }
+    }
+    
+    public GetOpenedNamespaces(rootSymbolId : string) : IEnumerable[XamlAttribute]
+    { 
+      def openedNamespaces = OpenedNamespaces.Get(rootSymbolId);
+      openedNamespaces.Select(os => XamlAttribute("xmlns:" + os.Alias, XamlValue.String("clr-namespace:" + os.FullName), Helpers.NoLocation));
+    }
+    
+    public GetBindingConverterId(converterXml : string) : int
+    {
+      _bindingConverters.GetOrAdd(converterXml, _ => _bindingConverters.Count)
+    }
+    
+    public ClearBindingConverters() : void
+    {
+      _bindingConverters.Clear();
+    }
+  }
+  
+  public class Framework
+  {
+    public Types : PlatformTypes { get { _ctx.ToAmmyContext().Types }}
+    
+    private _ctx : DependentPropertyEvalContext;
+    public this (ctx : DependentPropertyEvalContext)
+    {
+      _ctx = ctx;
+    }
+  }
+  
+  public class ListDictionary[T]
+  {
+    public Items : Dictionary[string, List[T]] = Dictionary();
+    
+    public Add(filename : string, item : T) : void 
+    {
+      mutable lst;
+      if (Items.TryGetValue(filename, out lst))
+        lst.Add(item)
+      else
+        Items.Add(filename, List() <- [ item ]);
+    }
+    
+    public Get(filename : string) : List[T]
+    {
+      mutable lst;
+      if (Items.TryGetValue(filename, out lst))
+        lst
+      else
+        List();
+    }
+    
+    public Clear() : void
+    {
+      Items.Clear();
+    }
+  }
+  
+  [Record]
+  public class CodeFieldInfo
+  {
+    public Name : string { get; set; }
+    public Type : string { get; set; }
+    public Variable : string { get; set; }
+  }
+  
+  [Record]
+  public class OpenedNamespace
+  {
+    public FullName : string { get; set; }
+    public Alias : string { get; set; }
+  }
+  
+  public class SpecialScopes
+  {
+    public TargetTypeScope : Scope;
+    
+    public this() 
+    {
+      TargetTypeScope = EmptyScope.Instance;
+    }
+  }
+}

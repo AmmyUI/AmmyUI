@@ -1,0 +1,4 @@
+Button "DependencyProperty" {
+    "Click me!"
+    Width: 200
+}

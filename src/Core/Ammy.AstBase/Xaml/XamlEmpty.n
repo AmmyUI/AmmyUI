@@ -1,0 +1,17 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Xaml
+{
+  public class XamlEmpty : XamlElement
+  {
+    public override Build(_location : XamlLocation, _indent : int) : string 
+    { "" }
+  }
+}

@@ -1,0 +1,6 @@
+Button "ToolTip {
+    Content: "OK"
+    ToolTip: ToolTip { "Click me!"}
+    ToolTipService.ShowDuration: 3000
+    ToolTipService.ShowOnDisabled: true
+}

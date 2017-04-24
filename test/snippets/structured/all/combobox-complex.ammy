@@ -1,0 +1,21 @@
+ComboBox "ComboBoxComplex" { 
+    Height: 20
+    IsEditable: true
+    TextSearch.TextPath: "Children[1].Children[0].Text"
+    
+    StackPanel {
+        TextSearch.Text: "A"
+        StackPanel { 
+            TextBlock { "abc" }
+            TextBlock { "def" }
+        }
+    }
+
+    StackPanel {
+        TextSearch.Text: "B"
+        StackPanel { 
+            TextBlock { "3" }
+            TextBlock { "4" }
+        }
+    }
+}

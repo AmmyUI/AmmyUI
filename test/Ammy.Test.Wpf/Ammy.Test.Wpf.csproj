@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1E37D588-ECDB-48A0-9658-9DF5BA5F5AC1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ammy.WpfTest</RootNamespace>
+    <AssemblyName>Ammy.WpfTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AmmySidekick, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7c1296d24569a67d, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Ammy.Wpf.1.0.0\lib\net40\AmmySidekick.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.Core.3.0.3\lib\net45\Caliburn.Micro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v16.2.Extensions, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.4.1.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MahApps.Metro.1.4.1\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Caliburn.Micro.3.0.3\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Aliases\Aliases.ammy.cs" />
+    <Compile Include="App.ammy.cs">
+      <DependentUpon>App.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Attributes\Combine.ammy.cs" />
+    <Compile Include="Binding\InlineConverters.ammy.cs">
+      <DependentUpon>InlineConverters.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Bugs\BlendInteraction.ammy.cs">
+      <DependentUpon>BlendInteraction.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Bugs\Redefinition1.ammy.cs" />
+    <Compile Include="Bugs\SpacesAndNewlines.ammy.cs" />
+    <Compile Include="Bugs\x64reference.ammy.cs">
+      <DependentUpon>x64reference.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\AmmyReferencingXaml.ammy.cs">
+      <DependentUpon>AmmyReferencingXaml.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CustomControl.xaml.cs">
+      <DependentUpon>CustomControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CustomTextBlock.cs" />
+    <Compile Include="CustomControls\XamlReferencingAmmy.xaml.cs">
+      <DependentUpon>XamlReferencingAmmy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Frameworks\Caliburn.ammy.cs">
+      <DependentUpon>Caliburn.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="Mixins\AddTriggersSetters.ammy.cs" />
+    <Compile Include="Mixins\FadeIn.ammy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Resolving\AncestorType.ammy.cs">
+      <DependentUpon>AncestorType.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Resolving\MahAppsWindow.ammy.cs" />
+    <Compile Include="Resolving\NamespaceResolve_1a.ammy.cs">
+      <DependentUpon>NamespaceResolve_1a.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Utils.cs" />
+    <Compile Include="Workbench.ammy.cs">
+      <DependentUpon>Workbench.ammy</DependentUpon>
+    </Compile>
+    <Compile Include="Workbench2.ammy.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="..\..\packages\Ammy.Wpf.1.0.0\content\lib.ammy">
+      <Link>lib.ammy</Link>
+    </None>
+    <None Include="Aliases\Aliases.ammy" />
+    <None Include="App.ammy" />
+    <None Include="Attributes\Combine.ammy" />
+    <None Include="Binding\InlineConverters.ammy" />
+    <None Include="Bugs\BlendInteraction.ammy" />
+    <None Include="Bugs\Redefinition1.ammy" />
+    <None Include="Bugs\SpacesAndNewlines.ammy" />
+    <None Include="Bugs\x64reference.ammy" />
+    <None Include="CustomControls\AmmyReferencingXaml.ammy" />
+    <None Include="Frameworks\Caliburn.ammy" />
+    <None Include="Frameworks\DevExpress.ammy" />
+    <None Include="Mixins\AddTriggersSetters.ammy" />
+    <None Include="Mixins\FadeIn.ammy" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Resolving\AncestorType.ammy" />
+    <None Include="Resolving\MahAppsWindow.ammy" />
+    <None Include="Resolving\NamespaceResolve_1a.ammy" />
+    <None Include="Resolving\NamespaceResolve_1b.ammy" />
+    <None Include="ResourceDictionary.ammy" />
+    <None Include="Workbench.ammy" />
+    <None Include="Workbench2.ammy" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Aliases\Aliases.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Attributes\Combine.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Bugs\x64reference.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>x64reference.ammy</DependentUpon>
+    </Page>
+    <Page Include="CustomControls\CustomControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\XamlReferencingAmmy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Mixins\AddTriggersSetters.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Mixins\FadeIn.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resolving\AncestorType.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>AncestorType.ammy</DependentUpon>
+    </Page>
+    <Page Include="Resolving\MahAppsWindow.g.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resolving\NamespaceResolve_1a.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>NamespaceResolve_1a.ammy</DependentUpon>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  -->
+  <Target Name="BeforeBuild">
+    <Message Text="@(Compile)">
+    </Message>
+  </Target>
+  <Target Name="AfterBuild">
+    <Message Text="@(Compile)">
+    </Message>
+  </Target>
+  <Import Project="..\..\packages\Ammy.1.0.0\build\Ammy.targets" Condition="Exists('..\..\packages\Ammy.1.0.0\build\Ammy.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Ammy.1.0.0\build\Ammy.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Ammy.1.0.0\build\Ammy.targets'))" />
+  </Target>
+</Project>

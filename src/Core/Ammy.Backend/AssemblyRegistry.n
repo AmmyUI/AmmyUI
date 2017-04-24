@@ -1,0 +1,100 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Reflection;
+using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+
+using DotNet;
+
+namespace Ammy.Backend
+{
+  class AssemblyRegistry
+  {
+    _globalNamespace : Namespace = Namespace("<global>", null, null);
+    mutable _currentAssemblyPath : string;
+    
+    public GlobalNamespace : Namespace { get { _globalNamespace; } }
+    
+    public RegisterAssembly(assembly : Assembly, assemblyPath : string) : void
+    {
+      _currentAssemblyPath = assemblyPath;
+      try {
+        
+        foreach (type in assembly.GetTypes()) {
+          if (string.IsNullOrEmpty(type.Namespace)) {
+            _globalNamespace.Types.Add(type);
+          } else {
+            def ns = _globalNamespace.GetOrAddNamespace(type.Namespace, type.Assembly);
+            ns.Types.Add(type);
+          }
+        }
+      } catch {
+        | e => Debug.WriteLine($"Failed to load types from assembly $(assembly.FullName): " + e)
+      }
+    }
+    
+    public RegisterTypes(types : array[System.Type]) : void
+    {
+      try {
+        foreach (type in types) {
+          if (string.IsNullOrEmpty(type.Namespace)) {
+            _globalNamespace.Types.Add(type);
+          } else {
+            def ns = _globalNamespace.GetOrAddNamespace(type.Namespace, type.Assembly);
+            ns.Types.Add(type);
+          }
+        }
+      } catch {
+        | e => Debug.WriteLine("Failed to load additional types: " + e)
+      }
+    }
+    
+    public class Namespace
+    {
+      public Name : string { get; private set; }
+      public Types : List[Type] { get; private set; }
+      public Namespaces : ConcurrentDictionary[string, Namespace] { get; private set; }
+      public Owner : Namespace { get; private set; }
+      public Symbol : NamespaceSymbol { get; set; }
+      public Assembly : Assembly { get; set; }
+      
+      public this(name : string, owner : Namespace, assembly : Assembly)
+      {
+        Name = name;
+        Types = List();
+        Namespaces = ConcurrentDictionary();
+        Owner = owner;
+        Assembly = assembly;
+      }
+      
+      public GetOrAddNamespace(namespacePath : string, assembly : Assembly) : Namespace
+      {
+        def split = namespacePath.Split(array['.']);
+        GetOrAddNamespace(split, 0, assembly)
+      }
+      
+      private GetOrAddNamespace(split : array[string], depth : int, assembly : Assembly) : Namespace
+      { 
+        def leftNs = Namespaces.GetOrAdd(split[depth], _ => Namespace(split[depth], this, assembly));
+        
+        if (depth == split.Length - 1) {
+          leftNs
+        } else {
+          leftNs.GetOrAddNamespace(split, depth + 1, assembly);
+        }
+      }
+      
+      public override ToString() : string
+      {
+        Name
+      }
+    }
+  }
+}

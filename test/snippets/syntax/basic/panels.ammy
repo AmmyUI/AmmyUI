@@ -1,0 +1,22 @@
+Grid "Panels" {
+  StackPanel {
+    TextBlock "A" {}
+    TextBlock "B" {}
+  }
+  WrapPanel {
+    Button {}
+    Button {}
+  }
+  Canvas {
+    TextBox {}
+  }
+  TabPanel {
+    Label {}
+  }
+  UniformGrid {
+    TextBlock {}
+  }
+  VirtualizingStackPanel {
+    TextBlock {}
+  }
+}

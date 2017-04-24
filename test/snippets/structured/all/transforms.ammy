@@ -1,0 +1,38 @@
+StackPanel "Transforms" {
+    Button {
+        RenderTransformOrigin: "0.5, 0.5"
+        RenderTransform: RotateTransform {
+            Angle: 45
+        }
+    }
+
+    Button {
+        RenderTransform: RotateTransform {
+            Angle: 45
+            CenterX: 10
+            CenterY: 15
+        }
+    }
+
+    Button {
+        RenderTransform: ScaleTransform {
+            ScaleX: 0.5
+            ScaleY: 0.8
+            CenterX: 10
+            CenterY: 15
+        }
+    }
+
+    // Matrix transform
+    Button {
+        RenderTransform: "1,0,0,1,10,20"
+    }
+
+    Button {
+        RenderTransform: TransformGroup {
+            RotateTransform { Angle: 45 }
+            ScaleTransform { ScaleX: 5, ScaleY: 1 }
+            SkewTransform { AngleX: 30 }
+        }
+    }
+}

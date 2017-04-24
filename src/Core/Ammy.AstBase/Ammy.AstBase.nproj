@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>bd975029-c6fc-4ad4-a456-3368f7bf8452</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ammy.AstBase</RootNamespace>
+    <AssemblyName>Ammy.AstBase</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>true</NoStdLib>
+    <NemerleVersion>Net-4.0</NemerleVersion>
+    <NemerleBinPathRoot Condition=" '$(NemerleBinPathRoot)' == '' ">$(ProgramFiles)\Nemerle</NemerleBinPathRoot>
+    <Nemerle Condition=" '$(Nemerle)' == '' ">$(NemerleBinPathRoot)\$(NemerleVersion)</Nemerle>
+    <KeyOriginatorFile>Key.snk</KeyOriginatorFile>
+    <Name>Ammy.AstBase</Name>
+    <DocumentationFile />
+    <StartupObject />
+    <ApplicationIcon />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunDebugger>true</RunDebugger>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <MacroReference Include="Nitra.Compiler">
+      <Name>Nitra.Compiler</Name>
+      <AssemblyName>Nitra.Compiler.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\Nitra.Compiler.dll</HintPath>
+      <Private>False</Private>
+    </MacroReference>
+    <Reference Include="DotNetLang">
+      <Name>DotNetLang</Name>
+      <AssemblyName>DotNetLang.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\DotNetLang.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Nitra.Runtime">
+      <Name>Nitra.Runtime</Name>
+      <AssemblyName>Nitra.Runtime.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\Nitra.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <Name>System.Collections.Immutable</Name>
+      <AssemblyName>System.Collections.Immutable.dll</AssemblyName>
+      <HintPath>..\..\..\lib\Nitra-bin\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Nemerle">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(Nemerle)\Nemerle.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <MacroReference Include="Nemerle.Linq">
+      <HintPath>$(Nemerle)\Nemerle.Linq.dll</HintPath>
+    </MacroReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Infrastructure\EnumerableExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\SymbolExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstXamlContainerExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PriorityScope.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GlobalScope.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\ContextExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\FunctionCall.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\Helpers.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\NumericTypes.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\PlatformTypes.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\ReflectionTypeProvider.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\AmmyDependentPropertyEvalContext.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InitAst\BuildResult.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InitAst\EnumConvert.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="InitAst\InitAst.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstExpr.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstExprExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstNodeMember.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstParsingContext.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstParsingContextExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstStringContent.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstStringContentExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstUsing.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstValueContainerExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstViewModel.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstXamlContainer.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\Breadcrumb.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\ReferenceValueCollector.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\TopNodeSymbolCollector.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.n" />
+    <Compile Include="Symbols\DefaultNamespaceSymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\DefaultPropertySymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\EventHandlerSymbol.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Kind.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\SymbolCollector.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlAttribute.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlElement.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlEmpty.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlList.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlLocation.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlNode.n">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xaml\XamlValue.n">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Language" />
+    <Folder Include="InitAst" />
+    <Folder Include="Infrastructure" />
+    <Folder Include="Xaml" />
+    <Folder Include="Symbols" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Language\AstValueContainer.nitra">
+      <SubType>Content</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ammy.Backend\Ammy.Backend.nproj">
+      <Name>Ammy.Backend</Name>
+      <Project>{3f6612f1-b749-40da-b2f8-b61b4e22c547}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Ammy.Platforms\Ammy.Platforms.csproj">
+      <Name>Ammy.Platforms</Name>
+      <Project>{6e35138d-7436-425c-9e7a-2d5a9b30b3ee}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(Nemerle)\Nemerle.MSBuild.targets" />
+  <!--
+		To modify your build process, add your task inside one of the targets below and uncomment it. 
+		Other similar extension points exist, see Microsoft.Common.targets.
+
+	<Target Name="BeforeBuild">
+	</Target>
+	<Target Name="AfterBuild">
+	</Target>
+	-->
+</Project>

@@ -1,0 +1,84 @@
+﻿
+using System.Linq;
+using System.Collections.Immutable;
+
+﻿using Nitra;
+using Nitra.Declarations;
+using DotNet;
+using Ammy;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Xaml;
+using Ammy.Scopes;
+
+namespace Ammy.Language
+{
+  abstract ast NodeBase : NodeMember, BindableAst
+  {
+    in IsTopNode : bool = false;
+
+    out AstVariable : InitAst.Variable;
+
+    AstVariable = InitAst.Variable("<missing>");
+
+    GenericArgs : QualifiedReference*;
+    GenericArgs.Scope = TypeScope;
+
+    NodeName : NodeName?;
+    NodeKey  : NodeKey?;
+    
+    Declarations : GlobalDeclaration*;
+    Declarations.GlobalDeclarationScope = GlobalDeclarationScope;
+    Declarations.ContainingTable = TableScope(null, "Function and variable declarations");
+    Declarations.TypeScope       = TypeScope;
+
+    Members : NodeMember*;
+    
+    Members.Parent = this;
+    Members.GlobalDeclarationScope = GlobalDeclarationScope.HideWith(Declarations.ContainingTable);
+    Members.ParentVariableAst   = AstVariable;
+    Members.ParsingContext      = ParsingContext.NewTargetTypeIfNeeded(Breadcrumbs, Type, context);
+    Members.ParentPropertyScope = PropertyScope(context, false, TypeScope.UnionWith(GlobalDeclarationScope)
+                                                                         .UnionWith(Type.Scope));
+    Members.ParentNodeType      = Some(Type);
+    Members.TypeScope           = TypeScope;
+    Members.Breadcrumbs         = Breadcrumbs.Add(Breadcrumb.Node(this, Type));
+    Members.FunctionRefScope    = FunctionRefScope;
+    Members.RootSymbolId        = RootSymbolId;
+    Members.TemplateParameterScope = TemplateParameterScope;
+    Members.IsInsideFrameworkTemplate = this.IsInsideFrameworkTemplate(IsInsideFrameworkTemplate, Type, context);
+    
+    Scope = TypeScope.UnionWith(GlobalDeclarationScope)
+                     .HideWith(Type.Scope);
+
+  stage 1:  
+    
+    out Type    : TypeSymbol;
+  }
+
+  abstract ast NodeAbstract : NodeBase
+  {
+    Key : QualifiedReference;
+    Key.Scope            = TypeScope;
+    Key.NameScopeFactory = GetScope.CreateNodeNameScopeFactory(context);
+
+  stage 1:
+    out Ref : Ref[TypeSymbol] = this.ResolveKey(Key.Ref);
+
+    Xaml   = this.BuildXaml(Type, Members.Xaml, GenericArgs.Ref, RootSymbolId, context);
+    Type = Ref.Symbol;
+  }
+
+  ast Node : NodeAbstract 
+  {}
+
+  ast NodeName 
+  {
+    Key : string;
+  }
+
+  ast NodeKey
+  {
+    Key : string;
+  }
+}

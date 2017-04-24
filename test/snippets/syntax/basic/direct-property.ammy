@@ -1,0 +1,8 @@
+﻿TextBlock "DirectProperty" {
+    Style: Style {
+        Triggers: [
+            DataTrigger {
+            }
+        ]
+    }
+}

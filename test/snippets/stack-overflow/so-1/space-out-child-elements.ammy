@@ -1,0 +1,13 @@
+﻿// http://stackoverflow.com/questions/932510/how-do-i-space-out-the-child-elements-of-a-stackpanel
+
+using header = TextBlock(TopMargin);
+
+template TopMargin : TextBlock {
+    Margin: "0, 10, 0, 0"
+}
+
+StackPanel "SpaceOutElements" {
+    header {}
+    header {}
+    header {}
+}

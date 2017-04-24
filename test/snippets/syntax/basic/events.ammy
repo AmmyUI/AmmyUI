@@ -1,0 +1,6 @@
+using ShowTest.Common.ViewModels;
+
+Button "Events" {
+    Click: TestViewModel.OnClick
+    PreviewKeyDown: TestViewModel.OnPreviewKeyDown
+}

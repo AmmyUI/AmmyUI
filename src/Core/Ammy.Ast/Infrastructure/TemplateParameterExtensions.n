@@ -1,0 +1,27 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using Ammy.Language;
+
+namespace Ammy
+{
+  public module TemplateParameterExtensions
+  {
+    public ResolveByIndex(this instance : FunctionArgument, index : int, scope : TableScope) : Ref[FunctionParameterSymbol]
+    {
+      foreach (symList in scope.Symbols)
+        foreach (sym is FunctionParameterSymbol
+                 when sym.Index == index in symList) 
+                   return Ref.Some(instance.Location, sym);
+      Ref.Unresolved(instance.Location, index.ToString(), ResolutionSource.Bind(scope));
+    }
+  }
+}

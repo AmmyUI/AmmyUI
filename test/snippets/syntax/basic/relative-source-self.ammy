@@ -1,0 +1,6 @@
+﻿Canvas "RelativeSourceSelf" {
+  Width: bind Height 
+         set [
+           RelativeSource: RelativeSource { Mode: Self }
+         ]
+}

@@ -1,0 +1,22 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.ProjectSystem;
+
+namespace Ammy.Backend
+{
+  public interface ISourceCodeProject
+  {
+    Files : array[File] { get; }
+    DirtyFiles : HashSet[int] { get; }
+    GetFilenames() : array[string];
+    ClearDirty() : void;
+    IsParsed : bool { get; set; }
+  }
+}

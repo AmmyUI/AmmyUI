@@ -1,0 +1,4 @@
+Button "ResourceSystem" {
+    "OK"
+    Background: resource dyn SystemColors.ControlLightBrushKey
+}

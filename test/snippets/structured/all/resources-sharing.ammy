@@ -1,0 +1,17 @@
+// Not supported at the moment, since there is no code equivalent
+// You can still define resource with x:Shared="False" in external XAML file
+// and use it from here 
+/*
+StackPanel "ResourcesSharing" {
+    Resources: [
+        Image Key="photo" { Source: "Images/photo.jpg" }
+    ]
+    
+    ListView {
+        Items: [ 
+            resource photo
+            resource photo
+        ]
+    }
+}
+*/

@@ -1,0 +1,5 @@
+ListBox "ListBoxItemsPanel" {
+    ItemsPanel: ItemsPanelTemplate {
+        VirtualizingStackPanel { Orientation: "Horizontal" }
+    }
+}

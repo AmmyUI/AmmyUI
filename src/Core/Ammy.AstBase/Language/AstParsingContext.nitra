@@ -1,0 +1,35 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Ammy.Infrastructure;
+
+namespace Ammy.Language
+{
+  ast TargetTypeContext
+  {
+    in Collector : ReferenceValueCollector;
+    out Scope : Scope = this.GetTargetTypeScope(Collector.GetSymbols(), context);
+  }
+  
+  ast RelativeSourceContext
+  {
+    in ParentNodeType : option[TypeSymbol] = None();
+    in Collector : ReferenceValueCollector;
+    out Scope : Scope = this.GetRelativeSourceScope(Collector.GetSymbols(), context);
+  }
+
+  ast ParsingContext 
+  {
+    out TargetType : TargetTypeContext = TargetTypeContext(Helpers.NoLocation);
+    out RelativeSource : RelativeSourceContext = RelativeSourceContext(Helpers.NoLocation);
+  }
+}

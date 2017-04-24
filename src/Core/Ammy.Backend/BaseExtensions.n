@@ -1,0 +1,148 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Imperative;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+
+using Nitra.Declarations;
+using DotNet;
+
+namespace Ammy.Infrastructure
+{
+  public module BaseExtensions
+  {
+    
+    public GetParameterType(this parameterScope : TableScope, parameterIndex : int) : TypeSymbol
+    {
+      def parm = parameterScope
+                       .Symbols
+                       .SelectMany(s => s)
+                       .OfType.[FormalParameterSymbol]()
+                       .FirstOrDefault(s => s.Index == parameterIndex :> (uint));
+      
+      parm.Type
+    }
+    
+    // This makes DependencyProperty wait until `_objectToWaitFor` is available
+    public WaitForAndReturn[T](this instance : T, _objectToWaitFor : object) : T
+    {
+      instance
+    }
+    
+    public SplitReference(this reference : QualifiedReference) : (string * string) 
+    {
+      reference.FullName().SplitReference();
+    }
+    
+    public SplitReference(this fullName : string) : (string * string) 
+    {
+      def lastIndex = fullName.LastIndexOf('.');
+      
+      if (lastIndex != -1) {
+        def qualifier = fullName.Substring(0, lastIndex);
+        def name = fullName.Substring(lastIndex + 1);
+        (qualifier, name)
+      } else {
+        ("", fullName)
+      }
+    }
+    
+    public GetCompilerMessagesString(this file : FileEvalPropertiesData) : string 
+    {
+      string.Join(Environment.NewLine, file.GetCompilerMessage()
+                                           .Select(msg => msg.ToString()));
+    }
+    
+    public GetFullName(this type : TypeSymbol) : string
+    {
+      match(type) {
+        | alias is TypeAliasSymbol => (alias.Replacement.Symbol :> TypeSymbol).FullName
+        | _ => type.FullName
+      }
+    }
+    
+    public FullName(this instance : DotNet.QualifiedReference) : string
+    {
+      match (instance) {
+        | simple is DotNet.QualifiedReference.Simple => simple.Name.Text
+        | qualified is DotNet.QualifiedReference.Qualified => 
+          qualified.Qualifier.FullName() + "." + qualified.Name.Text;
+        | _ => ""
+      }
+    }
+    
+    public Name(this instance : DotNet.QualifiedReference) : string
+    {
+      match (instance) {
+        | simple is DotNet.QualifiedReference.Simple => simple.Name.Text
+        | qualified is DotNet.QualifiedReference.Qualified => qualified.Name.Text
+        | _ => ""
+      }
+    }
+    
+    public Values[T](this instance : IEnumerable[T]) : string
+    {
+      string.Join(", ", instance)
+    }
+    
+    public SamePathAs(this path1 : string, path2 : string) : bool
+    {
+      when (string.IsNullOrWhiteSpace(path1) || string.IsNullOrWhiteSpace(path2))
+        return false;
+      
+      def p1 = Path.GetFullPath(path1).TrimEnd(array['\\', '/']);
+      def p2 = Path.GetFullPath(path2).TrimEnd(array['\\', '/']);
+      
+      string.Equals(p1, p2, StringComparison.OrdinalIgnoreCase)
+    }
+    
+    public ToRelativeDir(this absolutePath : string, relativeRoot : string) : string
+    {
+      def absolutePath = absolutePath.TrimEnd(array['\\', '/']) + '\\';
+      absolutePath.ToRelativeFile(relativeRoot)
+    }
+    
+    public ToRelativeFile(this absolutePath : string, relativeRoot : string) : string
+    {
+      if (Path.IsPathRooted(absolutePath)) {
+        def absolutePathUri = Uri(absolutePath, UriKind.Absolute);
+        def relativeRootUri = Uri(relativeRoot.TrimEnd(array['\\', '/']) + '\\', UriKind.Absolute);
+        def relativePath = relativeRootUri.MakeRelativeUri(absolutePathUri).ToString();
+      
+        Uri.UnescapeDataString(relativePath)
+      } else {
+        absolutePath
+      }
+    }
+    
+    public ToAbsolutePath(this relativePath : string, root : string) : string
+    {
+      Path.GetFullPath(Path.Combine(root, relativePath));
+    }
+    
+    public IsDescendant(this sym : TypeSymbol, baseType : TypeSymbol) : bool 
+    {
+      IsDescendant(sym, baseType.GetFullName())
+    }
+    
+    public IsDescendant(this sym : TypeSymbol, baseTypeFullName : string) : bool 
+    {
+      | (_, "System.Object")      => true
+      | (a is TypeAliasSymbol, _) => IsDescendant(a.Replacement.Symbol :> TypeSymbol, baseTypeFullName)
+      | (s is SupportsInheritanceTypeSymbol, _) when s.IsFullNameEvaluated =>
+        if (s.FullName == baseTypeFullName) true
+        else s.BaseTypeSet.ParentTypes.Any(parent => parent.IsDescendant(baseTypeFullName))
+        
+      | (type is TopConstructedTypeSymbol, _) => 
+        IsDescendant(type.TypeInfo, baseTypeFullName)
+      
+      | _ when sym.IsFullNameEvaluated && sym.FullName == baseTypeFullName => true
+      | _ => false
+    }
+  }
+}

@@ -1,0 +1,21 @@
+ListBox "ListBoxControlTemplate" {
+    "Item 1"
+    "Item 1" 
+
+    Padding: 10
+
+    Template: ControlTemplate {
+        TargetType: ListBox
+
+        Border {
+            ScrollViewer {
+                Padding: bind Padding from $template
+                Focusable: false
+
+                ItemsPresenter {
+                    SnapsToDevicePixels: bind SnapsToDevicePixels from $template
+                }
+            }
+        }
+    }
+}

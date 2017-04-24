@@ -1,0 +1,7 @@
+﻿using System
+using MahApps.Metro.Controls
+
+MetroWindow "Ammy.WpfTest.Resolving.NamespaceResolve_1a" {
+  @Grid_0 {
+  }
+}

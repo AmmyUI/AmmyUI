@@ -1,0 +1,10 @@
+// http://stackoverflow.com/questions/183406/newline-in-string-attribute
+// How can I add a line break to text when it is being set as an attribute i.e.:
+// <TextBlock Text="Stuff on line1 \n Stuff on line2" />
+
+TextBlock "Newline" {
+    Text: "We
+           support
+           multiline
+           values"
+}

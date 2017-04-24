@@ -1,0 +1,7 @@
+﻿using System
+
+ResourceDictionary {
+  String Key="MyText" { 
+    "Resource dictionary test"
+  }
+} 

@@ -1,0 +1,122 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using Type = System.Type;
+
+using Nitra.Declarations;
+using DotNet;
+
+namespace Ammy.Backend
+{
+  [Record]
+  public class ExternalNamespaceDeclaration : ExternalDeclaration[AssemblyNamespaceSymbol]
+  {
+    public Namespace : string { get; private set; }
+    public override CreateSymbol() : DeclarationSymbol { AssemblyNamespaceSymbol() }
+  }
+  
+  public interface IExternalTypeDeclaration
+  {
+    Type : Type { get; }
+  }
+
+  public interface IExternalTopTypeDeclaration
+  {
+    Type : Type { get; }
+  }
+
+  public interface IExternalNestsdTypeDeclaration
+  {
+    Type : Type { get; }
+  }
+
+  [Record]
+  public class ExternalTopTypeDeclaration[TSymbol] : ExternalDeclaration[TSymbol], IExternalTopTypeDeclaration, IExternalTypeDeclaration
+    where TSymbol : DeclarationSymbol
+  {
+    public Type : Type { get; private set; }
+  }
+
+  [Record]
+  public class ExternalConstructedTypeDeclaration[TSymbol] : ExternalDeclaration[TSymbol], IExternalTypeDeclaration
+    where TSymbol : DeclarationSymbol
+  {
+    public Type : Type { get; private set; }
+  }
+
+  [Record]
+  public class ExternalNestsdTypeDeclaration[TSymbol] : ExternalDeclaration[TSymbol], IExternalNestsdTypeDeclaration, IExternalTypeDeclaration
+    where TSymbol : DeclarationSymbol
+  {
+    public Type : Type { get; private set; }
+  }
+
+  [Record]
+  public class TypeParameterDeclaration : ExternalDeclaration[TypeParameterSymbol]
+  {
+    public TypeParam : Type;
+    public override CreateSymbol() : DeclarationSymbol { TypeParameterSymbol() }
+  }
+
+  [Record]
+  public class ExternalPropertyDeclaration : ExternalDeclaration[Member.PropertySymbol]
+  {
+    public Property : PropertyInfo;
+    public override CreateSymbol() : DeclarationSymbol { Member.PropertySymbol() }
+  }
+
+  [Record]
+  public class ExternalMethodDeclaration : ExternalDeclaration[Member.MethodSymbol]
+  {
+    public Method : MethodInfo;
+    public override CreateSymbol() : DeclarationSymbol { Member.MethodSymbol() }
+  }
+
+  [Record]
+  public class ExternalConstructorDeclaration : ExternalDeclaration[Member.ConstructorSymbol]
+  {
+    public Method : ConstructorInfo;
+    public override CreateSymbol() : DeclarationSymbol { Member.ConstructorSymbol() }
+  }
+
+  [Record]
+  public class ExternalFieldDeclaration : ExternalDeclaration[Member.FieldSymbol]
+  {
+    public Field : FieldInfo;
+    public override CreateSymbol() : DeclarationSymbol { Member.FieldSymbol() }
+  }
+
+  [Record]
+  public class ExternalEnumFieldDeclaration : ExternalDeclaration[EnumMemberSymbol]
+  {
+    public Field : FieldInfo;
+    public override CreateSymbol() : DeclarationSymbol { EnumMemberSymbol() }
+  }
+
+  [Record]
+  public class ExternalEventDeclaration : ExternalDeclaration[Member.EventSymbol]
+  {
+    public Event : EventInfo;
+    public override CreateSymbol() : DeclarationSymbol { Member.EventSymbol() }
+  }
+
+  [Record]
+  public class ExternalParameterDeclaration : ExternalDeclaration[FormalParameterSymbol]
+  {
+    public Parameter : ParameterInfo;
+    public override CreateSymbol() : DeclarationSymbol { FormalParameterSymbol() }
+  }
+
+  [Record]
+  public class ExternalCustomAttributeDeclaration : ExternalDeclaration[CustomAttributeSymbol]
+  {
+    public Attribute : object;
+    public override CreateSymbol() : DeclarationSymbol { CustomAttributeSymbol() }
+  }
+}

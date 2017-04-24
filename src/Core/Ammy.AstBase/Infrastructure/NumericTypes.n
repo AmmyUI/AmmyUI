@@ -1,0 +1,53 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Extensions;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ammy.Infrastructure
+{
+    public module NumericTypes
+    {
+        private mutable static Types : HashSet[Type];
+        private mutable static _typeNameCache : array[string];
+
+        static this() 
+        {
+            Types = HashSet.[Type]();
+            
+            _ = Types.Add(typeof(int));
+            _ = Types.Add(typeof(double));
+            _ = Types.Add(typeof(decimal));
+            _ = Types.Add(typeof(long));
+            _ = Types.Add(typeof(short));
+            _ = Types.Add(typeof(sbyte));
+            _ = Types.Add(typeof(byte));
+            _ = Types.Add(typeof(ulong));
+            _ = Types.Add(typeof(ushort));
+            _ = Types.Add(typeof(uint));
+            _ = Types.Add(typeof(float));
+        }
+        
+        public GetTypeNames() : array[string]
+        {
+            when (_typeNameCache == null)
+                _typeNameCache = Types.Select(t => t.FullName).ToArray();
+
+            _typeNameCache;
+        }
+
+        public TypeIsNumeric(type : Type) : bool
+        {
+            Types.Contains(Nullable.GetUnderlyingType(type) ?? type);
+        }
+
+        public TypeIsNumeric(fullname : string) : bool
+        {
+            Types.Any(t => t.FullName == fullname);
+        }
+    }
+}

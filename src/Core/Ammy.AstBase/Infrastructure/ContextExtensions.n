@@ -1,0 +1,105 @@
+﻿using Nemerle;
+using Nemerle.Collections;
+using Nemerle.Text;
+using Nemerle.Utility;
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using Nitra;
+using Nitra.Declarations;
+using Ammy.Language;
+
+namespace Ammy.Infrastructure
+{
+  public module ContextExtensions
+  {
+    public CreateParsingContext(this ctx : DependentPropertyEvalContext) : ParsingContext
+    {
+      def context = ctx :> AmmyDependentPropertyEvalContext;
+      def parsingContext = ParsingContext(Helpers.NoLocation);
+      
+      context.ParsingContexts = context.ParsingContexts.Add(parsingContext);
+      
+      parsingContext;
+    }
+    
+    public EvalParsingContexts(this ctx : DependentPropertyEvalContext) : void
+    {
+      def context = ctx :> AmmyDependentPropertyEvalContext;
+      
+      foreach (parsingContext in context.ParsingContexts) {
+        parsingContext.EvalProperties(ctx);
+        parsingContext.TargetType.EvalProperties(ctx);
+        parsingContext.RelativeSource.EvalProperties(ctx);
+        
+        // If by the end of 2 stage we still haven't found needed Scopes
+        // set them as empty scopes for further DP evaluation
+        when (ctx.Stage > 2) {
+          when (!parsingContext.TargetType.IsScopeEvaluated)
+            parsingContext.TargetType.Scope = EmptyScope.Instance;
+            
+          when (!parsingContext.RelativeSource.IsScopeEvaluated)
+            parsingContext.RelativeSource.Scope = EmptyScope.Instance;
+        }
+      }
+    }
+    
+    public IsMissingXamlMarked(this ctx : DependentPropertyEvalContext) : bool
+    {
+      ctx.ToAmmyContext().MissingXamlMarked;
+    }
+    
+    public ToAmmyContext(this ctx : DependentPropertyEvalContext) : AmmyDependentPropertyEvalContext
+    {
+      ctx :> AmmyDependentPropertyEvalContext
+    }
+        
+    public GetStringType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.String;
+    }
+    
+    public GetCharType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Char;
+    }
+    
+    public GetInt32Type(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Int32;
+    }
+    
+    public GetDoubleType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Double;
+    }
+    
+    public GetBooleanType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Boolean;
+    }
+    
+    public GetObjectType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Object;
+    }
+    
+    public GetBindingBaseType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.BindingBase;
+    }
+    
+    public GetBindingType(this ctx : DependentPropertyEvalContext) : TypeSymbol 
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Binding;
+    }
+    
+    public GetBindingTypeScope(this ctx : DependentPropertyEvalContext) : Scope
+    {
+      (ctx :> AmmyDependentPropertyEvalContext).Types.Binding.Scope;
+    }
+  }
+}

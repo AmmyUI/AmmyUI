@@ -22,6 +22,7 @@ Thumbs.db
 bin/
 *.lib
 *.sbr
+*.g.xaml
 obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
@@ -46,7 +47,6 @@ Doc/*.html
 Doc/*.xml
 Doc/ParserResultProcessing-Pics
 Nitra.LanguageCompiler/Templates/XXLanguageXXVsPackage/packages/*
-**/packages/*
 Ide/NitraLangVsPackage/*
 Ide/NitraCSharpVsPackage/*
 *.nupkg
@@ -58,6 +58,8 @@ build/*.pdb
 build/*.xml
 build/*.exe
 AppPackages/
+/Backup*
+/UpgradeLog*
 *.xap
 src/Ammy.Sidekick.Uwp/project.lock.json
 test/snippets/**/*.g.cs
@@ -65,3 +67,7 @@ test/snippets-workbench/syntax/workbench/*
 project.lock.json
 *.gold
 .vs/
+*.etl
+*.vspx
+packages
+*.tmp_proj

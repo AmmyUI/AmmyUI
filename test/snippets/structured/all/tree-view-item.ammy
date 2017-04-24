@@ -1,0 +1,16 @@
+TreeView "TreeViewItem" {
+    TreeViewItem {
+        Header: "Desktop"
+
+        TreeViewItem { Header: "Computer" }
+        TreeViewItem { Header: "Recycle Bin" }
+
+        TreeViewItem {
+            Header: "Control Panel"
+
+            TreeViewItem { Header: "Programs" }
+            TreeViewItem { Header: "Security" }
+            TreeViewItem { Header: "User Accounts" }
+        }
+    }
+}
