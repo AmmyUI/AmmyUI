@@ -69,13 +69,51 @@ Window "MyApp.MainWindow" {
 ## Building and debugging
 
 * Install Visual Studio 2017 if you don't have one
-* Install (Nemerle)[http://nemerle.org] (Click "Download Now" button)
+* Install [Nemerle](http://nemerle.org) (Click "Download Now" button)
 * Clone repository
 * Open `Ammy.sln` solution in VS2017 and build it
 * Set `Ammy.VisualStudio` project as StartUp Project and start Debugging session
 * Open `Ammy.Tests.sln` solution 
 * `Ammy.Test.Workbench` project is for debugging
 * `Ammy.Test.Wpf` contains permanent tests that should all compile
+
+## Project structure
+
+### Syntax and AST
+
+Ammy uses [Nitra](https://github.com/rsdn/nitra) for parsing and typing. First, file is parsed with syntax defined in Syntax.nitra. Resulting `ParseTree` is then mapped to AST (Mapping.nitra, MappingExpr.nitra, MappingFunctions.nitra). 
+
+Semantic analysis is a process where types loaded from Backend are binded to AST. This process defined inside Ast and AstBase projects in `.nitra` files.
+
+* Ammy.Backend (Loads referenced assemblies and creates Nitra symbols)
+* Ammy.AstBase (Common AST types)
+* Ammy.Ast (More AST types)
+* Ammy.Syntax (Syntax and Mapping to AST)
+
+### Sidekick 
+
+Sidekick library has two primary functions. 1) `ExpressionConverter` used for inline binding converters 2) Runtime update logic
+
+* Ammy.Sidekick.XamarinForms
+* Ammy.Sidekick.Uwp
+* Ammy.Sidekick.Common
+
+### Compilation and Tasks
+
+Build assembly is a glue between IDE/MSBuild and Ammy language. 
+
+* Ammy.Build
+* Ammy.BamlCompilerWPF
+
+### IDE
+
+* Ammy.VisualStudio
+* Ammy.VisualStudio.Service
+* Ammy.VisualStudio.ItemTemplates
+
+Ammy.VisualStudio only contains service providers. These providers use RuntimeLoader to load Ammy.VisualStudio.Service assembly and load actual services. Ammy.VisualStudio.Service contains all the logic for highlighting, intelli-sense, regions, adornments, classisifiers and other stuff. 
+
+
 
 
 
