@@ -1,4 +1,4 @@
-## Ammy - UI Language for XAML platforms
+# Ammy - UI Language for XAML platforms
 
 Ammy is a modern UI language that either replaces or compliments XAML in your projects. 
 
@@ -65,3 +65,18 @@ Window "MyApp.MainWindow" {
   }
 }
 ```
+
+## Building and debugging
+
+* Install Visual Studio 2017 if you don't have one
+* Install (Nemerle)[http://nemerle.org] (Click "Download Now" button)
+* Clone repository
+* Open `Ammy.sln` solution in VS2017 and build it
+* Set `Ammy.VisualStudio` project as StartUp Project and start Debugging session
+* Open `Ammy.Tests.sln` solution 
+* `Ammy.Test.Workbench` project is for debugging
+* `Ammy.Test.Wpf` contains permanent tests that should all compile
+
+
+
+
