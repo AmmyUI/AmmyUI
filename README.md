@@ -36,8 +36,6 @@ Note that you don't need to import any namespaces manually. In case you need to 
 ### Slightly more complicated example
 
 ```
-// Define alias for form field (label + textbox)
-// Alias takes parameters and returns an element
 alias FormField (labelText, binding)
 {
   StackPanel {
@@ -60,9 +58,6 @@ Window "MyApp.MainWindow" {
     TextBlock {
       Text: bind 
             convert (MyViewModel vm) => "Hello, " + vm.FirstName + " " + vm.LastName
-      
-      // Empty binding path binds whole DataContext
-      // `convert` defines binding converter inline
     }
   }
 }
