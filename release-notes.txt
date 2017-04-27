@@ -1,10 +1,23 @@
 ## [Current]
 
-* support variable or parameter as node Key i.e.
+* support variable or parameter as node Key:
   Grid Key=$var {
     ...
   }
 
+* x:Arguments support:
+  MyControl {
+    arguments [
+      MyArgument {}
+      MyArgument {}
+    ]
+  }
+
+* Support `const` members in property assignment:
+  TextBlock {
+    Text: Strings.HelloString // HelloString is const
+  }
+  
 ## [1.2.41] - 14.04.2017
 
 ### Fixed
