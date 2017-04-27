@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{EDCC3B85-0BAD-11DB-BC1A-00112FDE8B61}") = "Ammy.Ast", "src\Core\Ammy.Ast\Ammy.Ast.nproj", "{EC5CDAD4-E1F9-4518-90CC-81CF6F9DA778}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ammy.Sidekick.Common", "src\Platforms\Ammy.Sidekick.Common\Ammy.Sidekick.Common.csproj", "{388A94D5-246F-4192-8C3E-89852F3181D6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6EA83C76-9CF6-4119-B81A-B8D876359A69} = {6EA83C76-9CF6-4119-B81A-B8D876359A69}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{9E6BF1C2-CA41-4A1B-9ACE-FEFA05C94A02}"
 EndProject
@@ -44,8 +47,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ammy.Platforms", "src\Core\Ammy.Platforms\Ammy.Platforms.csproj", "{6E35138D-7436-425C-9E7A-2D5A9B30B3EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ammy.Sidekick.XamarinForms", "src\Platforms\Ammy.Sidekick.XamarinForms\Ammy.Sidekick.XamarinForms.csproj", "{67F9D3A8-F71E-4428-913F-C37AE82CDB24}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6EA83C76-9CF6-4119-B81A-B8D876359A69} = {6EA83C76-9CF6-4119-B81A-B8D876359A69}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ammy.Sidekick.Uwp", "src\Platforms\Ammy.Sidekick.Uwp\Ammy.Sidekick.Uwp.csproj", "{426E47B2-A85E-4395-A36B-A9CE050278EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6EA83C76-9CF6-4119-B81A-B8D876359A69} = {6EA83C76-9CF6-4119-B81A-B8D876359A69}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

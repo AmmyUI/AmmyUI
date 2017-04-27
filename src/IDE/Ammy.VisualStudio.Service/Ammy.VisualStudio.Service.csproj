@@ -358,14 +358,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)*.*" "$(SolutionDir)packages\Ammy.1.0.0\build"
-copy "$(SolutionDir)src\AmmyStandardLib\lib-wpf.ammy" "$(SolutionDir)packages\Ammy.Wpf.1.0.0\content\lib.ammy"
-copy "$(SolutionDir)src\AmmyStandardLib\lib-xamarin.ammy" "$(SolutionDir)packages\Ammy.XamarinForms.1.0.0\content\lib.ammy"
-copy "$(SolutionDir)src\AmmyStandardLib\lib-uwp.ammy" "$(SolutionDir)packages\Ammy.Uwp.1.0.0\content\lib.ammy"
-copy "$(SolutionDir)src\internal.cs" "$(SolutionDir)packages\Ammy.1.0.0\build"</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted "$(SolutionDir)build\init-local-packages.ps1" -RootDir "$(SolutionDir)\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)lib\adb\*.*" "$(SolutionDir)packages\Ammy.1.0.0\build"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

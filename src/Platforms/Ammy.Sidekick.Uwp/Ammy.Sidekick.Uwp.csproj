@@ -127,8 +127,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)packages\Ammy.Uwp.1.0.0\lib\uap10.0\"
-copy "$(TargetDir)AmmySidekick.pdb" "$(SolutionDir)packages\Ammy.Uwp.1.0.0\lib\uap10.0\"</PostBuildEvent>
+    <PostBuildEvent>powershell -ExecutionPolicy Unrestricted "$(SolutionDir)build\init-local-packages.ps1" -RootDir "$(SolutionDir)\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
