@@ -58,7 +58,7 @@
     <Reference Include="Nitra.Runtime">
       <Name>Nitra.Runtime</Name>
       <AssemblyName>Nitra.Runtime.dll</AssemblyName>
-      <HintPath>..\..\lib\\Nitra-bin\Nitra.Runtime.dll</HintPath>
+      <HintPath>..\..\..\lib\Nitra-bin\Nitra.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
