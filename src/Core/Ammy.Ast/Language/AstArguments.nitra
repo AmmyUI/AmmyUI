@@ -1,0 +1,33 @@
+﻿using System.Linq;
+using System.Collections.Immutable;
+
+﻿using Nitra;
+using Nitra.Declarations;
+using DotNet;
+using Ammy;
+using Ammy.Infrastructure;
+using Ammy.InitAst;
+using Ammy.Xaml;
+using Ammy.Scopes;
+
+namespace Ammy.Language
+{
+  ast Arguments : NodeMember
+  {
+    ArgumentNodes : Node*;
+    ArgumentNodes.Parent = this;
+    ArgumentNodes.GlobalDeclarationScope = GlobalDeclarationScope;
+    ArgumentNodes.ParentVariableAst   = InitAst.Variable("<missing>");
+    ArgumentNodes.ParsingContext      = ParsingContext;
+    ArgumentNodes.ParentPropertyScope = PropertyScope(context, false, TypeScope.UnionWith(GlobalDeclarationScope));
+    ArgumentNodes.ParentNodeType      = None();
+    ArgumentNodes.TypeScope           = TypeScope;
+    ArgumentNodes.Breadcrumbs         = Breadcrumbs;
+    ArgumentNodes.FunctionRefScope    = FunctionRefScope;
+    ArgumentNodes.RootSymbolId        = RootSymbolId;
+    ArgumentNodes.TemplateParameterScope = TemplateParameterScope;
+    ArgumentNodes.IsInsideFrameworkTemplate = IsInsideFrameworkTemplate;
+
+    Xaml = this.BuildXaml(ArgumentNodes.Xaml);
+  }
+}

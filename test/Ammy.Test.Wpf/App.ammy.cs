@@ -7,6 +7,7 @@ using System.Windows;
 using Ammy.WpfTest.Attributes;
 using Ammy.WpfTest.Mixins;
 using AmmySidekick;
+using Ammy.WpfTest.PropertyValues;
 
 namespace Ammy.WpfTest
 {
@@ -19,7 +20,8 @@ namespace Ammy.WpfTest
             Test(() => new Combine());
             Test(() => new FadeIn());
             Test(() => new NodeKey());
-            
+            Test(() => new ReferenceValue());
+
             Current.Shutdown(_isSuccess ? 0 : -1);
         }
 

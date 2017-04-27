@@ -73,6 +73,7 @@ namespace Ammy
       | ContentFunctionRef = "#" Key=QualifiedReference FunctionArguments?; 
       | TypeFunctionRef    = Function=TypeFunctionRef
       | ViewModel          = "viewmodel" s Key=QualifiedReference
+      | Arguments          = "arguments" s "[" s nl ArgumentNodes=(Node; ContentDelimiter)* s nl "]"
     }    
     
     [ExplicitSpaces]
@@ -116,6 +117,7 @@ namespace Ammy
       | Value = !"none" Value
     }
 
+    [ExplicitSpaces]
     syntax ParameterValue = "$" Key=Reference;
 
     [ExplicitSpaces]

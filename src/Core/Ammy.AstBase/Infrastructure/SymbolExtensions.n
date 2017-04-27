@@ -90,6 +90,11 @@ namespace Ammy.Infrastructure
       | _ => false
     }
     
+    public IsConst(this symbol : DeclarationSymbol) : bool
+    {
+      symbol is Member.ConstantSymbol
+    }
+    
     public GetAttributes(this type : TypeSymbol, attrName : string) : IEnumerable[CustomAttributeData]
     {
       def decl = type.FirstDeclarationOrDefault :> IExternalTypeDeclaration;

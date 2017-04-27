@@ -133,6 +133,12 @@
     <Compile Include="InitAst\InitAstExtensions.n">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Language\AstArguments.nitra">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Language\AstArgumentsExtensions.n">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Language\AstBindingSource.nitra">
       <SubType>Code</SubType>
     </Compile>

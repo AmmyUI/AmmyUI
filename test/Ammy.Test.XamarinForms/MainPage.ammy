@@ -1,0 +1,5 @@
+﻿ContentPage "Ammy.Test.XamarinForms.MainPage" {
+  arguments [
+    string { "asdfsdf" }
+  ]
+}

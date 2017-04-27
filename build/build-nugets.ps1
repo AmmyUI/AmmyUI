@@ -63,5 +63,5 @@ Set-Location "build"
 
 Get-ChildItem '*.nuspec' -Recurse | ForEach-Object {
     Write-Output "Building NuGet package for $_"
-    &"..\tools\nuget\nuget.exe" pack "$_"
+    &"..\.nuget\nuget.exe" pack "$_"
 }

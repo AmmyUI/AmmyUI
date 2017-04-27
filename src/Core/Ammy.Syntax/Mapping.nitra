@@ -144,6 +144,9 @@ map syntax AmmySyntax.NodeMember -> NodeMember {
   | ViewModel -> ViewModel {
     Key -> Key;
   }
+  | Arguments -> Arguments {
+    ArgumentNodes.Item1 -> ArgumentNodes;
+  }
 }
 
 map syntax AmmySyntax.PropertyMember -> Property 

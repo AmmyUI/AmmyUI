@@ -1,3 +1,10 @@
+## [Current]
+
+* support variable or parameter as node Key i.e.
+  Grid Key=$var {
+    ...
+  }
+
 ## [1.2.41] - 14.04.2017
 
 ### Fixed

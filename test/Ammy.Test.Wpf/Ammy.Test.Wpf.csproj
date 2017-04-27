@@ -143,6 +143,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PropertyValues\ReferenceValue.ammy.cs">
+      <DependentUpon>ReferenceValue.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Resolving\AncestorType.ammy.cs">
       <DependentUpon>AncestorType.ammy</DependentUpon>
     </Compile>
@@ -182,6 +185,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="PropertyValues\ReferenceValue.ammy" />
     <None Include="Resolving\AncestorType.ammy" />
     <None Include="Resolving\MahAppsWindow.ammy" />
     <None Include="Resolving\NamespaceResolve_1a.ammy" />
@@ -230,6 +234,11 @@
     <Page Include="Mixins\FadeIn.g.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PropertyValues\ReferenceValue.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>ReferenceValue.ammy</DependentUpon>
     </Page>
     <Page Include="Resolving\AncestorType.g.xaml">
       <SubType>Designer</SubType>

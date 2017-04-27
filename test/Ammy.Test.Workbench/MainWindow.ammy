@@ -16,8 +16,9 @@ Window "Ammy.Test.Workbench.MainWindow" {
   Resources: ResourceDictionary {
     @ColorMap("color-bkg", "#eeeeee")
   }
-
+  
   StackPanel {
+
     Style: Style {
       TargetType: StackPanel
        

@@ -65,7 +65,7 @@ namespace Ammy.Language
             def declaredIn = dp.DeclaredIn;
             def alias = context.GetNamespaceAliasFor(declaredIn, rootSymbolId);
             XamlValue.String($"$alias$(declaredIn.Name).$(dp.Name)", value.Location)
-          } else if (ms.IsStatic()) {
+          } else if (ms.IsStatic() || ms.IsConst()) {
             if (value.Key is QualifiedReference.Simple) {
               XamlValue.String($"$(symbol.Name)", value.Location)
             } else {
@@ -73,7 +73,7 @@ namespace Ammy.Language
               XamlValue.String($"{x:Static $alias$(ms.DeclaredIn.Name).$(symbol.Name)}", value.Location)
             }
           } else {
-            value.Error(context, "Cannot reference non-static member");
+            value.Error(context, "Can only reference static or const members");
             XamlValue.String($"{x:Static $(symbol.Name)}", value.Location)
           }
           

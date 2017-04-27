@@ -1,0 +1,9 @@
+﻿using Ammy.WpfTest
+
+UserControl "Ammy.WpfTest.PropertyValues.ReferenceValue" {
+  StackPanel {
+    TextBlock "TextBlockWithConst" {
+      Text: Utils.ConstValue
+    }
+  }
+}
