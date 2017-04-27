@@ -118,7 +118,7 @@ namespace Ammy.Language
       BuildParameterXaml(value, symbol, context).Build()
     }
     
-    private BuildParameterXaml(value : IAst, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
+    public BuildParameterXaml(value : IAst, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
     {
       match (symbol) {
         | FunctionParameterSymbol => XamlValue.String("{PARAMETER_" + symbol.FullName + "}", value.Location);

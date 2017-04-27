@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Ammy.WpfTest.Attributes;
 using Ammy.WpfTest.Mixins;
-//using Ammy.WpfTest.Attributes;
-//using Ammy.WpfTest.Mixins;
 using AmmySidekick;
 
 namespace Ammy.WpfTest
@@ -20,9 +18,8 @@ namespace Ammy.WpfTest
         {
             Test(() => new Combine());
             Test(() => new FadeIn());
-
-            //var workbench = new WpfApplication18.MainWindow();
-            //workbench.Show();
+            Test(() => new NodeKey());
+            
             Current.Shutdown(_isSuccess ? 0 : -1);
         }
 

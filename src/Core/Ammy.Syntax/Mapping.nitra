@@ -92,7 +92,16 @@ map syntax AmmySyntax.NodeName -> NodeName {
 }
 
 map syntax AmmySyntax.NodeKey -> NodeKey {
-  Key = ParsedValue(Key.Span, Key.Value());
+  | StringKey { 
+    Key = ParsedValue(Key.Span, Key.Value());
+  }
+  | VariableKey {
+    Key -> Key;
+  }
+}
+
+map syntax AmmySyntax.ParameterValue -> Reference {
+  this.Key
 }
 
 map syntax AmmySyntax.NodeMember -> NodeMember {
@@ -158,7 +167,7 @@ map syntax AmmySyntax.Value -> PropertyValue {
   }
   | ValueList -> ValueList  { Values.Item1 -> Values; }
   //| Empty     -> Empty      { Key = Reference(Location(File, NSpan(Span.EndPos)), ""); }
-  | Parameter -> Parameter  { Key -> Key; }
+  | Parameter -> Parameter  { ParameterValue -> Key; }
   | Binding   -> Binding    {
     Binding.Path -> Path;
     Binding.Source -> BindingSource;

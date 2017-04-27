@@ -1,0 +1,13 @@
+﻿alias ColorMap(name, color) {
+    SolidColorBrush Key=$name { Color: $color }
+}
+
+$nodeKey="b"
+
+UserControl "Ammy.WpfTest.Attributes.NodeKey" {
+  Resources: ResourceDictionary {
+    @ColorMap("a", "#aaaaaa")
+    SolidColorBrush Key=$nodeKey { Color: "#bbbbbb" }
+    SolidColorBrush Key="c" { Color: "#cccccc" }  
+  }
+}

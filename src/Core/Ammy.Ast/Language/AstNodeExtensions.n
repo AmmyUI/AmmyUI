@@ -50,7 +50,7 @@ namespace Ammy.Language
     public GetDictionaryKey(this node : NodeBase, context : DependentPropertyEvalContext) : option[InitAst]
     {
       def context = context.ToAmmyContext();
-      def getString (str) {
+      def getString (str : string) {
         InitAst.PrimitiveValue(context.Types.String.AsTypeInfo(), str, false)
       }
       def isTargetTypeSet(styleNode) {
@@ -58,8 +58,15 @@ namespace Ammy.Language
         styleNode.Members.ParsingContext.TargetType.Collector.GetSymbols().Count > 0
       }
       
-      if (node.NodeKey.HasValue) 
-        Some(getString(node.NodeKey.Value.Key.Value))
+      def keyValue = node.NodeKey.KeyValue;
+      
+      if (keyValue.IsSome) 
+        if (keyValue.Value is XamlValue.String as str)
+          Some(getString(str.Value))
+        else {
+          assert2(false, "Key value can only be XamlValue.String, not " + keyValue.Value);
+          None()
+        }
       else if (node.NodeName.HasValue) 
         Some(getString(node.NodeName.Value.Key.Value));
       else if (node.Type.IsDescendant(context.Types.Style) && !isTargetTypeSet(node)) 
@@ -97,13 +104,18 @@ namespace Ammy.Language
                             
       def name = if (node.NodeName.HasValue) [XamlAttribute(context.Platform.XPrefix + "Name", XamlValue.String(node.NodeName.Value.Key.Value), Helpers.NoLocation)] 
                  else [];
-      def key = if (node.NodeKey.HasValue) [XamlAttribute(context.Platform.XPrefix + "Key", XamlValue.String(node.NodeKey.Value.Key.Value), Helpers.NoLocation)] 
+      def key = if (node.NodeKey.KeyValue.IsSome) [XamlAttribute(context.Platform.XPrefix + "Key", node.NodeKey.KeyValue.Value, Helpers.NoLocation)] 
                 else [];
       def allMembers = key.Concat(name)
                           .Concat(typeArguments)
                           .Concat(members);
             
       XamlNode(ns + nodeType.Name, node.Location, allMembers);
+    }
+    
+    public GetNodeKeyValue(this nodeKey : NodeKey.VariableKey, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
+    {
+      AstPropertyValueExtensions.BuildParameterXaml(nodeKey, symbol, context)
     }
   }
 }

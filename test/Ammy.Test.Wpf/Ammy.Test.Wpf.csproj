@@ -99,6 +99,9 @@
       <DependentUpon>App.ammy</DependentUpon>
     </Compile>
     <Compile Include="Attributes\Combine.ammy.cs" />
+    <Compile Include="Attributes\NodeKey.ammy.cs">
+      <DependentUpon>NodeKey.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Binding\InlineConverters.ammy.cs">
       <DependentUpon>InlineConverters.ammy</DependentUpon>
     </Compile>
@@ -162,6 +165,7 @@
     <None Include="Aliases\Aliases.ammy" />
     <None Include="App.ammy" />
     <None Include="Attributes\Combine.ammy" />
+    <None Include="Attributes\NodeKey.ammy" />
     <None Include="Binding\InlineConverters.ammy" />
     <None Include="Bugs\BlendInteraction.ammy" />
     <None Include="Bugs\Redefinition1.ammy" />
@@ -200,6 +204,11 @@
     <Page Include="Attributes\Combine.g.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Attributes\NodeKey.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>NodeKey.ammy</DependentUpon>
     </Page>
     <Page Include="Bugs\x64reference.g.xaml">
       <SubType>Designer</SubType>

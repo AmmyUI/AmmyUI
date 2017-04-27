@@ -26,7 +26,8 @@ namespace Ammy.Language
 
     NodeName : NodeName?;
     NodeKey  : NodeKey?;
-    
+    NodeKey.VariableScope = GlobalDeclarationScope.HideWith(TemplateParameterScope);
+
     Declarations : GlobalDeclaration*;
     Declarations.GlobalDeclarationScope = GlobalDeclarationScope;
     Declarations.ContainingTable = TableScope(null, "Function and variable declarations");
@@ -77,8 +78,22 @@ namespace Ammy.Language
     Key : string;
   }
 
-  ast NodeKey
+  abstract ast NodeKey 
   {
-    Key : string;
+    in VariableScope : Scope;
+    out KeyValue : XamlValue;
+
+    | StringKey {
+      Key : string;
+      KeyValue = XamlValue.String(Key.Value);
+    }
+    | VariableKey {
+      in Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
+      
+      Key : Reference;
+      Key.Scope = VariableScope;
+      
+      KeyValue = this.GetNodeKeyValue(Ref.Symbol, context);
+    }
   }
 }

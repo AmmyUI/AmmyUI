@@ -47,7 +47,10 @@ namespace Ammy
     syntax TypeFunctionRefBody = "{" s nl GlobalDeclarations (!"set" NodeMember; ContentDelimiter)* s nl "}";
 
     syntax NodeName = sm Name=StringLiteral;
-    syntax NodeKey = "Key" "=" Key=StringLiteral;
+    syntax NodeKey {
+      | StringKey = "Key" "=" Key=StringLiteral;
+      | VariableKey = "Key" "=" Key=ParameterValue;
+    }
     syntax GenericArgs = "<" (QualifiedReference; ",")+ ">";
     
     [ExplicitSpaces]
@@ -113,6 +116,8 @@ namespace Ammy
       | Value = !"none" Value
     }
 
+    syntax ParameterValue = "$" Key=Reference;
+
     [ExplicitSpaces]
     syntax Value
     {
@@ -123,7 +128,7 @@ namespace Ammy
       | Null  = "null"
       | Reference = !Keyword Key=QualifiedReference s !"{"
       | ValueList = "[" s (Value; ContentDelimiter)* s "]"
-      | Parameter = "$" Key=Reference
+      | Parameter = ParameterValue
       | NodeValue = Combine=("combine" s)? Node
       | TypeFunctionRef = TypeFunction=TypeFunctionRef
 

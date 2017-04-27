@@ -1,12 +1,22 @@
 ﻿using System.Windows.Input
 
-alias Some(color) {
+alias Some( color) {
   TextBlock {
     Background: $color
   }
 }
 
-Window "Ammy.Test.Workbench.MainWindow" {  
+$keyName="keyname"
+
+alias ColorMap(name, color) {
+    SolidColorBrush Key=$name { Color: $color }
+}
+
+Window "Ammy.Test.Workbench.MainWindow" {
+  Resources: ResourceDictionary {
+    @ColorMap("color-bkg", "#eeeeee")
+  }
+
   StackPanel {
     Style: Style {
       TargetType: StackPanel

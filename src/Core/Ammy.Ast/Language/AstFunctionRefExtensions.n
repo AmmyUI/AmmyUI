@@ -192,7 +192,7 @@ namespace Ammy.Language
         | (TypeFunctionRefSymbol, tfr is TypeFunctionRef) =>
           def name = if (tfr.NodeName.HasValue) [XamlAttribute(context.Platform.XPrefix + "Name", XamlValue.String(tfr.NodeName.Value.Key.Value), tfr.NodeName.Location)] 
                  else [];
-          def key = if (tfr.NodeKey.HasValue) [XamlAttribute(context.Platform.XPrefix + "Key", XamlValue.String(tfr.NodeKey.Value.Key.Value), tfr.NodeKey.Location)] 
+          def key = if (tfr.NodeKey.KeyValue.IsSome) [XamlAttribute(context.Platform.XPrefix + "Key", tfr.NodeKey.KeyValue.Value, tfr.NodeKey.Location)] 
                     else [];
           XamlList(array[result.AppendChildren(membersXaml.Concat(name).Concat(key))])
           

@@ -28,7 +28,7 @@ namespace Ammy.VisualStudio.Service
         {
             TryAddItem(reference);
         }
-
+        
         public void Visit(Name name)
         {
             TryAddItem(name);
