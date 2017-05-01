@@ -70,7 +70,9 @@ namespace Ammy.Language
 
   stage 1:
     out Ref : Ref[MemberSymbol] = Key.Ref.Resolve();
-    Xaml = XamlAttribute("Source", XamlValue.String($"{x:Static local:$(Ammy.Infrastructure.BaseExtensions.FullName(Key))}}"), Location);
+    out RefTypeName : string = (context :> AmmyDependentPropertyEvalContext).GetNamespaceAliasFor(Ref.Symbol.DeclaredIn, RootSymbolId) + Ref.Symbol.DeclaredIn.Name;
+
+    Xaml = XamlAttribute("Source", XamlValue.String($<#{x:Static $RefTypeName.$(Ref.Name)}#>), Location);
   }
 
   ast BindingSourceResource : BindingSource
