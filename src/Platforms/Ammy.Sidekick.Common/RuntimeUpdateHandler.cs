@@ -123,6 +123,8 @@ namespace AmmySidekick
                     if (fe != null)
                         fe.ClearValue(Control.BackgroundProperty);
                     XamlHelper.InitializeComponent(rootElement, pageMessage.Buffer, new Uri(pageMessage.TargetId, UriKind.Relative));
+
+                    CurrentlyUpdatedTargetId = "";
                 };
                 timer.Tick += timerOnTick;
             }
