@@ -57,8 +57,11 @@ namespace Ammy.Build
         {
             //Debugger.Launch();
 
-            // Don't rebuild 20 times when updating/installing from NuGet
-            if (Environment.StackTrace.Contains("at NuGet.PackageManagement.VisualStudio")) {
+            // Don't rebuild 20 times when updating/installing from NuGet or adding item template
+            if (Environment.StackTrace.Contains("at NuGet.PackageManagement.VisualStudio") ||
+                Environment.StackTrace.Contains("at System.Windows.Controls.PopupControlService") ||
+                Environment.StackTrace.Contains("at Microsoft.VisualStudio.Build.ComInteropWrapper.ProjectShim.BuildTargetsImpl") ||
+                Environment.StackTrace.Contains("at Microsoft.VisualStudio.TemplateWizard.Wizard")) {
                 GeneratedItems = new string[0];
                 GeneratedXamlItems = new string[0];
 
