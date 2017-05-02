@@ -94,7 +94,7 @@ namespace Ammy.Language
                            context : DependentPropertyEvalContext) : XamlList
     {
       def context = context.ToAmmyContext();
-      def parameterValuePrefix = "{PARAMETER_";
+      def parameterValuePrefix = "<#PARAMETER_";
       def parameters = parameters.Zip(parameterValues, (p, v) => (p, v));
       
       def getFunctionParameter (name) {
@@ -154,8 +154,11 @@ namespace Ammy.Language
       
       def result = xamlTemplate.ReplaceAttributeValue(name => nameSelector(name), a => {
         match (a.Value) {
-          | XamlValue.String(val) when val.StartsWith(parameterValuePrefix) => 
-            def parameterName = val.Substring(parameterValuePrefix.Length).TrimEnd('}');
+          | XamlValue.String(val) when val.Contains(parameterValuePrefix) => 
+            def start = val.IndexOf(parameterValuePrefix);
+            def trimStart = val.Substring(start + parameterValuePrefix.Length);
+            def trimEnd = trimStart.LastIndexOf("#>");
+            def parameterName = trimStart.Remove(trimEnd);
             def (_, xamlValue) = parameters.FirstOrDefault((p, _v) => p.Name == parameterName);
             
             // If parameter argument is not supplied, try default value
@@ -167,11 +170,18 @@ namespace Ammy.Language
                                 | _ => null
                               }
                             } else xamlValue;
-                
-            if (xamlValue != null)
-              Some(XamlAttribute(nameSelector(a.Name), xamlValue, a.OriginalLocation, a.IsCombine))
+                            
+                            
+            def resultValue = if (xamlValue is XamlValue.String as str) 
+                                XamlValue.String(val.Substring(0, start) + str.Value + val.Substring(start + parameterValuePrefix.Length + trimEnd + 2));
+                              else
+                                xamlValue;
+                                
+            if (resultValue != null)
+              Some(XamlAttribute(nameSelector(a.Name), resultValue, a.OriginalLocation, a.IsCombine))
             else
               None()
+              
           | XamlValue.String(val) =>
             def newValue = Regex.Replace(val, @"\W(ns\d):|^(ns\d):", m => {
                 if (m.Groups[1].Success)

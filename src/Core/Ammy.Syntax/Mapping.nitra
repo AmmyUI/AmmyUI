@@ -178,6 +178,10 @@ map syntax AmmySyntax.Value -> PropertyValue {
     Binding.ConverterBack -> ConverterBack;
     match(Binding.Settings) { | Some(s) -> s.Item3.Item1 | None() -> [] } -> Settings;
   }
+  | ResourceWithVariable -> ResourceWithVariable {
+    ParameterValue -> Key;
+    IsDynamic = ParsedValue(Span, IsDynamicData);
+  }
   | ResourceWithRef  -> ResourceWithRef {
     Key -> Key;
     IsDynamic = ParsedValue(Span, IsDynamicData);

@@ -121,7 +121,7 @@ namespace Ammy.Language
     public BuildParameterXaml(value : IAst, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
     {
       match (symbol) {
-        | FunctionParameterSymbol => XamlValue.String("{PARAMETER_" + symbol.FullName + "}", value.Location);
+        | FunctionParameterSymbol => XamlValue.String("<#PARAMETER_" + symbol.FullName + "#>", value.Location);
         | x is GlobalDeclaration.VariableSymbol => 
           if (x.Value.HasValue)
             XamlValue.String(x.Value.Value, value.Location);
@@ -131,6 +131,20 @@ namespace Ammy.Language
           }
         | _ => assert2(false); null
       }
+    }
+    
+    public BuildXaml(this value : PropertyValue.ResourceWithVariable, symbol : VariableRefSymbol, context : DependentPropertyEvalContext) : XamlValue
+    {
+      def xaml = AstPropertyValueExtensions.BuildParameterXaml(value, symbol, context);
+      
+      assert2(xaml is XamlValue.String);
+      
+      def str = (xaml :> XamlValue.String).Value;
+      
+      if (value.IsDynamic.Value)
+        XamlValue.String("{DynamicResource " + str + "}", value.Location);
+      else
+        XamlValue.String("{StaticResource " + str + "}", value.Location);
     }
     
     public BuildXaml(this value : PropertyValue.ResourceWithName) : XamlValue

@@ -146,6 +146,9 @@
     <Compile Include="PropertyValues\ReferenceValue.ammy.cs">
       <DependentUpon>ReferenceValue.ammy</DependentUpon>
     </Compile>
+    <Compile Include="PropertyValues\ResourceKeyword.ammy.cs">
+      <DependentUpon>ResourceKeyword.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Resolving\AncestorType.ammy.cs">
       <DependentUpon>AncestorType.ammy</DependentUpon>
     </Compile>
@@ -186,6 +189,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="PropertyValues\ReferenceValue.ammy" />
+    <None Include="PropertyValues\ResourceKeyword.ammy" />
     <None Include="Resolving\AncestorType.ammy" />
     <None Include="Resolving\MahAppsWindow.ammy" />
     <None Include="Resolving\NamespaceResolve_1a.ammy" />
@@ -239,6 +243,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>ReferenceValue.ammy</DependentUpon>
+    </Page>
+    <Page Include="PropertyValues\ResourceKeyword.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>ResourceKeyword.ammy</DependentUpon>
     </Page>
     <Page Include="Resolving\AncestorType.g.xaml">
       <SubType>Designer</SubType>

@@ -118,14 +118,24 @@ namespace Ammy.Language
       Xaml = this.BuildXaml(Values.Xaml);
     }
     | Parameter {
-      in Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
-      
       Key : Reference;
       Key.Scope = GlobalDeclarationScope.HideWith(TemplateParameterScope);
+
+      in Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
 
       //when (!Ref.Symbol.Type.Symbol.IsAssignableFrom(ParentProperty.Ref.Symbol.Type))
       //  Error (context, $"$(Ref.Symbol.Type.Symbol.Name) value is not assignable to $(ParentProperty.Ref.Symbol.Type.Name)");
       
+      Xaml = this.BuildXaml(Ref.Symbol, context);
+    }
+    | ResourceWithVariable {
+      Key : Reference;
+      Key.Scope = GlobalDeclarationScope.HideWith(TemplateParameterScope);
+
+      IsDynamic : bool;
+
+      in Ref : Ref[VariableRefSymbol] = Key.Ref.Resolve();
+
       Xaml = this.BuildXaml(Ref.Symbol, context);
     }
     | ResourceWithName {

@@ -6,24 +6,21 @@ alias Some( color) {
   }
 }
 
-$keyName="keyname"
+$keyName="brush0"
 
-alias ColorMap(name, color) {
-    SolidColorBrush Key=$name { Color: $color }
-}
 
 Window "Ammy.Test.Workbench.MainWindow" {
-  Resources: ResourceDictionary {
-    @ColorMap("color-bkg", "#eeeeee")
-  }
-  
-  StackPanel {
-
-    Style: Style {
-      TargetType: StackPanel
-       
-      #Setter("Background", "Red")
+  alias A(p) {
+    Grid { 
+      Background: resource $p
     }
-    Width: bind Width from $ancestor<MainWindow>
   }
+
+  Resources: [
+    SolidColorBrush Key="brush0" {
+      
+    }
+  ]
+
+  @A($keyName)
 }

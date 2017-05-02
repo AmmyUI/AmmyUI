@@ -1,5 +1,13 @@
 ## [Current]
 
+* Fixed Static binding source bug i.e.
+  bind "Something" from Type.StaticProperty
+  
+* support variable/parameter as resource key:
+  Background: resource $backgroundKey
+
+## [1.2.53] - 01.05.2017
+
 * support variable or parameter as node Key:
   Grid Key=$var {
     ...
@@ -18,6 +26,8 @@
     Text: Strings.HelloString // HelloString is const
   }
   
+* small bugfixes
+
 ## [1.2.41] - 14.04.2017
 
 ### Fixed

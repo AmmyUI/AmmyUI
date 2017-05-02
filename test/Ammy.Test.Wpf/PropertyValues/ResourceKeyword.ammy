@@ -1,0 +1,16 @@
+﻿UserControl "Ammy.WpfTest.PropertyValues.ResourceKeyword" {
+  $resKey="brush0"
+
+  mixin A(p) for TextBlock {
+    Background: resource $p
+  }
+
+  Resources: [
+    SolidColorBrush Key="brush0" {}
+  ]
+  
+  TextBlock "TestTextBlock" { 
+    #A($resKey)
+    Foreground: resource $resKey
+  }
+}

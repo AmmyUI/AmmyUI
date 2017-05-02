@@ -137,6 +137,7 @@ namespace Ammy
     precedence Keywords:
       | ResourceWithRef  = "resource" s IsDynamic="dyn"? s Key=QualifiedReference
       | ResourceWithName = "resource" s IsDynamic="dyn"? s StringLiteral
+      | ResourceWithVariable = "resource" s IsDynamic="dyn"? s ParameterValue
       | Binding
     }
 

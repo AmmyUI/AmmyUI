@@ -21,6 +21,7 @@ namespace Ammy.WpfTest
             Test(() => new FadeIn());
             Test(() => new NodeKey());
             Test(() => new ReferenceValue());
+            Test(() => new ResourceKeyword());
 
             Current.Shutdown(_isSuccess ? 0 : -1);
         }
