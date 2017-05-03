@@ -58,15 +58,16 @@ namespace Ammy.Build
             //Debugger.Launch();
 
             // Don't rebuild 20 times when updating/installing from NuGet or adding item template
-            var stackTrace = Environment.StackTrace;
+            string stackTrace = Environment.StackTrace;
 
             if (stackTrace.Contains("at NuGet.PackageManagement.VisualStudio") ||
                 stackTrace.Contains("at System.Windows.Controls.PopupControlService") ||
+                stackTrace.Contains("at Microsoft.VisualStudio.Build.ComInteropWrapper.ProjectShim.BuildTargetsImpl") ||
                 stackTrace.Contains("at Microsoft.VisualStudio.TemplateWizard.Wizard")) {
                 GeneratedItems = new string[0];
                 GeneratedXamlItems = new string[0];
 
-                HasErrors = true;
+                HasErrors = false;
                 AmmyPlatform = "<notset>";
 
                 return true;
