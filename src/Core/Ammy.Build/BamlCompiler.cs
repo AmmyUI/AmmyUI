@@ -37,7 +37,7 @@ namespace Ammy.Build
             var args = $"/targetPath:{targetPath} /assemblyName:{assemblyName} /rootNamespace:{rootNamespace} /outputPath:\"{outputPath}\" /markup:{markup} /references:{references} /sources:{sources}";
             var tempFileName = Path.GetTempFileName();
 
-            System.IO.File.WriteAllText(tempFileName, args);
+            File.WriteAllText(tempFileName, args);
 
             var process = new Process {
                 StartInfo = new ProcessStartInfo {
@@ -58,7 +58,7 @@ namespace Ammy.Build
             process.WaitForExit();
 
             try {
-                System.IO.File.Delete(tempFileName);
+                File.Delete(tempFileName);
             } catch { }
         }
 

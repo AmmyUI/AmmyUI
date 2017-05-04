@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Ammy.WPF</id>
-    <version>1.2.52</version>
+    <version>1.2.71</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
     <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
@@ -13,7 +13,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>xaml wpf</tags>
     <dependencies>
-      <dependency id="Ammy" version="1.2.52" />
+      <dependency id="Ammy" version="1.2.71" />
     </dependencies>
   </metadata>
   <files>

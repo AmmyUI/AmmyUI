@@ -1,10 +1,12 @@
-## [Current]
+## [1.2.71] - 04.05.2017
 
-* Fixed Static binding source bug i.e.
-  bind "Something" from Type.StaticProperty
-  
 * support variable/parameter as resource key:
   Background: resource $backgroundKey
+
+* improved performance by removing unnecessary compilations
+
+* fixed Static binding source bug i.e.
+  bind "Something" from Type.StaticProperty
 
 ## [1.2.53] - 01.05.2017
 
