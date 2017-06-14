@@ -239,11 +239,10 @@ namespace Ammy.Infrastructure
                     .ToList()
     }
     
-    public IsNumeric(this type : TypeSymbol) : bool
-    {
-      NumericTypes.TypeIsNumeric(type.FullName);
-    }
-    
+    //public IsNumeric(this type : TypeSymbol) : bool
+    //{
+    //  NumericTypes.TypeIsNumeric(type.FullName);
+    //}    
     
     public HasImplicitConversion(this type : TypeSymbol, convertTo : TypeSymbol, context : DependentPropertyEvalContext) : bool 
     {
@@ -289,7 +288,7 @@ namespace Ammy.Infrastructure
         | x is Member.MethodSymbol => x.ReturnType
         | x is Member.FieldSymbol => x.Type
         | x is Member.ConstantSymbol => x.Type
-        | x is LambdaParameterSymbol => x.Type
+        | x is Ammy.Language.LambdaParameterSymbol => x.Type
         | x is EnumMemberSymbol => x.DeclaredIn
         | TypeSymbol => context.ToAmmyContext().Types.Type
         | _ => context.ToAmmyContext().Types.Void

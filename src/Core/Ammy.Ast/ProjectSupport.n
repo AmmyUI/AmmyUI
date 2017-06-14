@@ -154,6 +154,24 @@ namespace Ammy.Language
       Context.ProjectDir = project.ProjectDir;
       Context.Platform = Platform;
       
+      DotNet.PlatformTypes.Boolean = context.Types.Boolean;
+      DotNet.PlatformTypes.Byte = context.Types.Byte;
+      DotNet.PlatformTypes.Char = context.Types.Char;
+      DotNet.PlatformTypes.Decimal = context.Types.Decimal;
+      DotNet.PlatformTypes.Double = context.Types.Double;
+      DotNet.PlatformTypes.Int16 = context.Types.Int16;
+      DotNet.PlatformTypes.Int32 = context.Types.Int32;
+      DotNet.PlatformTypes.Int64 = context.Types.Int64;
+      DotNet.PlatformTypes.Object = context.Types.Object;
+      DotNet.PlatformTypes.SByte = context.Types.SByte;
+      DotNet.PlatformTypes.Single = context.Types.Single;
+      DotNet.PlatformTypes.String = context.Types.String;
+      DotNet.PlatformTypes.Type = context.Types.Type;
+      DotNet.PlatformTypes.UInt16 = context.Types.UInt16;
+      DotNet.PlatformTypes.UInt32 = context.Types.UInt32;
+      DotNet.PlatformTypes.UInt64 = context.Types.UInt64;
+      DotNet.PlatformTypes.Void = context.Types.Void;
+      
       project.Data;
     }
     

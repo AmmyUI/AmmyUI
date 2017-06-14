@@ -113,6 +113,10 @@
     <Compile Include="Bugs\x64reference.ammy.cs">
       <DependentUpon>x64reference.ammy</DependentUpon>
     </Compile>
+    <Compile Include="CSharp\CSharp6.cs" />
+    <Compile Include="CSharp\CSharp6Test.ammy.cs">
+      <DependentUpon>CSharp6Test.ammy</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\AmmyReferencingXaml.ammy.cs">
       <DependentUpon>AmmyReferencingXaml.ammy</DependentUpon>
     </Compile>
@@ -177,6 +181,7 @@
     <None Include="Bugs\Redefinition1.ammy" />
     <None Include="Bugs\SpacesAndNewlines.ammy" />
     <None Include="Bugs\x64reference.ammy" />
+    <None Include="CSharp\CSharp6Test.ammy" />
     <None Include="CustomControls\AmmyReferencingXaml.ammy" />
     <None Include="Frameworks\Caliburn.ammy" />
     <None Include="Frameworks\DevExpress.ammy" />
@@ -222,6 +227,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>x64reference.ammy</DependentUpon>
+    </Page>
+    <Page Include="CSharp\CSharp6Test.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>CSharp6Test.ammy</DependentUpon>
     </Page>
     <Page Include="CustomControls\CustomControl.xaml">
       <SubType>Designer</SubType>

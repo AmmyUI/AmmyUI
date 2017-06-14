@@ -17,16 +17,16 @@ namespace Ammy.Infrastructure
   public module BaseExtensions
   {
     
-    public GetParameterType(this parameterScope : TableScope, parameterIndex : int) : TypeSymbol
-    {
-      def parm = parameterScope
-                       .Symbols
-                       .SelectMany(s => s)
-                       .OfType.[FormalParameterSymbol]()
-                       .FirstOrDefault(s => s.Index == parameterIndex :> (uint));
+    //public GetParameterType(this parameterScope : TableScope, parameterIndex : int) : TypeSymbol
+    //{
+    //  def parm = parameterScope
+    //                   .Symbols
+    //                   .SelectMany(s => s)
+    //                   .OfType.[FormalParameterSymbol]()
+    //                   .FirstOrDefault(s => s.Index == parameterIndex :> (uint));
       
-      parm.Type
-    }
+    //  parm.Type
+    //}
     
     // This makes DependencyProperty wait until `_objectToWaitFor` is available
     public WaitForAndReturn[T](this instance : T, _objectToWaitFor : object) : T

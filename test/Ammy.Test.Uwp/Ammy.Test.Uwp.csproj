@@ -16,7 +16,8 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Ammy.UwpTest_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Ammy.Test.Uwp_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>BB2FCB7C2AC82AC15C9BDD8A5AECD80EB24EFE6D</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -95,6 +96,7 @@
     <None Include="..\..\packages\Ammy.Uwp.1.0.0\content\lib.ammy">
       <Link>lib.ammy</Link>
     </None>
+    <None Include="Ammy.Test.Uwp_TemporaryKey.pfx" />
     <None Include="project.json" />
     <None Include="MyUserControl.ammy" />
   </ItemGroup>

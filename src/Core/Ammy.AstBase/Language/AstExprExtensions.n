@@ -17,6 +17,8 @@ using Ammy.Infrastructure;
 using Ammy.InitAst;
 using Ammy.Backend;
 
+using Expr = Ammy.Language.Expr;
+
 namespace Ammy.Language
 {
   public module AstExprExtensions
@@ -257,8 +259,8 @@ namespace Ammy.Language
         else 
           InitAst.StaticCall(types.String.AsTypeInfo(), "Concat", array[leftAst, rightAst])
                             
-        | EqualExpr when leftExprType.IsNumeric() && rightExprType.IsNumeric()
-        | NumericBinary =>
+        | Ammy.Language.EqualExpr when leftExprType.IsNumeric() && rightExprType.IsNumeric()
+        | Ammy.Language.NumericBinary =>
           mutable resultType;
           def (l, r) = BinaryNumericPromotion(op, leftExprType, leftAst, rightExprType, rightAst, context, out resultType);
                 
@@ -267,10 +269,10 @@ namespace Ammy.Language
                   
           InitAst.Binary(op, l, r)
                 
-        | EqualExpr => 
+        | Ammy.Language.EqualExpr => 
           InitAst.Binary(op, leftAst, rightAst)
               
-        | OrAndExpr =>
+        | Ammy.Language.OrAndExpr =>
           when (!leftExprType.IsDescendant(context.Types.Boolean))
             host.Expr1.Error(context, "Expected boolean expression, got " + leftExprType.GetFullName());
                   
@@ -372,7 +374,7 @@ namespace Ammy.Language
       match (exprType.GetFullName()) {
         | "System.Byte" | "System.SByte" | "System.Int16" | "System.UInt16" | "System.Char" =>
           InitAst.Cast(context.Types.Int32.AsTypeInfo(), exprAst)
-        | "System.UInt32" when op is UnaryOp.Minus => 
+        | "System.UInt32" when op is UnaryOp.Negation => 
           InitAst.Cast(context.Types.Int64.AsTypeInfo(), exprAst)
         | _ => 
           exprAst

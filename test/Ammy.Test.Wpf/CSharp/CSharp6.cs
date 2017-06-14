@@ -9,6 +9,6 @@ namespace Ammy.WpfTest.CSharp
 {
     class CSharp6
     {
-        public string One => "One";
-    }
+        public string One => "One11";
+    } 
 }
