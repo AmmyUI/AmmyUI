@@ -1,3 +1,7 @@
+## [1.2.72] - 14.06.2017
+
+* support for local types written in C# 6
+
 ## [1.2.71] - 04.05.2017
 
 * support variable/parameter as resource key:
