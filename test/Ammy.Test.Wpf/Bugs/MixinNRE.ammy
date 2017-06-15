@@ -1,15 +1,4 @@
-﻿using System.Windows.Input
-
-alias Some( color) {
-  TextBlock {
-    Background: $color
-  }
-}
-
-$keyName="brush0"
-
-
-Window "Ammy.Test.Workbench.MainWindow" {
+﻿UserControl "Ammy.WpfTest.Bugs.MixinNRE" {
 mixin BindEventToCommand (eventName = "", command = "") for Grid {
   combine System.Windows.Interactivity.Interaction.Triggers : [
       System.Windows.Interactivity.EventTrigger {
@@ -20,10 +9,10 @@ mixin BindEventToCommand (eventName = "", command = "") for Grid {
       }
     ]
   }
-
+  
   Grid {
     Background: CornflowerBlue
     #BindEventToCommand("PreviewMouseLeftButtonDown", "SelectCommand")
     #BindEventToCommand("PreviewMouseRightButtonDown", "CreateCommand")   
-  }  
+  }
 }

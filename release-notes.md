@@ -1,3 +1,7 @@
+##
+
+* fixed bug #91 (combine not working)
+
 ## [1.2.74] - 14.06.2017
 
 * fixed bug #88 (Nemerle.Core.AssertionException: assertion !IsMemberTableEvaluated)

@@ -249,7 +249,7 @@ namespace Ammy.Xaml
             match (child) {
               | XamlValue as val => 
                 _ = builder.Append(val.Build(currentLoc, indent));
-                currentLoc = Value.End;
+                currentLoc = val.End;
               | XamlNode as node => 
                 currentLoc = XamlLocation(currentLoc.Row + 1, location.Column + indent, currentLoc.Position + indent + nl.Length);
                 _ = builder.Append(nl + node.Build(currentLoc, indent + 2));

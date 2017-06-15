@@ -108,6 +108,9 @@
     <Compile Include="Bugs\BlendInteraction.ammy.cs">
       <DependentUpon>BlendInteraction.ammy</DependentUpon>
     </Compile>
+    <Compile Include="Bugs\MixinNRE.ammy.cs">
+      <DependentUpon>MixinNRE.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Bugs\Partial.ammy.cs">
       <DependentUpon>Partial.ammy</DependentUpon>
     </Compile>
@@ -182,6 +185,7 @@
     <None Include="Attributes\NodeKey.ammy" />
     <None Include="Binding\InlineConverters.ammy" />
     <None Include="Bugs\BlendInteraction.ammy" />
+    <None Include="Bugs\MixinNRE.ammy" />
     <None Include="Bugs\Partial.ammy" />
     <None Include="Bugs\Redefinition1.ammy" />
     <None Include="Bugs\SpacesAndNewlines.ammy" />
@@ -227,6 +231,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <DependentUpon>NodeKey.ammy</DependentUpon>
+    </Page>
+    <Page Include="Bugs\MixinNRE.g.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>MixinNRE.ammy</DependentUpon>
     </Page>
     <Page Include="Bugs\Partial.g.xaml">
       <SubType>Designer</SubType>
