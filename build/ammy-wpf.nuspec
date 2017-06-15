@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Ammy.WPF</id>
-    <version>1.2.72</version>
+    <version>1.2.74</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
     <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
@@ -13,12 +13,12 @@
     <copyright>Copyright 2017</copyright>
     <tags>xaml wpf</tags>
     <dependencies>
-      <dependency id="Ammy" version="1.2.72" />
+      <dependency id="Ammy" version="1.2.74" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\packages\Ammy.Wpf.1.0.0\lib\net40\AmmySidekick.dll" target="lib\net40" />
     <file src="..\src\AmmyStandardLib\lib-wpf.ammy" target="content\lib.ammy" />
-    <file src="..\release-notes.txt" target="readme.txt" />
+    <file src="..\release-notes.md" target="readme.txt" />
   </files>
 </package>

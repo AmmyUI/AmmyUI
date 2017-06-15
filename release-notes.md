@@ -1,3 +1,7 @@
+## [1.2.74] - 14.06.2017
+
+* fixed bug #88 (Nemerle.Core.AssertionException: assertion !IsMemberTableEvaluated)
+
 ## [1.2.72] - 14.06.2017
 
 * support for local types written in C# 6

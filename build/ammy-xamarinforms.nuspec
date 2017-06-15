@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Ammy.XamarinForms</id>
-    <version>1.2.72</version>
+    <version>1.2.74</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
     <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
@@ -13,12 +13,12 @@
     <copyright>Copyright 2017</copyright>
     <tags>xaml xamarin</tags>
     <dependencies>
-      <dependency id="Ammy" version="1.2.72" />
+      <dependency id="Ammy" version="1.2.74" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\packages\Ammy.XamarinForms.1.0.0\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\AmmySidekick.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20" />
     <file src="..\src\AmmyStandardLib\lib-xamarin.ammy" target="content\lib.ammy" />
-    <file src="..\release-notes.txt" target="readme.txt" />
+    <file src="..\release-notes.md" target="readme.txt" />
   </files>
 </package>

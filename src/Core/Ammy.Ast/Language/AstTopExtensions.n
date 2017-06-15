@@ -116,7 +116,7 @@ namespace Ammy.Language
                      else ownerNamespace.FullName + "." + symbolName;
       
       mutable lightList = LightList();
-      ownerNamespace.MemberTable.FindMany.[TopClassSymbol](ts => ts.FullName == fullName, ref lightList);
+      ownerNamespace.MemberTable.FindMany.[TopClassSymbol](ts => ts.IsFullNameEvaluated && ts.FullName == fullName, ref lightList);
             
       when (lightList.Count > 0) {
         // Problem is:
@@ -140,7 +140,10 @@ namespace Ammy.Language
           lightList[0].DeclaredIn = declaredIn;
           lightList[0].IsPartial = isPartial;
           lightList[0].Kind = kind;
-          lightList[0].MemberTable = memberTable;
+          
+          when (!lightList[0].IsMemberTableEvaluated)
+            lightList[0].MemberTable = memberTable;
+            
           lightList[0].NestedTypes = nestedTypes;
           lightList[0].TypeParameters = typeParameters;
           lightList[0].TypeParametersCount = typeParametersCount;
@@ -158,7 +161,10 @@ namespace Ammy.Language
       symbol.DeclaredIn = ownerNamespace;
       symbol.IsPartial = true;
       symbol.Kind = Kind.TopNode;
-      symbol.MemberTable = TableScope(symbol, "MemberTable");
+      
+      when (!symbol.IsMemberTableEvaluated)
+        symbol.MemberTable = TableScope(symbol, "MemberTable");
+        
       symbol.NestedTypes = List();
       symbol.TypeParameters = ImmutableArray.Create();
       symbol.TypeParametersCount = 0;

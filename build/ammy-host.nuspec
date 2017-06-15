@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Ammy.Host</id>
-    <version>1.2.72</version>
+    <version>1.2.74</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
     <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
@@ -21,6 +21,6 @@
   </metadata>
   <files>
     <file src="..\packages\Ammy.Host.1.0.0\lib\net40\*.dll" target="lib\net40" />
-    <file src="..\release-notes.txt" target="readme.txt" />
+    <file src="..\release-notes.md" target="readme.txt" />
   </files>
 </package>
