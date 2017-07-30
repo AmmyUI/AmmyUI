@@ -1,0 +1,3 @@
+<ns0:MetroWindow x:Class="Ammy.WpfTest.Resolving.NamespaceResolve_1a" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ns0="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" xmlns:ns1="clr-namespace:AmmySidekick;assembly=AmmySidekick" ns1:Ammy.Register="/Ammy.WpfTest;component/Resolving/NamespaceResolve_1a.g.xaml">
+  <Grid DockPanel.Dock="Right" Width="100" Height="200"/>
+</ns0:MetroWindow>

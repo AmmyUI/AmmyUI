@@ -1,7 +1,0 @@
-﻿using DevExpress.Xpf.Grid
-
-UserControl "Ammy.WpfTest.Frameworks.DevExpress" { 
-  GridControl {            
-      Columns: [ ]
-  }
-}

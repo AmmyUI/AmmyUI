@@ -57,18 +57,6 @@
       <HintPath>..\..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Xpf.Grid.v16.2.Extensions, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\devexpress\DevExpress.Xpf.Grid.v16.2.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="MahApps.Metro, Version=1.4.1.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MahApps.Metro.1.4.1\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
@@ -163,7 +151,9 @@
     <Compile Include="Resolving\AncestorType.ammy.cs">
       <DependentUpon>AncestorType.ammy</DependentUpon>
     </Compile>
-    <Compile Include="Resolving\MahAppsWindow.ammy.cs" />
+    <Compile Include="Resolving\MahAppsWindow.ammy.cs">
+      <DependentUpon>MahAppsWindow.ammy</DependentUpon>
+    </Compile>
     <Compile Include="Resolving\NamespaceResolve_1a.ammy.cs">
       <DependentUpon>NamespaceResolve_1a.ammy</DependentUpon>
     </Compile>
@@ -193,7 +183,6 @@
     <None Include="CSharp\CSharp6Test.ammy" />
     <None Include="CustomControls\AmmyReferencingXaml.ammy" />
     <None Include="Frameworks\Caliburn.ammy" />
-    <None Include="Frameworks\DevExpress.ammy" />
     <None Include="Mixins\AddTriggersSetters.ammy" />
     <None Include="Mixins\FadeIn.ammy" />
     <None Include="packages.config" />
@@ -286,6 +275,7 @@
     <Page Include="Resolving\MahAppsWindow.g.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <DependentUpon>MahAppsWindow.ammy</DependentUpon>
     </Page>
     <Page Include="Resolving\NamespaceResolve_1a.g.xaml">
       <SubType>Designer</SubType>
