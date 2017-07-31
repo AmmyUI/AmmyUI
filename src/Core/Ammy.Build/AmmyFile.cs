@@ -80,19 +80,22 @@ namespace Ammy.Build
 
         public IReadOnlyList<CompilerMessage> GetErrors()
         {
+            try {
+                var errors = GetCompilerMessages().Concat(EvalPropertiesData.GetCompilerMessage())
+                                                  .Concat(GetXamlNodeErrors())
+                                                  .Concat(BamlCompilerMessages)
+                                                  .Distinct(new ErrorEqualityComparer())
+                                                  .Take(50)
+                                                  .ToList();
 
-            var errors = GetCompilerMessages().Concat(EvalPropertiesData.GetCompilerMessage())
-                                              .Concat(GetXamlNodeErrors())
-                                              .Concat(BamlCompilerMessages)
-                                              .Distinct(new ErrorEqualityComparer())
-                                              .Take(50)
-                                              .ToList();
-            
-            if (errors.Any(c => !c.Text.StartsWith("XAML not evaluated: ")))
-                return errors.Where(c => !c.Text.StartsWith("XAML not evaluated: "))
-                             .ToArray();
+                if (errors.Any(c => !c.Text.StartsWith("XAML not evaluated: ")))
+                    return errors.Where(c => !c.Text.StartsWith("XAML not evaluated: "))
+                                 .ToArray();
 
-            return errors;
+                return errors;
+            } catch {
+                return new CompilerMessage[0];
+            }
         }
     }
 

@@ -7,7 +7,7 @@ Copy-Item "src\Core\Ammy.Host\bin\Debug\*.*" "packages\Ammy.Host.1.0.0\lib\net40
 Copy-Item "lib\Nitra-bin\System.Collections.Immutable.dll" "packages\Ammy.1.0.0\build"
 Copy-Item "src\AmmyLibrary" "packages\Ammy.Host.1.0.0\content" -include "*.ammy"
 # Build Ammy.Tests.sln
-&"C:\Program Files (x86)\MSBuild\14.0\Bin\MsBuild.exe" /m Ammy.Tests.sln
+&"c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\msbuild.exe" /m Ammy.Tests.sln
 
 # If failed, quit
 if (!$?) {
