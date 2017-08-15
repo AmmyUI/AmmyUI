@@ -1,6 +1,6 @@
-##
+## [1.2.83] - 14.06.2017
 
-* fixed bug #91 (combine not working)
+* Fixed UWP startup crash issue for Xamarin Forms
 
 ## [1.2.74] - 14.06.2017
 

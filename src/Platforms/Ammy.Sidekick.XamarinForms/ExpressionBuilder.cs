@@ -503,9 +503,17 @@ namespace AmmySidekick
     {
         public static MethodInfo GetMethod(this Type type, string name, bool isInstance, Type[] parameterTypes = null)
         {
+            // Search for public methods only
             var method = type.GetTypeInfo()
                              .GetDeclaredMethods(name)
                              .FirstOrDefault(mi => mi.IsPublic && (isInstance ? !mi.IsStatic : mi.IsStatic) && HasMatchingParameterTypes(mi, parameterTypes));
+
+            // Search for any methods
+            if (method == null) {
+                method = type.GetTypeInfo()
+                             .GetDeclaredMethods(name)
+                             .FirstOrDefault(mi => isInstance ? !mi.IsStatic : mi.IsStatic && HasMatchingParameterTypes(mi, parameterTypes));
+            }
 
             if (method == null)
                 throw new Exception("Method `" + name + "` on type `" + type.Name + "` not found");
