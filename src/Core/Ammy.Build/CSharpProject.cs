@@ -56,7 +56,9 @@ namespace Ammy.Build
                 var filename = filenames[index];
                 var extension = Path.GetExtension(filename);
 
-                if (extension != ".cs" || filename.EndsWith(".ammy.cs"))
+                // ignoring ".ammy.cs" makes it impossible to use defined properties from that type
+                //if (extension != ".cs" || filename.EndsWith(".ammy.cs"))
+                if (extension != ".cs")
                     continue;
 
                 if (!Path.IsPathRooted(filename))
