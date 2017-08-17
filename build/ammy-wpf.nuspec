@@ -5,7 +5,7 @@
     <version>1.2.84</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
-    <licenseUrl>https://creativecommons.org/licenses/by-nc/3.0/</licenseUrl>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://www.ammyui.com</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Ammy UI Language for XAML platforms. Please install Ammy Visual Studio Extension for full support.</description>
