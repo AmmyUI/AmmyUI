@@ -27,13 +27,14 @@ namespace Ammy.Language
       } 
     }
     
-    public BuildXamlTemplate(this function : GlobalDeclaration.ContentFunction, membersXaml : ImmutableArray[XamlElement], targetTypeSymbol : TypeSymbol, _rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
+    public BuildXamlTemplate(this function : GlobalDeclaration.ContentFunction, membersXaml : ImmutableArray[XamlElement], targetTypeSymbol : TypeSymbol, rootSymbolId : string, context : DependentPropertyEvalContext) : XamlNode
     {
-      def _context = context.ToAmmyContext();
+      def context = context.ToAmmyContext();
       //def nss = [XamlAttribute("xmlns", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml/presentation"), Helpers.NoLocation),
       //           XamlAttribute("xmlns:x", XamlValue.String("http://schemas.microsoft.com/winfx/2006/xaml"), Helpers.NoLocation)];
-                   
-      XamlNode (targetTypeSymbol.Name, function.Location, //context.GetOpenedNamespaces(rootSymbolId)
+      def ns = context.GetNamespaceAliasFor(targetTypeSymbol, rootSymbolId);
+      
+      XamlNode (ns + targetTypeSymbol.Name, function.Location, //context.GetOpenedNamespaces(rootSymbolId)
                                                                  membersXaml)
     }
     

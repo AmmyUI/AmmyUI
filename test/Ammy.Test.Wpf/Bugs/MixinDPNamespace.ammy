@@ -13,8 +13,8 @@ mixin GridViewDataColumnToolTip(binding) for DropDownButton {
     ]
 }
 
-UserControl "Ammy.Test.Workbench.MainWindow" {
+UserControl "Ammy.WpfTest.Bugs.MixinDPNamespace" {
   DropDownButton { 
     #GridViewDataColumnToolTip("")
   }
-} 
+}

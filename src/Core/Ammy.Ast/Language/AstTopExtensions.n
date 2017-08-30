@@ -132,7 +132,12 @@ namespace Ammy.Language
           def typeParameters = lightList[0].TypeParameters;
           def typeParametersCount = lightList[0].TypeParametersCount;
           def flags = lightList[0].Flags;
-          def _scope = lightList[0].Scope;
+          
+          try {
+            def _scope = lightList[0].Scope;
+          } catch {
+            | _ => ()
+          }
           
           lightList[0].ResetProperties();
           
