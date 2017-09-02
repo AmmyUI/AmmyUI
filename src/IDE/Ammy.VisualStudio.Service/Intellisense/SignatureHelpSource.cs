@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Text;
 using Nitra;
 using Nitra.Declarations;
 using Nitra.Runtime.Reflection;
+using System.Diagnostics;
 
 namespace Ammy.VisualStudio.Service.Intellisense
 {
@@ -36,21 +37,26 @@ namespace Ammy.VisualStudio.Service.Intellisense
 
         public void AugmentSignatureHelpSession(ISignatureHelpSession session, IList<ISignature> signatures)
         {
-            var snapshot = _buffer.CurrentSnapshot;
-            var trackingPoint = session.GetTriggerPoint(_buffer);
-            var position = trackingPoint.GetPosition(snapshot);
-            var file = _compilerService.LatestResult?.GetFile(_document.FilePath);
-            var compiledSnapshot = file?.Meta.Snapshot as ITextSnapshot;
+            try {
+                var snapshot = _buffer.CurrentSnapshot;
+                var trackingPoint = session.GetTriggerPoint(_buffer);
+                var position = trackingPoint.GetPosition(snapshot);
+                var file = _compilerService.LatestResult?.GetFile(_document.FilePath);
+                var compiledSnapshot = file?.Meta.Snapshot as ITextSnapshot;
 
-            if (compiledSnapshot == null || compiledSnapshot.TextBuffer != _buffer)
-                return;
+                if (compiledSnapshot == null || compiledSnapshot.TextBuffer != _buffer)
+                    return;
 
-            var span = new Span(position, 0);
-            var applicableToSpan = _buffer.CurrentSnapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive, 0);
-            var signature = GetSignature(position, file.Ast, applicableToSpan);
+                var span = new Span(position, 0);
+                var applicableToSpan = _buffer.CurrentSnapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive, 0);
+                var signature = GetSignature(position, file.Ast, applicableToSpan);
 
-            if (signature != null)
-                signatures.Add(signature);
+                if (signature != null)
+                    signatures.Add(signature);
+            } catch (Exception e) {
+                Debug.WriteLine("AugmentSignatureHelpSession failed");
+                Debug.WriteLine(e.ToString());
+            }
         }
 
         public ISignature GetBestMatch(ISignatureHelpSession session)

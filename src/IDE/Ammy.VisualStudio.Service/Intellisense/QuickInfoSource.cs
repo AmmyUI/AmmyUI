@@ -18,6 +18,7 @@ using Ammy.VisualStudio.Service.Classifications;
 using Ammy.VisualStudio.Service.Compilation;
 using DotNet;
 using Microsoft.VisualStudio.PlatformUI;
+using System.Diagnostics;
 
 namespace Ammy.VisualStudio.Service.Intellisense
 {
@@ -59,29 +60,35 @@ namespace Ammy.VisualStudio.Service.Intellisense
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> quickInfoContent, out ITrackingSpan applicableToSpan)
         {
-            var subjectTriggerPoint = session.GetTriggerPoint(_buffer.CurrentSnapshot);
-            if (!subjectTriggerPoint.HasValue) {
+            try {
+
+                var subjectTriggerPoint = session.GetTriggerPoint(_buffer.CurrentSnapshot);
+                if (!subjectTriggerPoint.HasValue) {
+                    applicableToSpan = null;
+                    return;
+                }
+
+                var currentSnapshot = subjectTriggerPoint.Value.Snapshot;
+
+                //look for occurrences of our QuickInfo words in the span
+                var navigator = NavigatorService.GetTextStructureNavigator(_buffer);
+                var extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
+                var result = _compilerService.LatestResult?.GetFile(_document.FilePath);
+
                 applicableToSpan = null;
-                return;
+
+                if (result == null)
+                    return;
+
+                bool foundSomething;
+                SpanToSymbol(quickInfoContent, new NSpan(extent.Span.Start, extent.Span.End), result.Ast, out foundSomething);
+
+                if (foundSomething)
+                    applicableToSpan = currentSnapshot.CreateTrackingSpan(extent.Span.Start, extent.Span.Length, SpanTrackingMode.EdgeInclusive);
+            } catch (Exception e) {
+                Debug.WriteLine("AugmentQuickInfoSession failed");
+                Debug.WriteLine(e.ToString());
             }
-
-            var currentSnapshot = subjectTriggerPoint.Value.Snapshot;
-
-            //look for occurrences of our QuickInfo words in the span
-            var navigator = NavigatorService.GetTextStructureNavigator(_buffer);
-            var extent = navigator.GetExtentOfWord(subjectTriggerPoint.Value);
-            var result = _compilerService.LatestResult?.GetFile(_document.FilePath);
-
-            applicableToSpan = null;
-
-            if (result == null)
-                return;
-
-            bool foundSomething;
-            SpanToSymbol(quickInfoContent, new NSpan(extent.Span.Start, extent.Span.End), result.Ast, out foundSomething);
-
-            if (foundSomething)
-                applicableToSpan = currentSnapshot.CreateTrackingSpan(extent.Span.Start, extent.Span.Length, SpanTrackingMode.EdgeInclusive);
         }
 
         public static DeclarationSymbol SpanToSymbol(IList<object> quickInfoContent, NSpan span, IAst ast, out bool foundSomething)

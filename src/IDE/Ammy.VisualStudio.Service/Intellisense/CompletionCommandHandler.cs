@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.TextManager.Interop;
 using IServiceProvider = System.IServiceProvider;
+using System.Diagnostics;
 
 namespace Ammy.VisualStudio.Service.Intellisense
 {
@@ -47,34 +48,40 @@ namespace Ammy.VisualStudio.Service.Intellisense
 
         public int Exec(ref Guid cmdGroup, uint cmdId, uint cmdExecOpt, IntPtr pin, IntPtr pout)
         {
-            if (VsShellUtilities.IsInAutomationFunction(ServiceProvider))
-                return _nextCommandHandler.Exec(ref cmdGroup, cmdId, cmdExecOpt, pin, pout);
-            
-            var typedChar = char.MinValue;
-            var retVal = VSConstants.S_OK;
-            
-            if (cmdGroup == VSConstants.VSStd2K && cmdId == (uint) VSConstants.VSStd2KCmdID.TYPECHAR)
-                typedChar = (char) (ushort) Marshal.GetObjectForNativeVariant(pin);
-            
-            var shouldReturn = _completionController.TryCommitSession(typedChar, cmdId);
-            if (shouldReturn)
-                return retVal;
-            
-            if (cmdId == (uint)VSConstants.VSStd2KCmdID.RETURN) {
-                if (_customFormatter.TryFormatOnEnter())
+            try {
+                if (VsShellUtilities.IsInAutomationFunction(ServiceProvider))
+                    return _nextCommandHandler.Exec(ref cmdGroup, cmdId, cmdExecOpt, pin, pout);
+
+                var typedChar = char.MinValue;
+                var retVal = VSConstants.S_OK;
+
+                if (cmdGroup == VSConstants.VSStd2K && cmdId == (uint)VSConstants.VSStd2KCmdID.TYPECHAR)
+                    typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pin);
+
+                var shouldReturn = _completionController.TryCommitSession(typedChar, cmdId);
+                if (shouldReturn)
+                    return retVal;
+
+                if (cmdId == (uint)VSConstants.VSStd2KCmdID.RETURN) {
+                    if (_customFormatter.TryFormatOnEnter())
+                        return VSConstants.S_OK;
+                }
+
+                var isControlSpace = Keyboard.Modifiers == ModifierKeys.Control && typedChar == ' ';
+
+                if (!isControlSpace)
+                    retVal = _nextCommandHandler.Exec(ref cmdGroup, cmdId, cmdExecOpt, pin, pout);
+
+                if (_completionController.TryComplete(typedChar, cmdId, _completionBroker))
                     return VSConstants.S_OK;
+
+                return retVal;
+            } catch (Exception e) {
+                Debug.WriteLine("Exec failed");
+                Debug.WriteLine(e.ToString());
+
+                return VSConstants.S_FALSE;
             }
-
-            var isControlSpace = Keyboard.Modifiers == ModifierKeys.Control && typedChar == ' ';
-        
-            if (!isControlSpace)
-                retVal = _nextCommandHandler.Exec(ref cmdGroup, cmdId, cmdExecOpt, pin, pout);
-
-            if (_completionController.TryComplete(typedChar, cmdId, _completionBroker))
-                return VSConstants.S_OK;
-
-
-            return retVal;
         }
     }
 }

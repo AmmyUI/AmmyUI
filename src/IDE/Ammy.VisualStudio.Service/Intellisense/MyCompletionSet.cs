@@ -32,47 +32,52 @@ namespace Ammy.VisualStudio.Service.Intellisense
 
         public override void Filter()
         {
-            var text = ApplicableTo.GetText(ApplicableTo.TextBuffer.CurrentSnapshot);
-            text = text.TrimStart('.').Trim(' ');
+            try {
+                var text = ApplicableTo.GetText(ApplicableTo.TextBuffer.CurrentSnapshot);
+                text = text.TrimStart('.').Trim(' ');
 
-            //if (IsNullOrWhiteSpace(text)) {
-            //    _session.Dismiss();
-            //    return;
-            //}
-            
-            var orderedByDistance = _items.Where(c => ContainsAllSymbols(text, c.InsertionText))
-                                          .OfType<MyCompletion>()
-                                          .OrderBy(c => {
-                                              var distance = GetSymbolDistance(c, text);
-                                              c.OrderIndex = distance;
-                                              return distance;
-                                          })
-                                          .Distinct(new CompletionEqualityComparer());
-            
-            var zeroIndex = new List<Completion>();
-            var properties = new List<Completion>();
-            var nodes = new List<Completion>();
-            var other = new List<Completion>();
+                //if (IsNullOrWhiteSpace(text)) {
+                //    _session.Dismiss();
+                //    return;
+                //}
 
-            foreach (var item in orderedByDistance) {
-                if (item.OrderIndex == 0)
-                    zeroIndex.Add(item);
-                else if (item.CompletionType == CompletionType.Property)
-                    properties.Add(item);
-                else if (item.CompletionType == CompletionType.Node)
-                    nodes.Add(item);
-                else
-                    other.Add(item);
+                var orderedByDistance = _items.Where(c => ContainsAllSymbols(text, c.InsertionText))
+                                              .OfType<MyCompletion>()
+                                              .OrderBy(c => {
+                                                  var distance = GetSymbolDistance(c, text);
+                                                  c.OrderIndex = distance;
+                                                  return distance;
+                                              })
+                                              .Distinct(new CompletionEqualityComparer());
+
+                var zeroIndex = new List<Completion>();
+                var properties = new List<Completion>();
+                var nodes = new List<Completion>();
+                var other = new List<Completion>();
+
+                foreach (var item in orderedByDistance) {
+                    if (item.OrderIndex == 0)
+                        zeroIndex.Add(item);
+                    else if (item.CompletionType == CompletionType.Property)
+                        properties.Add(item);
+                    else if (item.CompletionType == CompletionType.Node)
+                        nodes.Add(item);
+                    else
+                        other.Add(item);
+                }
+
+                WritableCompletions.Clear();
+                WritableCompletions.AddRange(zeroIndex.Concat(properties)
+                                                      .Concat(nodes)
+                                                      .Concat(other)
+                                                      .ToList());
+
+                if (WritableCompletions.Count > 0)
+                    SelectionStatus = new CompletionSelectionStatus(WritableCompletions[0], true, true);
+            } catch (Exception e) {
+                Debug.WriteLine("Filter failed");
+                Debug.WriteLine(e.ToString());
             }
-
-            WritableCompletions.Clear();
-            WritableCompletions.AddRange(zeroIndex.Concat(properties)
-                                                  .Concat(nodes)
-                                                  .Concat(other)
-                                                  .ToList());
-
-            if (WritableCompletions.Count > 0)
-                SelectionStatus = new CompletionSelectionStatus(WritableCompletions[0], true, true);
         }
 
         private static int GetSymbolDistance(Completion c, string text)
