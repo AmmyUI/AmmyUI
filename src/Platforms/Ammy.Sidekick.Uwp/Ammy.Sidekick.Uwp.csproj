@@ -113,12 +113,10 @@
     <Compile Include="..\Ammy.Sidekick.XamarinForms\ExpressionConverter.cs">
       <Link>ExpressionConverter.cs</Link>
     </Compile>
-    <Compile Include="..\Ammy.Sidekick.XamarinForms\KnownTypes.cs">
-      <Link>KnownTypes.cs</Link>
-    </Compile>
     <Compile Include="..\Ammy.Sidekick.XamarinForms\NumericTypes.cs">
       <Link>NumericTypes.cs</Link>
     </Compile>
+    <Compile Include="KnownTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Ammy.Sidekick.Uwp.rd.xml" />
   </ItemGroup>
