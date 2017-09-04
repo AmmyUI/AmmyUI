@@ -88,6 +88,7 @@ namespace Ammy.VisualStudio.Service.Intellisense
             } catch (Exception e) {
                 Debug.WriteLine("AugmentQuickInfoSession failed");
                 Debug.WriteLine(e.ToString());
+                applicableToSpan = null;
             }
         }
 

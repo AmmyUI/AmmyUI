@@ -16,6 +16,12 @@ mixin GridViewDataColumnToolTip(binding) for DropDownButton {
 UserControl "Ammy.Test.Workbench.MainWindow" {
   DropDownButton { 
     #GridViewDataColumnToolTip("")
-    
+    StackPanel { 
+      StackPanel { 
+        
+
+        TextBlock {  }
+      }
+    }
   }
 } 

@@ -11,7 +11,7 @@ namespace Ammy.VisualStudio.Service.Taggers
 {
     public class OutliningTagger : ITagger<IOutliningRegionTag>
     {
-        private readonly List<ITagSpan<IOutliningRegionTag>> _regionList = new List<ITagSpan<IOutliningRegionTag>>();
+        private List<ITagSpan<IOutliningRegionTag>> _regionList = new List<ITagSpan<IOutliningRegionTag>>();
         private readonly ITextBuffer _buffer;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -28,7 +28,7 @@ namespace Ammy.VisualStudio.Service.Taggers
 
         public void Update(AmmyFile<Top> file)
         {
-            _regionList.Clear();
+            _regionList = new List<ITagSpan<IOutliningRegionTag>>();
 
             var snapshot = (ITextSnapshot)file.Meta.Snapshot;
             var nodeCollector = new AstCollectorVisitor(ast => ast is Node || ast is Function || ast is TypeFunctionRef);
