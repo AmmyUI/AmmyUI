@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Ammy.UWP</id>
-    <version>1.2.85</version>
+    <version>1.2.86</version>
     <authors>Ion OÜ</authors>
     <owners>Ion OÜ</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
@@ -13,7 +13,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>xaml uwp</tags>
     <dependencies>
-      <dependency id="Ammy" version="1.2.85" />
+      <dependency id="Ammy" version="1.2.86" />
     </dependencies>
   </metadata>
   <files>
