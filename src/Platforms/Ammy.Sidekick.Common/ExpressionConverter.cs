@@ -16,18 +16,18 @@ namespace AmmySidekick
         {
             try {
                 var builder = new ExpressionBuilder(this);
-                var doc = XDocument.Parse(parameter.ToString());
-                var id = doc.Root.Attribute("id").Value;
+                var xml = parameter.ToString();
 
                 Delegate converter;
 
-                if (_converterCache.TryGetValue(id, out converter))
+                if (_converterCache.TryGetValue(xml, out converter))
                     return converter.DynamicInvoke(value);
-                
+
+                var doc = XDocument.Parse(xml);
                 var lambda = builder.Build(doc);
                 var compiled = lambda.Compile();
 
-                _converterCache[id] = compiled;
+                _converterCache[xml] = compiled;
 
                 var result = compiled.DynamicInvoke(value);
                 return result;

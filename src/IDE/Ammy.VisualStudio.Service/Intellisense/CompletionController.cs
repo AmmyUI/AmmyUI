@@ -157,7 +157,7 @@ namespace Ammy.VisualStudio.Service.Intellisense
         private static bool IsSessionStartSequence(char typedChar)
         {
             var isControlSpace = Keyboard.Modifiers == ModifierKeys.Control && typedChar == ' ';
-            return IsCompletionStartSymbol(typedChar) || typedChar == '.';// || isControlSpace;
+            return IsCompletionStartSymbol(typedChar) || typedChar == '.' || isControlSpace;
         }
         
         private static bool IsCompletionStartSymbol(char typedChar)
