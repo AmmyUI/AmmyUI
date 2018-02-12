@@ -28,7 +28,7 @@ namespace Ammy.Build
             return Compile(new AmmyProject(referenceAssemblies, ammyFiles, new CSharpProject(projectDir, allSourceFiles), compilationData, projectDir, outputPath, rootNamespace, assemblyName, targetPath), generateMetaFile, needBamlGeneration, needUpdate);
         }
 
-        public CompileResult Compile(AmmyProject project, bool generateMetaFile = false, bool needBamlGeneration = false, bool needUpdate = true)
+        public CompileResult Compile(AmmyProject project, bool generateMetaFile = false, bool needBamlGeneration = false, bool needUpdate = true, bool needXamlGeneration = true)
         {
             var compileResult = new CompileResult(needBamlGeneration) {
                 AmmyProject = project
@@ -58,12 +58,12 @@ namespace Ammy.Build
 
                 EnsureOutputDirectoryExists(project.OutputPath.ToAbsolutePath(project.FsProject.ProjectDir));
                 
-                var anyErrors = compileResult.CompilerMessages.Any(msg => msg.Type == CompilerMessageType.Error || msg.Type == CompilerMessageType.FatalError);
-                var fileOutputWriter = new FileOutputWriter(compileResult, project.Context, project.Files, project.FsProject.ProjectDir, project.OutputPath);
+                var anyErrors = compileResult.CompilerMessages.Any(msg => msg.Type == CompilerMessageType.Error || msg.Type == CompilerMessageType.FatalError);                
                 var bamlCompiler = new BamlCompiler(_isMsBuildCompilation);
 
                 if (!anyErrors) {
-                    fileOutputWriter.WriteFiles(generateMetaFile);
+                    if (needXamlGeneration)
+                        GenerateXamlFiles(compileResult, generateMetaFile);
 
                     if (needBamlGeneration)
                         bamlCompiler.CompileBamlFiles(compileResult, project);
@@ -73,6 +73,12 @@ namespace Ammy.Build
             }
 
             return compileResult;
+        }
+
+        public void GenerateXamlFiles(CompileResult compileResult, bool generateMetaFile)
+        {
+            var fileOutputWriter = new FileOutputWriter(compileResult);
+            fileOutputWriter.WriteFiles(generateMetaFile);
         }
 
         private static void EnsureOutputDirectoryExists(string outputPath)

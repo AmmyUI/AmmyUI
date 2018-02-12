@@ -110,6 +110,15 @@ namespace Ammy.VisualStudio.Service.Compilation
             });
         }
         
+        private void GenerateXamlFiles(string filename)
+        {
+            try {
+                _compiler.GenerateXamlFiles(LatestResult, true);
+            } catch (Exception e) {
+                this.LogDebugInfo("Can't generate XAML files: " + e);
+            }
+        }
+
         private CompileResult CompileImpl(string filename, bool sendRuntimeUpdate, bool needBamlCompilation = false)
         {
             if (sendRuntimeUpdate)
@@ -118,7 +127,7 @@ namespace Ammy.VisualStudio.Service.Compilation
             string projectName;
             var ammyProject = GetAmmyProject(filename, out projectName);
             
-            var result = _compiler.Compile(ammyProject, false, needBamlCompilation);
+            var result = _compiler.Compile(ammyProject, false, needBamlCompilation, needXamlGeneration: !AmmySettings.TransformOnSave);
             result.ProjectName = projectName;
 
             if (result.IsSuccess && sendRuntimeUpdate) {
@@ -342,6 +351,8 @@ namespace Ammy.VisualStudio.Service.Compilation
             documentEvents.DocumentSaved += document => {
                 if (document.FullName.EndsWith(".cs"))
                     LatestResult?.AmmyProject.CSharpProject.MarkAsDirty(document.FullName);
+                if (document.FullName.EndsWith(".ammy") && AmmySettings.TransformOnSave)
+                    GenerateXamlFiles(document.FullName);
             };
             
             solutionEvents.ProjectAdded += project1 => {

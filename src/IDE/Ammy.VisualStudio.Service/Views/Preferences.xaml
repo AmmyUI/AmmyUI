@@ -24,7 +24,8 @@
           <RadioButton Foreground="#444444" x:Name="BraceOnNewLine">New line</RadioButton>
           <RadioButton Foreground="#444444" x:Name="BraceOnSameLine" IsChecked="True">Same line</RadioButton>
 
-          <CheckBox Foreground="#444444" x:Name="ShowEndTagAdornments" Margin="0,20" IsChecked="True">Show end tag adornments</CheckBox>
+          <CheckBox Foreground="#444444" x:Name="ShowEndTagAdornments" Margin="0,20,0,0" IsChecked="True">Show end tag adornments</CheckBox>
+          <CheckBox Foreground="#444444" x:Name="TransformOnSave" Margin="0,10" IsChecked="True">Transform on save</CheckBox>
         </StackPanel>
       </TabItem>
       <TabItem Header="Xamarin Forms">

@@ -34,6 +34,7 @@ namespace Ammy.VisualStudio.Service.Views
 
             ShowEndTagAdornments.IsChecked = AmmySettings.ShowEndTagAdornments;
             SuppressAdbWarning.IsChecked = AmmySettings.SuppressAdbWarning;
+            TransformOnSave.IsChecked = AmmySettings.TransformOnSave;
             AdbPath.Text = AmmySettings.AdbPath;
 
             FormatDocument.Click += (sender, args) => {
@@ -50,6 +51,7 @@ namespace Ammy.VisualStudio.Service.Views
             Save.Click += (sender, args) => {
                 AmmySettings.OpeningBraceOnSameLine = BraceOnSameLine.IsChecked ?? false;
                 AmmySettings.ShowEndTagAdornments = ShowEndTagAdornments.IsChecked ?? false;
+                AmmySettings.TransformOnSave = TransformOnSave.IsChecked ?? false;
                 AmmySettings.SuppressAdbWarning = SuppressAdbWarning.IsChecked ?? false;
                 AmmySettings.AdbPath = AdbPath.Text;
 

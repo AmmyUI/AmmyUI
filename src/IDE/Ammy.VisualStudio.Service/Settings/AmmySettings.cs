@@ -58,6 +58,8 @@ namespace Ammy.VisualStudio.Service.Settings
             }
         }
 
+        public static bool TransformOnSave { get; internal set; }
+
         private static void LoadSettings()
         {
             var store = SettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);

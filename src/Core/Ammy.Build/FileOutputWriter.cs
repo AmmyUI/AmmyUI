@@ -23,13 +23,15 @@ namespace Ammy.Build
         private readonly string _projectPath;
         private readonly string _outputPath;
 
-        public FileOutputWriter(CompileResult compileResult, AmmyDependentPropertyEvalContext context, IReadOnlyList<AmmyFile<Top>> files, string projectPath, string outputPath)
+        public FileOutputWriter(CompileResult compileResult)
         {
+            var ammyProject = compileResult.AmmyProject;
+
             _compileResult = compileResult;
-            _context = context;
-            _files = files;
-            _projectPath = projectPath;
-            _outputPath = outputPath;
+            _files = compileResult.Files.ToList();
+            _context = ammyProject.Context;
+            _projectPath = ammyProject.FsProject.ProjectDir;
+            _outputPath = ammyProject.OutputPath;
         }
 
         public void WriteFiles(bool generateMetaFile)
