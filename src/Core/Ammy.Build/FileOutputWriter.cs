@@ -82,7 +82,7 @@ namespace Ammy.Build
 
                 for (int i = 0; i < 3; i++) {
                     try {
-                        File.WriteAllText(xamlFilePath, xaml);
+                        WriteAllText(xamlFilePath, xaml);
                         break;
                     } catch (IOException) {
                         // Might throw access denied exception, so retry few times
@@ -145,6 +145,33 @@ namespace Ammy.Build
                                   FullName = symbol.FullName
                               } };
                           });
+        }
+
+        public static void WriteAllText(string path, string contents)
+        {
+            var b1 = Encoding.UTF8.GetBytes(contents);
+            if (File.Exists(path))
+            {
+                var b2 = File.ReadAllBytes(path);
+                if (AreEqual(b1, b2))
+                    return;
+                File.WriteAllBytes(path, b1);
+            }
+        }
+
+        private static bool AreEqual(IReadOnlyList<byte> a, IReadOnlyList<byte> b)
+        {
+            var aLength = a?.Count ?? -1;
+            var bLength = b?.Count ?? -1;
+            if (aLength != bLength)
+                return false;
+            if (aLength < 1)
+                return true;
+            for (var i = aLength - 1; i >= 0; i--)
+                if (a[i] != b[i])
+                    return false;
+
+            return true;
         }
     }
 }
