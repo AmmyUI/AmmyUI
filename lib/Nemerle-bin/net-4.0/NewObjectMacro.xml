@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\NewObjectMacro.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Snippets.NewObjectExpressionMacro" />
+    <member name="M:Snippets.NewObjectExpressionMacro.#ctor" />
+    <member name="F:Snippets.NewObjectExpressionMacro.my_usage" />
+    <member name="F:Snippets.NewObjectExpressionMacro.keywords" />
+    <member name="M:Snippets.NewObjectExpressionMacro.#cctor" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_Location" />
+    <member name="P:Snippets.NewObjectExpressionMacro.Location" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_IsInherited" />
+    <member name="P:Snippets.NewObjectExpressionMacro.IsInherited" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_Keywords" />
+    <member name="P:Snippets.NewObjectExpressionMacro.Keywords" />
+    <member name="M:Snippets.NewObjectExpressionMacro.GetName" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_Name" />
+    <member name="P:Snippets.NewObjectExpressionMacro.Name" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_Namespace" />
+    <member name="P:Snippets.NewObjectExpressionMacro.Namespace" />
+    <member name="M:Snippets.NewObjectExpressionMacro.GetNamespace" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_Usage" />
+    <member name="P:Snippets.NewObjectExpressionMacro.Usage" />
+    <member name="M:Snippets.NewObjectExpressionMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Snippets.NewObjectExpressionMacro.IsTailRecursionTransparent" />
+    <member name="M:Snippets.NewObjectExpressionMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Snippets.NewObjectExpressionMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Snippets.NewObjectExpressionMacro.SyntaxExtension" />
+    <member name="T:Snippets.NewObjectImpl" />
+    <member name="M:Snippets.NewObjectImpl._N_findLocalFunction_11312(Snippets.NewObjectImpl._N_closureOf_Run_11299,Nemerle.Compiler.Parsetree.Name)" />
+    <member name="M:Snippets.NewObjectImpl._N_fixMethodName_11306(Nemerle.Compiler.Parsetree.Name)" />
+    <member name="M:Snippets.NewObjectImpl.Run(Nemerle.Compiler.Typer,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Snippets.NewObjectImpl.InterfaceInfo" />
+    <member name="T:Snippets.NewObjectImpl.MethodInfo" />
+    <member name="T:_N_MacroContexts" />
+    <member name="M:_N_MacroContexts.#cctor" />
+    <member name="F:_N_MacroContexts.serialized" />
+    <member name="F:_N_MacroContexts.contexts" />
+    <member name="F:_N_MacroContexts.last_manager" />
+    <member name="M:_N_MacroContexts.Get(System.Int32,Nemerle.Compiler.ManagerClass)" />
+    <member name="M:_N_MacroContexts.Clear" />
+  </members>
+</doc>

@@ -1,0 +1,406 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.ComputationExpressions.Macros.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.ComputationExpressions.Extensions.ArrayBuilder">
+      <summary>
+        <para>Defines a computation builder for the array comprehension.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.acc" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.For(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.DoWhile(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ArrayBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.Extensions.AsyncBuilder">
+      <summary>
+        <para>This is a AsyncBuilder computation builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.AsyncBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.ComputationBuilder">
+      <summary>
+        <para>Represents an internal computation builder that actually generates a code.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.For(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.DoWhile(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.DefaultBuilder">
+      <summary>
+        <para>This is a default F#-like computation builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.ComputationExpressions.DefaultBuilder.builder" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.#ctor(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.DefaultBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder">
+      <summary>
+        <para>Defines a computation builder for the enumerable comprehension.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Instance" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.EnumerableBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.Extensions.ListBuilder">
+      <summary>
+        <para>Defines a computation builder for the list comprehension.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Extensions.ListBuilder.acc" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Return(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.ReturnComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Yield(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.YieldComp(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Delay(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Zero" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.For(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.DoWhile(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.Extensions.ListBuilder.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ComputationExpressions.ComputationExpander">
+      <summary>
+        <para>This module allows us to expand any computation expression using
+ the specified internal builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transformUsing_7717(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.MatchCase},Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transformTry_7711(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transform3_7705(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transformList2_7699(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr},System.Boolean)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transform2_7693(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr,System.Boolean)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transformList_7687(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr},System.Boolean)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander._N_transform_7681(Nemerle.ComputationExpressions.ComputationExpander._N_closureOf_Expand_7673,Nemerle.Compiler.Parsetree.PExpr,System.Boolean)" />
+    <member name="M:Nemerle.ComputationExpressions.ComputationExpander.Expand(Nemerle.ComputationExpressions.ComputationBuilder,Nemerle.Compiler.Parsetree.PExpr)">
+      <summary>
+        <para>Expands the expression using the specified computation builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro">
+      <summary>
+        <para>Wraps the F#-like computation expression in the result at the final step.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro._N_run_10655(Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro._N_closureOf_Run_10626,Nemerle.Compiler.TypeInfo,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro._N_delay_10643(Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro._N_closureOf_Run_10626,Nemerle.Compiler.TypeInfo,Nemerle.Compiler.Parsetree.PExpr.Typed)" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.#ctor">
+      <summary>
+        <para>Wraps the F#-like computation expression in the result at the final step.
+ </para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.InternalMacros.ComputationRunMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.defcompMacro" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.defcompMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.defcompMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.defcompMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.defcompMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.callMacro" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.callMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.callMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.callMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.callMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.callcompMacro" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.callcompMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.callcompMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.callcompMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.callcompMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.returnMacro" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.returnMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.returnMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.returnMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.returnMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.returncompMacro" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.returncompMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.returncompMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.returncompMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.returncompMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.yieldcompMacro" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.yieldcompMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.yieldcompMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.yieldcompMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.yieldcompMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.compMacro" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.compMacro.my_usage" />
+    <member name="F:Nemerle.ComputationExpressions.compMacro.keywords" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_Location" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.Location" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_IsInherited" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.IsInherited" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_Keywords" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.Keywords" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.GetName" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_Name" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.Name" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_Namespace" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.Namespace" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.GetNamespace" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_Usage" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.Usage" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ComputationExpressions.compMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ComputationExpressions.compMacro.SyntaxExtension" />
+    <member name="T:Nemerle.ComputationExpressions.ComputationError">
+      <summary>
+        <para>This is a helper diagnostic module.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.ComputationError.UnexpectedCall(System.String,Nemerle.Compiler.Parsetree.PExpr)">
+      <summary>
+        <para>Is is called whenever the macro specified by its name is invalid in the current context.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:_N_MacroContexts" />
+    <member name="M:_N_MacroContexts.#cctor" />
+    <member name="F:_N_MacroContexts.serialized" />
+    <member name="F:_N_MacroContexts.contexts" />
+    <member name="F:_N_MacroContexts.last_manager" />
+    <member name="M:_N_MacroContexts.Get(System.Int32,Nemerle.Compiler.ManagerClass)" />
+    <member name="M:_N_MacroContexts.Clear" />
+  </members>
+</doc>

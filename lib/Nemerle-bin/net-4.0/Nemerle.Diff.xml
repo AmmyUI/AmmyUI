@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\TestFramework\\Nemerle.Diff.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Diff.DiffData`1">
+      <summary>
+        <para>Data of arrays comparison.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.DiffData`1.Data">
+      <summary>
+        <para>Buffer of elements that will be compared.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.DiffData`1.IsModified">
+      <summary>
+        <para>Array of booleans that flags for modified data for each element of array.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffData`1.#ctor(`0[])">
+      <summary>
+        <para>Initializes the diff sequence data buffer.
+ </para>
+      </summary>
+ <param name="data"><para>Reference to the array</para></param>
+
+</member>
+    <member name="T:Nemerle.Diff.DiffExtensions">
+      <summary>
+        <para>Implementation of Difference Algorithm published in
+ "An O(ND) Difference Algorithm and its Variations" by Eugene Myers
+ Algorithmica Vol. 1 No. 2, 1986, p 251. It's based on C# implementation
+ by Matthias Hertel (http://www.mathertel.de).
+
+</para>
+      </summary>
+    </member>
+    <member name="M:Nemerle.Diff.DiffExtensions._N__N_lambda__4804_4817``1(``0,``0)" />
+    <member name="M:Nemerle.Diff.DiffExtensions._N_optimizeDiffData_4659``1(Nemerle.Diff.DiffExtensions._N_closureOf_Diff_4511{``0},Nemerle.Diff.DiffData{``0})" />
+    <member name="M:Nemerle.Diff.DiffExtensions._N_computeLcs_4618``1(Nemerle.Diff.DiffExtensions._N_closureOf_Diff_4511{``0},Nemerle.Diff.DiffData{``0},System.Int32,System.Int32,Nemerle.Diff.DiffData{``0},System.Int32,System.Int32,System.Int32[],System.Int32[])" />
+    <member name="M:Nemerle.Diff.DiffExtensions._N_computeSms_4528``1(Nemerle.Diff.DiffExtensions._N_closureOf_Diff_4511{``0},Nemerle.Diff.DiffData{``0},System.Int32,System.Int32,Nemerle.Diff.DiffData{``0},System.Int32,System.Int32,System.Int32[],System.Int32[])" />
+    <member name="M:Nemerle.Diff.DiffExtensions._N__N_lambda__4071_4121``1(``0,``0)" />
+    <member name="M:Nemerle.Diff.DiffExtensions.Diff``1(``0[],``0[])">
+      <summary>
+        <para>Finds a difference in two sequences.
+ </para>
+      </summary>
+ <param name="sequenceA"><para>A-version of the sequence</para></param>
+ <param name="sequenceB"><para>B-version of the sequence</para></param>
+ <returns><para>Returns an array of DiffItems that describe the differences.</para></returns>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffExtensions.Diff``1(``0[],``0[],System.Func{``0,``0,System.Boolean})">
+      <summary>
+        <para>Finds a difference in two sequences.
+ </para>
+      </summary>
+ <param name="sequenceA"><para>A-version of the sequence</para></param>
+ <param name="sequenceB"><para>B-version of the sequence</para></param>
+ <param name="equals"><para>Item equality predicate</para></param>
+ <returns><para>Returns an array of DiffItems that describe the differences.</para></returns>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffExtensions.Patch``1(``0[],Nemerle.Diff.DiffItem{``0}[])">
+      <summary>
+        <para>Patches array via provided difference data.
+ </para>
+      </summary>
+ <param name="sequenceA"><para>Array to patch</para></param>
+ <param name="diffData"><para>Difference data</para></param>
+ <returns><para>Returns a patched version of the array.</para></returns>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffExtensions.Match``1(``0[],``0[])">
+      <summary>
+        <para>Finds a similarity rate for two sequences.
+ </para>
+      </summary>
+ <param name="sequenceA"><para>A-version of the sequence</para></param>
+ <param name="sequenceB"><para>B-version of the sequence</para></param>
+ <returns><para>Returns a similarity rate of given sequences (from 0.0D for fully different sequences to 1.0D for fully similar ones).</para></returns>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffExtensions.Match``1(``0[],``0[],System.Func{``0,``0,System.Boolean})">
+      <summary>
+        <para>Finds a similarity rate for two sequences.
+ </para>
+      </summary>
+ <param name="sequenceA"><para>A-version of the sequence</para></param>
+ <param name="sequenceB"><para>B-version of the sequence</para></param>
+ <param name="equals"><para>Item equality predicate</para></param>
+ <returns><para>Returns a similarity rate of given sequences (from 0.0D for fully different sequences to 1.0D for fully similar ones).</para></returns>
+
+</member>
+    <member name="T:Nemerle.Diff.DiffItem`1">
+      <summary>
+        <para>Details of one difference.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.DiffItem`1.Index">
+      <summary>
+        <para>Index of start element in the array.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.DiffItem`1.Deleted">
+      <summary>
+        <para>Number of deletions from the array.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.DiffItem`1.Inserted">
+      <summary>
+        <para>Array of elements to be inserted into the array</para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Diff.DiffItem`1.#ctor(System.Int32,System.Int32,`0[])">
+      <summary>
+        <para>Details of one difference.</para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.Diff.Snake">
+      <summary>
+        <para>Record represents a point of snake.</para>
+      </summary>
+
+</member>
+    <member name="F:Nemerle.Diff.Snake.X" />
+    <member name="F:Nemerle.Diff.Snake.Y" />
+    <member name="M:Nemerle.Diff.Snake.#ctor(System.Int32,System.Int32)">
+      <summary>
+        <para>Record represents a point of snake.</para>
+      </summary>
+
+</member>
+  </members>
+</doc>

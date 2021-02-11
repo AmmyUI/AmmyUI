@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\Unsafe\\Nemerle.Unsafe.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Unsafe._N_operator372029320_3921Macro" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.#ctor" />
+    <member name="F:Nemerle.Unsafe._N_operator372029320_3921Macro.my_usage" />
+    <member name="F:Nemerle.Unsafe._N_operator372029320_3921Macro.keywords" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.#cctor" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_Location" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.Location" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_IsInherited" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.IsInherited" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_Keywords" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.Keywords" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.GetName" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_Name" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.Name" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_Namespace" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.Namespace" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.GetNamespace" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_Usage" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.Usage" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.Unsafe._N_operator372029320_3921Macro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.Unsafe._N_operator372029320_3921Macro.SyntaxExtension" />
+    <member name="T:Nemerle.Unsafe.PinnedMacro" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.#ctor" />
+    <member name="F:Nemerle.Unsafe.PinnedMacro.my_usage" />
+    <member name="F:Nemerle.Unsafe.PinnedMacro.keywords" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.#cctor" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_Location" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.Location" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_IsInherited" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.IsInherited" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_Keywords" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.Keywords" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.GetName" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_Name" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.Name" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_Namespace" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.Namespace" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.GetNamespace" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_Usage" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.Usage" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.Unsafe.PinnedMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.Unsafe.PinnedMacro.SyntaxExtension" />
+    <member name="T:Nemerle.Unsafe.PinnedImpl" />
+    <member name="M:Nemerle.Unsafe.PinnedImpl.DoTransform(Nemerle.Compiler.Typer,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+  </members>
+</doc>

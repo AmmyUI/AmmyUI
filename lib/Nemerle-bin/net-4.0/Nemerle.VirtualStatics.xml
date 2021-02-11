@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.VirtualStatics.xml</name>
+  </assembly>
+  <members>
+    <member name="T:AllowVirtualStatics_assembly_postscanMacro" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.#ctor" />
+    <member name="F:AllowVirtualStatics_assembly_postscanMacro.my_usage" />
+    <member name="F:AllowVirtualStatics_assembly_postscanMacro.keywords" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.#cctor" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_Location" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.Location" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_IsInherited" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.IsInherited" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_Keywords" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.Keywords" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.GetName" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_Name" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.Name" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_Namespace" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.Namespace" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.GetNamespace" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_Usage" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.Usage" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.get_IsTailRecursionTransparent" />
+    <member name="P:AllowVirtualStatics_assembly_postscanMacro.IsTailRecursionTransparent" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:AllowVirtualStatics_assembly_postscanMacro.SyntaxExtension" />
+    <member name="T:AllowVirtualStatics_assembly_preaddMacro" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.#ctor" />
+    <member name="F:AllowVirtualStatics_assembly_preaddMacro.my_usage" />
+    <member name="F:AllowVirtualStatics_assembly_preaddMacro.keywords" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.#cctor" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_Location" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.Location" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_IsInherited" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.IsInherited" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_Keywords" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.Keywords" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.GetName" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_Name" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.Name" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_Namespace" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.Namespace" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.GetNamespace" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_Usage" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.Usage" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.get_IsTailRecursionTransparent" />
+    <member name="P:AllowVirtualStatics_assembly_preaddMacro.IsTailRecursionTransparent" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:AllowVirtualStatics_assembly_preaddMacro.SyntaxExtension" />
+    <member name="T:AllowVirtualStaticsImpl" />
+    <member name="M:AllowVirtualStaticsImpl._N_copyFunc_10139(Nemerle.Core.option{Nemerle.Compiler.Parsetree.ClassMember.Function})" />
+    <member name="M:AllowVirtualStaticsImpl._N__N_lambda__9755_9776(Nemerle.Compiler.Parsetree.TopDeclaration)" />
+    <member name="M:AllowVirtualStaticsImpl.#cctor" />
+    <member name="F:AllowVirtualStaticsImpl.metaClassName" />
+    <member name="F:AllowVirtualStaticsImpl.classFieldName" />
+    <member name="F:AllowVirtualStaticsImpl.baseTypeKey" />
+    <member name="F:AllowVirtualStaticsImpl.additionalBaseTypesKey" />
+    <member name="F:AllowVirtualStaticsImpl.processedMarker" />
+    <member name="M:AllowVirtualStaticsImpl.DoTransformBeforeInheritance(Nemerle.Compiler.Typer)" />
+    <member name="M:AllowVirtualStaticsImpl.DoTransform(Nemerle.Compiler.Typer)" />
+    <member name="M:AllowVirtualStaticsImpl.Process(Nemerle.Compiler.Typer,Nemerle.Compiler.TypeBuilder)" />
+    <member name="M:AllowVirtualStaticsImpl.GetStaticMethodsAndProperties(Nemerle.Compiler.TypeBuilder)" />
+    <member name="M:AllowVirtualStaticsImpl.Process(Nemerle.Compiler.TypeBuilder,Nemerle.Core.list{Nemerle.Compiler.Parsetree.ClassMember})" />
+    <member name="M:AllowVirtualStaticsImpl.Process(Nemerle.Compiler.Parsetree.ClassMember.Function)" />
+    <member name="M:AllowVirtualStaticsImpl.Process(Nemerle.Compiler.Parsetree.ClassMember.Property)" />
+    <member name="M:AllowVirtualStaticsImpl.CopyAndChangeAttributes(Nemerle.Compiler.Parsetree.ClassMember.Function)" />
+    <member name="M:AllowVirtualStaticsImpl.ChangeAttributes(Nemerle.Compiler.Parsetree.ClassMember,Nemerle.Compiler.Parsetree.ClassMember)" />
+    <member name="M:AllowVirtualStaticsImpl.CopyMissingMembers(Nemerle.Compiler.Typer,Nemerle.Compiler.TypeInfo,Nemerle.Compiler.TypeBuilder,Nemerle.Core.list{Nemerle.Compiler.Parsetree.ClassMember})" />
+    <member name="M:AllowVirtualStaticsImpl.GetBaseClassStaticMethodsAndProperties(Nemerle.Compiler.LibraryReference.ExternalTypeInfo)" />
+    <member name="M:AllowVirtualStaticsImpl.GetBaseClassStaticMethodsAndProperties(Nemerle.Compiler.Typer,Nemerle.Compiler.TypeBuilder)" />
+    <member name="T:_N_MacroContexts" />
+    <member name="M:_N_MacroContexts.#cctor" />
+    <member name="F:_N_MacroContexts.serialized" />
+    <member name="F:_N_MacroContexts.contexts" />
+    <member name="F:_N_MacroContexts.last_manager" />
+    <member name="M:_N_MacroContexts.Get(System.Int32,Nemerle.Compiler.ManagerClass)" />
+    <member name="M:_N_MacroContexts.Clear" />
+  </members>
+</doc>

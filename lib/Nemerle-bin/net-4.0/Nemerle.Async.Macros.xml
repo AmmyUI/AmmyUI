@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.Async.Macros.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Async.Internal.AsyncBuilderMacro">
+      <summary>
+        <para>This is a AsyncBuilder.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.#ctor" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.Bind(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,System.Boolean,System.Boolean)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.BindAsync(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,System.Boolean,System.Boolean)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.Combine(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.CombineAsync(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.Run(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.RunAsync(Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.While(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.DoWhile(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.ForEach(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.For(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.TryFinally(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.TryCatch(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilderMacro.Using(Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.Async.Internal.AsyncExpander">
+      <summary>
+        <para>This module allows us to expand any async expression using
+ the specified internal builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transformUsing_7193(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.MatchCase},Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transformTry_7187(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.TryCase})" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transform2_7181(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transformList2_7175(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Compiler.Parsetree.PExpr,Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transformList_7169(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander._N_transform_7163(Nemerle.Async.Internal.AsyncExpander._N_closureOf_Expand_7155,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="M:Nemerle.Async.Internal.AsyncExpander.Expand(Nemerle.Async.Internal.AsyncBuilderMacro,Nemerle.Compiler.Parsetree.PExpr)">
+      <summary>
+        <para>Expands the expression using the specified computation builder.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.Async.asyncMacro">
+      <summary>
+        <para>Creates function body for asynchronous exectution
+ or executes asynchronous block of code.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.asyncMacro.#ctor" />
+    <member name="F:Nemerle.Async.asyncMacro.my_usage" />
+    <member name="F:Nemerle.Async.asyncMacro.keywords" />
+    <member name="M:Nemerle.Async.asyncMacro.#cctor" />
+    <member name="M:Nemerle.Async.asyncMacro.get_Location" />
+    <member name="P:Nemerle.Async.asyncMacro.Location" />
+    <member name="M:Nemerle.Async.asyncMacro.get_IsInherited" />
+    <member name="P:Nemerle.Async.asyncMacro.IsInherited" />
+    <member name="M:Nemerle.Async.asyncMacro.get_Keywords" />
+    <member name="P:Nemerle.Async.asyncMacro.Keywords" />
+    <member name="M:Nemerle.Async.asyncMacro.GetName" />
+    <member name="M:Nemerle.Async.asyncMacro.get_Name" />
+    <member name="P:Nemerle.Async.asyncMacro.Name" />
+    <member name="M:Nemerle.Async.asyncMacro.get_Namespace" />
+    <member name="P:Nemerle.Async.asyncMacro.Namespace" />
+    <member name="M:Nemerle.Async.asyncMacro.GetNamespace" />
+    <member name="M:Nemerle.Async.asyncMacro.get_Usage" />
+    <member name="P:Nemerle.Async.asyncMacro.Usage" />
+    <member name="M:Nemerle.Async.asyncMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.Async.asyncMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.Async.asyncMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.asyncMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.Async.asyncMacro.SyntaxExtension" />
+    <member name="T:Nemerle.Async.AsyncMethod_method_preaddMacro">
+      <summary>
+        <para>Creates method body for asynchronous execution.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.#ctor" />
+    <member name="F:Nemerle.Async.AsyncMethod_method_preaddMacro.my_usage" />
+    <member name="F:Nemerle.Async.AsyncMethod_method_preaddMacro.keywords" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.#cctor" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_Location" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.Location" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_IsInherited" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.IsInherited" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_Keywords" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.Keywords" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.GetName" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_Name" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.Name" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_Namespace" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.Namespace" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.GetNamespace" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_Usage" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.Usage" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.Async.AsyncMethod_method_preaddMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.Async.AsyncMethod_method_preaddMacro.SyntaxExtension" />
+    <member name="T:Nemerle.Async.awaitMacro">
+      <summary>
+        <para>Awaits result of asynchronous expression.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.awaitMacro.#ctor" />
+    <member name="F:Nemerle.Async.awaitMacro.my_usage" />
+    <member name="F:Nemerle.Async.awaitMacro.keywords" />
+    <member name="M:Nemerle.Async.awaitMacro.#cctor" />
+    <member name="M:Nemerle.Async.awaitMacro.get_Location" />
+    <member name="P:Nemerle.Async.awaitMacro.Location" />
+    <member name="M:Nemerle.Async.awaitMacro.get_IsInherited" />
+    <member name="P:Nemerle.Async.awaitMacro.IsInherited" />
+    <member name="M:Nemerle.Async.awaitMacro.get_Keywords" />
+    <member name="P:Nemerle.Async.awaitMacro.Keywords" />
+    <member name="M:Nemerle.Async.awaitMacro.GetName" />
+    <member name="M:Nemerle.Async.awaitMacro.get_Name" />
+    <member name="P:Nemerle.Async.awaitMacro.Name" />
+    <member name="M:Nemerle.Async.awaitMacro.get_Namespace" />
+    <member name="P:Nemerle.Async.awaitMacro.Namespace" />
+    <member name="M:Nemerle.Async.awaitMacro.GetNamespace" />
+    <member name="M:Nemerle.Async.awaitMacro.get_Usage" />
+    <member name="P:Nemerle.Async.awaitMacro.Usage" />
+    <member name="M:Nemerle.Async.awaitMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.Async.awaitMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.Async.awaitMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.Async.awaitMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.Async.awaitMacro.SyntaxExtension" />
+    <member name="T:Nemerle.Async.ComputationError">
+      <summary>
+        <para>This is a helper diagnostic module.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Async.ComputationError.UnexpectedCall(System.String,Nemerle.Compiler.Parsetree.PExpr)">
+      <summary>
+        <para>Is is called whenever the macro specified by its name is invalid in the current context.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:_N_MacroContexts" />
+    <member name="M:_N_MacroContexts.#cctor" />
+    <member name="F:_N_MacroContexts.serialized" />
+    <member name="F:_N_MacroContexts.contexts" />
+    <member name="F:_N_MacroContexts.last_manager" />
+    <member name="M:_N_MacroContexts.Get(System.Int32,Nemerle.Compiler.ManagerClass)" />
+    <member name="M:_N_MacroContexts.Clear" />
+  </members>
+</doc>

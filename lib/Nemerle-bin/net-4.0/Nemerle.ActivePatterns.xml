@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.ActivePatterns.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.ActivePatterns.ActiveImpl" />
+    <member name="M:Nemerle.ActivePatterns.ActiveImpl.Impl(Nemerle.Compiler.Typer,Nemerle.Compiler.Parsetree.PExpr)" />
+    <member name="T:Nemerle.ActivePatterns.ActiveImpl.DecomposedActivePattern" />
+    <member name="T:Nemerle.ActivePatterns.ActiveImpl.DeactivationWorker" />
+    <member name="T:Nemerle.ActivePatterns.ActiveImpl.ActivePatternMatchingConvertor" />
+    <member name="T:Nemerle.ActivePatterns.activeMacro" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.#ctor" />
+    <member name="F:Nemerle.ActivePatterns.activeMacro.my_usage" />
+    <member name="F:Nemerle.ActivePatterns.activeMacro.keywords" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.#cctor" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_Location" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.Location" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_IsInherited" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.IsInherited" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_Keywords" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.Keywords" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.GetName" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_Name" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.Name" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_Namespace" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.Namespace" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.GetNamespace" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_Usage" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.Usage" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.get_IsTailRecursionTransparent" />
+    <member name="P:Nemerle.ActivePatterns.activeMacro.IsTailRecursionTransparent" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.CallTransform(Nemerle.Core.list{Nemerle.Compiler.Parsetree.PExpr})" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.Run(Nemerle.Compiler.Typer,Nemerle.Core.list{Nemerle.Compiler.Parsetree.SyntaxElement})" />
+    <member name="M:Nemerle.ActivePatterns.activeMacro.SyntaxExtension" />
+    <member name="T:_N_MacroContexts" />
+    <member name="M:_N_MacroContexts.#cctor" />
+    <member name="F:_N_MacroContexts.serialized" />
+    <member name="F:_N_MacroContexts.contexts" />
+    <member name="F:_N_MacroContexts.last_manager" />
+    <member name="M:_N_MacroContexts.Get(System.Int32,Nemerle.Compiler.ManagerClass)" />
+    <member name="M:_N_MacroContexts.Clear" />
+  </members>
+</doc>

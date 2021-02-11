@@ -1,0 +1,400 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.ComputationExpressions.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.ComputationExpressions.Async.Async`1" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Cancel">
+      <summary>
+        <para>Implementation detail. DO NOT USE!
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)">
+      <summary>
+        <para>Implementation detail. DO NOT USE!
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Start" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Start(Nemerle.ComputationExpressions.Async.CancelationToken)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Start(Nemerle.ComputationExpressions.Async.ExecutionContext)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Start(Nemerle.ComputationExpressions.Async.ExecutionContext,Nemerle.ComputationExpressions.Async.CancelationToken)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.Yield" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.SwitchTo(Nemerle.ComputationExpressions.Async.ExecutionContext)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.FromBeginEnd(Nemerle.Builtins.Function{System.AsyncCallback,System.IAsyncResult},Nemerle.Builtins.Function{System.IAsyncResult,`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.Async`1.FromBeginEnd(Nemerle.Builtins.Function{System.AsyncCallback,System.IAsyncResult},Nemerle.Builtins.FunctionVoid{System.IAsyncResult})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncPromise`1">
+      <summary>
+        <para>Description of AsyncResult.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncPromise`1._syncRoot" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncPromise`1._result" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.SetValue(`0)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.SetException(System.Exception)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.WrapFunction(Nemerle.Builtins.Function{`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.SetFunctionResult(Nemerle.Builtins.Function{`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.SetResult(Nemerle.ComputationExpressions.Async.AsyncResult{`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.SetResult(Nemerle.ComputationExpressions.Async.AsyncResult{`0},System.Boolean)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.get_Result" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncPromise`1.Result" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncPromise`1._firstJob" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncPromise`1.TryGetResult(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.ComputationExpressions.Async.AsyncResult{`0}@)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncResult`1" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1.GetValue" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1.ToString" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1._N_GetVariantCode" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1._N_GetVariantCodeSafe(Nemerle.ComputationExpressions.Async.AsyncResult{`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncResult`1._N_GetVariantCodeObject(System.Object)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncResult`1.Value`0" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncResult`1.Exeption`0" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncResult`1.Canceled`0" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncValue`1" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.TryGetResult(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.ComputationExpressions.Async.AsyncResult{`0}@)">
+      <summary>
+        <para>Implementation detail. DO NOT USE!
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.get_Result" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncValue`1.Result" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.get_Value" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncValue`1.Value" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.WaitOne" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncValue`1.WaitAll``1(System.Collections.Generic.IEnumerable{Nemerle.ComputationExpressions.Async.AsyncValue{``0}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.begin" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.end" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.cancel" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1._executed" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1._result" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1._job" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1._exception" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.Callback(System.IAsyncResult)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncFromBeginEnd`1.#ctor(Nemerle.Builtins.Function{System.AsyncCallback,System.IAsyncResult},Nemerle.Builtins.Function{System.IAsyncResult,`0},Nemerle.Builtins.FunctionVoid)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncSwitchExecutionContext" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncSwitchExecutionContext.executionContext" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncSwitchExecutionContext.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.FakeVoid@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncSwitchExecutionContext.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncSwitchExecutionContext.#ctor(Nemerle.ComputationExpressions.Async.ExecutionContext)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncYield" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncYield.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncYield.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncYield.Instance" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncYield.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.FakeVoid@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncYield.Cancel" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncBind`2" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBind`2.async" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBind`2.cont" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBind`2._r" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBind`2.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`1@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBind`2.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBind`2.#ctor(Nemerle.ComputationExpressions.Async.Async{`0},Nemerle.Builtins.Function{`0,Nemerle.ComputationExpressions.Async.Async{`1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2.async" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`1@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindVoid`2.#ctor(Nemerle.ComputationExpressions.Async.Async{`0},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{`1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncBindValue`2" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindValue`2.async" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindValue`2.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValue`2.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`1@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValue`2.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValue`2.#ctor(Nemerle.ComputationExpressions.Async.AsyncValue{`0},Nemerle.Builtins.Function{`0,Nemerle.ComputationExpressions.Async.Async{`1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2.async" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`1@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncBindValueVoid`2.#ctor(Nemerle.ComputationExpressions.Async.AsyncValue{`0},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{`1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AcyncBuilder" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Return``1(``0)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Bind``2(Nemerle.ComputationExpressions.Async.Async{``0},Nemerle.Builtins.Function{``0,Nemerle.ComputationExpressions.Async.Async{``1}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Bind``2(Nemerle.ComputationExpressions.Async.Async{``0},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{``1}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Bind``2(Nemerle.ComputationExpressions.Async.AsyncValue{``0},Nemerle.Builtins.Function{``0,Nemerle.ComputationExpressions.Async.Async{``1}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Bind``2(Nemerle.ComputationExpressions.Async.AsyncValue{``0},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{``1}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.While(Nemerle.Builtins.Function{System.Boolean},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.ForEach``1(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.ForEach``1(System.Collections.IEnumerable,Nemerle.Builtins.Function{``0,Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Delay``1(Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{``0}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.TryFinally``1(Nemerle.ComputationExpressions.Async.Async{``0},Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.TryCatch``1(Nemerle.ComputationExpressions.Async.Async{``0},Nemerle.Builtins.Function{System.Exception,Nemerle.ComputationExpressions.Async.Async{``0}})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncBuilder.Using``2(``0,Nemerle.Builtins.Function{``0,Nemerle.ComputationExpressions.Async.Async{``1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncDelay`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncDelay`1.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncDelay`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncDelay`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncDelay`1.#ctor(Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{`0}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncForEach`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEach`1.enumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEach`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEach`1.curBody" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEach`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.FakeVoid@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEach`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEach`1.#ctor(System.Collections.Generic.IEnumerator{`0},Nemerle.Builtins.Function{`0,Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.enumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.curBody" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.FakeVoid@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncForEachObject`1.#ctor(System.Collections.IEnumerator,Nemerle.Builtins.Function{`0,Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncReturn`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncReturn`1.value" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncReturn`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncReturn`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncReturn`1.#ctor(`0)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1.handler" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryCatch`1.#ctor(Nemerle.ComputationExpressions.Async.Async{`0},Nemerle.Builtins.Function{System.Exception,Nemerle.ComputationExpressions.Async.Async{`0}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1.handler" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,`0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncTryFinally`1.#ctor(Nemerle.ComputationExpressions.Async.Async{`0},Nemerle.Builtins.FunctionVoid)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncWhile" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncWhile.pred" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncWhile.body" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncWhile.curBody" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncWhile.Exec(Nemerle.ComputationExpressions.Async.AsyncJobBase,Nemerle.FakeVoid@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncWhile.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncWhile.#ctor(Nemerle.Builtins.Function{System.Boolean},Nemerle.Builtins.Function{Nemerle.ComputationExpressions.Async.Async{Nemerle.FakeVoid}})" />
+    <member name="T:Nemerle.ComputationExpressions.Async.CancelationToken" />
+    <member name="M:Nemerle.ComputationExpressions.Async.CancelationToken.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.CancelationToken.get_Default" />
+    <member name="P:Nemerle.ComputationExpressions.Async.CancelationToken.Default" />
+    <member name="F:Nemerle.ComputationExpressions.Async.CancelationToken._syncroot" />
+    <member name="F:Nemerle.ComputationExpressions.Async.CancelationToken._jobs" />
+    <member name="M:Nemerle.ComputationExpressions.Async.CancelationToken.Register(Nemerle.ComputationExpressions.Async.AsyncJobBase)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.CancelationToken.Cancel" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncCancelationException" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncCancelationException.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncCancelationException.#ctor(System.String)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncCancelationException.#ctor(System.String,System.Exception)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncCancelationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncAggregateException" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncAggregateException.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncAggregateException._exceptions" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncAggregateException.Add(System.Exception)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncAggregateException.ThrowIfAny" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncAggregateException.get_AggregatedExceptions" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncAggregateException.AggregatedExceptions" />
+    <member name="T:Nemerle.ComputationExpressions.Async.ExecutionContext">
+      <summary>
+        <para>Description of ExecutionContext.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.ExecutionContext.#ctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.ExecutionContext.Execute(Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.ExecutionContext.get_Default" />
+    <member name="P:Nemerle.ComputationExpressions.Async.ExecutionContext.Default" />
+    <member name="T:Nemerle.ComputationExpressions.Async.SystemExecutionContexts" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SystemExecutionContexts.ThreadPool" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SystemExecutionContexts.FromCurrentSynchronizationContext" />
+    <member name="T:Nemerle.ComputationExpressions.Async.SystemThreadPoolExecutionContext" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SystemThreadPoolExecutionContext.#cctor" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SystemThreadPoolExecutionContext.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Async.SystemThreadPoolExecutionContext.Instance" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SystemThreadPoolExecutionContext.Execute(Nemerle.Builtins.FunctionVoid)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.SynchronizationContextExecutionContext" />
+    <member name="F:Nemerle.ComputationExpressions.Async.SynchronizationContextExecutionContext.ctx" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SynchronizationContextExecutionContext.Execute(Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.SynchronizationContextExecutionContext.#ctor(System.Threading.SynchronizationContext)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncJobBase">
+      <summary>
+        <para>Implementation detail. DO NOT USE!
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJobBase._state" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.get_IsReady" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncJobBase.IsReady" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.get_State" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.set_State(System.Int32)" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncJobBase.State" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJobBase._N_ExecutionContext_3758" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.get_ExecutionContext" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.set_ExecutionContext(Nemerle.ComputationExpressions.Async.ExecutionContext)" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncJobBase.ExecutionContext" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.Cancel" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.ExecWhileReady``1(Nemerle.ComputationExpressions.Async.Async{``0},``0@)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJobBase.Start" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJobBase.NextJob" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncJobBase.JobState" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncJob`1" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJob`1._async" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJob`1._result" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJob`1._runCache" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJob`1.#ctor(Nemerle.ComputationExpressions.Async.ExecutionContext,Nemerle.ComputationExpressions.Async.Async{`0})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJob`1.Start" />
+    <member name="F:Nemerle.ComputationExpressions.Async.AsyncJob`1.syncRoot" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJob`1.Run" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncJob`1.get_Result" />
+    <member name="P:Nemerle.ComputationExpressions.Async.AsyncJob`1.Result" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AsyncStreamExtensions" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncStreamExtensions.AsyncRead(System.IO.Stream,System.Byte[],System.Int32,System.Int32)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AsyncStreamExtensions.AsyncWrite(System.IO.Stream,System.Byte[],System.Int32,System.Int32)" />
+    <member name="T:Nemerle.ComputationExpressions.Async.AcyncUtils" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncUtils.AsyncMap``2(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,``1})" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncUtils.AsyncMap``2(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,``1},Nemerle.ComputationExpressions.Async.CancelationToken)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncUtils.AsyncMap``2(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,``1},Nemerle.ComputationExpressions.Async.ExecutionContext)" />
+    <member name="M:Nemerle.ComputationExpressions.Async.AcyncUtils.AsyncMap``2(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,``1},Nemerle.ComputationExpressions.Async.ExecutionContext,Nemerle.ComputationExpressions.Async.CancelationToken)" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1">
+      <summary>
+        <para>Appends two enumerations using the tail call optimization.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.ts1" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.ts2" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEnumerable{`0})">
+      <summary>
+        <para>Appends two enumerations using the tail call optimization.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.Internal.AppendEnumerable`1.SubEnumerator`0" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.DelayedEnumerable`1">
+      <summary>
+        <para>Represents a delayed enumeration.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.DelayedEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.DelayedEnumerable`1.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.DelayedEnumerable`1.GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.DelayedEnumerable`1.#ctor(Nemerle.Builtins.Function{System.Collections.Generic.IEnumerable{`0}})">
+      <summary>
+        <para>Represents a delayed enumeration.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1">
+      <summary>
+        <para>Represents an empty enumeration.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.#cctor">
+      <summary>
+        <para>Represents an empty enumeration.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.#ctor" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.Instance" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.GetEnumerator" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.EmptyEnumerable`1.SubEnumerator`0" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.EnumerableHelper">
+      <summary>
+        <para>This is a helper module for the enumerable comprehension.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.Empty``1" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.Singleton``1(``0)" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.Append``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.Delay``1(Nemerle.Builtins.Function{System.Collections.Generic.IEnumerable{``0}})" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.While``1(Nemerle.Builtins.Function{System.Boolean},System.Collections.Generic.IEnumerable{``0})" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.ForEach``2(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{``0,System.Collections.Generic.IEnumerable{``1}})" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.TryFinally``1(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.TryCatch``1(System.Collections.Generic.IEnumerable{``0},Nemerle.Builtins.Function{System.Exception,System.Collections.Generic.IEnumerable{``0}})" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.EnumerableHelper.Using``2(``0,Nemerle.Builtins.Function{``0,System.Collections.Generic.IEnumerable{``1}})" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.ForHelper">
+      <summary>
+        <para>This is a helper module for implementing the for statement.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.ForHelper.Enumerate``1(Nemerle.Builtins.Function{System.Boolean},Nemerle.Builtins.Function{``0},Nemerle.Builtins.FunctionVoid)" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1">
+      <summary>
+        <para>Represents a single enumerable item.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1.item" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1.GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1.#ctor(`0)">
+      <summary>
+        <para>Represents a single enumerable item.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.Internal.SingleEnumerable`1.SubEnumerator`0" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1">
+      <summary>
+        <para>Represents an enumeration that imitates the try-catch block.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.cont" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0},Nemerle.Builtins.Function{System.Exception,System.Collections.Generic.IEnumerable{`0}})">
+      <summary>
+        <para>Represents an enumeration that imitates the try-catch block.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.Internal.TryCatchEnumerable`1.SubEnumerator`0" />
+    <member name="T:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1">
+      <summary>
+        <para>Represents an enumeration that can imitate the try-finally block.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.System#Collections#IEnumerable#GetEnumerator" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.body" />
+    <member name="F:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.handler" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.GetEnumerator" />
+    <member name="M:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0},Nemerle.Builtins.FunctionVoid)">
+      <summary>
+        <para>Represents an enumeration that can imitate the try-finally block.
+ </para>
+      </summary>
+
+</member>
+    <member name="T:Nemerle.ComputationExpressions.Internal.TryFinallyEnumerable`1.SubEnumerator`0" />
+  </members>
+</doc>

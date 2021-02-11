@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\Nemerle.Async.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Async.Internal.AsyncTask`1">
+      <summary>
+        <para>AsyncTask and AsyncTask[A] classes are needed for type system.
+
+</para> <para>It would be possible to replace them with Task and Task[A]
+ if Task[A] wouldn't inherit from Task.
+ But because it does, type system accepts Task and Task[A]
+ when we type "Task". Thats why AsyncTask[A] was introduced
+ which doesn't inherit from AsyncTask.
+ </para></summary>
+
+</member>
+    <member name="F:Nemerle.Async.Internal.AsyncTask`1.task" />
+    <member name="M:Nemerle.Async.Internal.AsyncTask`1.GetAwaiter" />
+    <member name="M:Nemerle.Async.Internal.AsyncTask`1.#ctor(System.Threading.Tasks.Task{`0})">
+      <summary>
+        <para>AsyncTask and AsyncTask[A] classes are needed for type system.
+
+</para> <para>It would be possible to replace them with Task and Task[A]
+ if Task[A] wouldn't inherit from Task.
+ But because it does, type system accepts Task and Task[A]
+ when we type "Task". Thats why AsyncTask[A] was introduced
+ which doesn't inherit from AsyncTask.
+ </para></summary>
+
+</member>
+    <member name="T:Nemerle.Async.Internal.AsyncTask" />
+    <member name="F:Nemerle.Async.Internal.AsyncTask.task" />
+    <member name="M:Nemerle.Async.Internal.AsyncTask.GetAwaiter" />
+    <member name="M:Nemerle.Async.Internal.AsyncTask.#ctor(System.Threading.Tasks.Task)" />
+    <member name="T:Nemerle.Async.Internal.AsyncBuilder" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Run(Nemerle.Builtins.FunctionVoid)">
+      <summary>
+        <para>Converts code to Task.
+
+</para> <para>This method is called when we are not returning value
+ in async {} block.
+ Example:
+     async
+     {
+         Console.WriteLine("It doesn't make much sense.");
+     }
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Run``1(Nemerle.Builtins.Function{``0})">
+      <summary>
+        <para>Converts code to Task[A].
+
+</para> <para>This method is called when we are returning value
+ in async {} block without calling await.
+ Example:
+     async
+     {
+         Console.WriteLine("It doesn't make much sense.");
+         10;
+     }
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.RunAsync(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask})">
+      <summary>
+        <para>Starts executing async section.
+
+</para> <para>This method is called when we are not returning value implicitly
+ in async {} block (we are returning Task).
+ Example:
+     async
+     {
+         await TaskEx.Delay(5000);
+         Console.WriteLine("Async returns Task.");
+     }
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.RunAsync``1(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask{``0}})">
+      <summary>
+        <para>Starts executing async section.
+
+</para> <para>This method is called when we are returning value explicitly
+ in async {} block (we are returning Task[T]).
+ Example:
+     async
+     {
+         await k = FuncAsync(10);
+         k + 5;
+     }
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Bind(Nemerle.Builtins.Function{Nemerle.Builtins.Tuple{System.Runtime.CompilerServices.INotifyCompletion,System.Boolean,Nemerle.Builtins.FunctionVoid}})">
+      <summary>
+        <para>Adds continuation ('cont') to given task ('task').
+ Returns async that represents continuation end.
+ Called when continuation doesn't contain awaits.
+
+</para> <para>Example:
+     await TaskEx.Delay(4000);
+     ...
+ Calls:
+     def awaiter = TaskEx.Delay(4000).GetAwaiter();
+     Bind(awaiter, awaiter.IsCompleted, () =&gt; awaiter.GetResult, () =&gt; ...);
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Bind``1(Nemerle.Builtins.Function{Nemerle.Builtins.Tuple{System.Runtime.CompilerServices.INotifyCompletion,System.Boolean,Nemerle.Builtins.Function{``0}}})">
+      <summary>
+        <para>Adds continuation ('cont') to given task ('task').
+ Returns async that represents continuation end.
+ Called when continuation doesn't contain awaits.
+
+</para> <para>Example:
+     await k1 = asyncFunc1(10);
+     ...
+     10;
+ Calls:
+     def awaiter = asyncFunc1(10).GetAwaiter();
+     Bind(awaiter, awaiter.IsCompleted, () =&gt; awaiter.GetResult, () =&gt; { def k1 = ...; 10; });
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.BindAsync(Nemerle.Builtins.Function{Nemerle.Builtins.Tuple{System.Runtime.CompilerServices.INotifyCompletion,System.Boolean,Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask}}})">
+      <summary>
+        <para>Adds continuation ('cont') to given task ('task').
+ Returns async that represents continuation end.
+ Called when continuation contains await (returns Bind(Async)).
+
+</para> <para>Example:
+     await TaskEx.Delay(4000);
+     ...
+ Calls:
+     def awaiter = TaskEx.Delay(4000).GetAwaiter();
+     BindAsync(awaiter, awaiter.IsCompleted, () =&gt; awaiter.GetResult, () =&gt; ...);
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.BindAsync``1(Nemerle.Builtins.Function{Nemerle.Builtins.Tuple{System.Runtime.CompilerServices.INotifyCompletion,System.Boolean,Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask{``0}}}})">
+      <summary>
+        <para>Adds continuation ('cont') to given task ('task').
+ Returns async that represents continuation end.
+ Called when continuation contains await (returns Bind(Async)).
+
+</para> <para>Example:
+     await TaskEx.Delay(4000);
+     ...;
+     10;
+ Calls:
+     def awaiter = TaskEx.Delay(4000).GetAwaiter();
+     BindAsync(awaiter, awaiter.IsCompleted, () =&gt; awaiter.GetResult, () =&gt; { ...; 10; });
+ </para></summary>
+
+</member>
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.TryCatch``1(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask},Nemerle.Builtins.FunctionVoid{System.Exception})" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.TryCatch``1(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask{``0}},Nemerle.Builtins.Function{System.Exception,``0})" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.TryFinally``1(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask},Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.TryFinally``1(Nemerle.Builtins.Function{Nemerle.Async.Internal.AsyncTask{``0}},Nemerle.Builtins.FunctionVoid)" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Using``1(``0,Nemerle.Builtins.Function{``0,Nemerle.Async.Internal.AsyncTask})" />
+    <member name="M:Nemerle.Async.Internal.AsyncBuilder.Using``2(``0,Nemerle.Builtins.Function{``0,Nemerle.Async.Internal.AsyncTask{``1}})" />
+  </members>
+</doc>

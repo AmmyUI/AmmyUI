@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>bin\Release\Nemerle.Statechart.Runtime.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Statechart.CompletionEvent" />
+    <member name="M:Nemerle.Statechart.CompletionEvent.#ctor" />
+    <member name="F:Nemerle.Statechart.CompletionEvent.instance" />
+    <member name="M:Nemerle.Statechart.CompletionEvent.get_New" />
+    <member name="P:Nemerle.Statechart.CompletionEvent.New" />
+    <member name="M:Nemerle.Statechart.CompletionEvent.get_Name" />
+    <member name="P:Nemerle.Statechart.CompletionEvent.Name" />
+    <member name="M:Nemerle.Statechart.CompletionEvent.get_FullName" />
+    <member name="P:Nemerle.Statechart.CompletionEvent.FullName" />
+    <member name="T:Nemerle.Statechart.EventInfo" />
+    <member name="F:Nemerle.Statechart.EventInfo.name" />
+    <member name="F:Nemerle.Statechart.EventInfo.parms" />
+    <member name="M:Nemerle.Statechart.EventInfo.#ctor(System.String,Nemerle.Core.list{System.String})" />
+    <member name="T:Nemerle.Statechart.ActiveStateMachine`1">
+      <summary>
+        <para>Description of Implementation.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.#ctor" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.get_Events" />
+    <member name="P:Nemerle.Statechart.ActiveStateMachine`1.Events" />
+    <member name="F:Nemerle.Statechart.ActiveStateMachine`1.Messenger" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.Subscribe" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.Unsubscribe" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.Initiate" />
+    <member name="F:Nemerle.Statechart.ActiveStateMachine`1.queue" />
+    <member name="F:Nemerle.Statechart.ActiveStateMachine`1.queue_thread" />
+    <member name="F:Nemerle.Statechart.ActiveStateMachine`1.work_event" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.PostEvent(System.String)" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.PostEvent(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.DoActivityStop" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.Terminate" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.Completion" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.CheckCompletion" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.CheckQueue(System.Collections.Concurrent.ConcurrentQueue{Nemerle.Statechart.HsmEvent})" />
+    <member name="M:Nemerle.Statechart.ActiveStateMachine`1.QueueThread" />
+    <member name="T:Nemerle.Statechart.DoActivity" />
+    <member name="F:Nemerle.Statechart.DoActivity.task" />
+    <member name="F:Nemerle.Statechart.DoActivity.action" />
+    <member name="F:Nemerle.Statechart.DoActivity.continuation" />
+    <member name="M:Nemerle.Statechart.DoActivity.#ctor(System.Action)" />
+    <member name="M:Nemerle.Statechart.DoActivity.#ctor(System.Action,System.Action{System.Threading.Tasks.Task})" />
+    <member name="M:Nemerle.Statechart.DoActivity.Start" />
+    <member name="M:Nemerle.Statechart.DoActivity.StartContinued" />
+    <member name="M:Nemerle.Statechart.DoActivity.Stop" />
+    <member name="T:Nemerle.Statechart.CancelableDoActivity" />
+    <member name="F:Nemerle.Statechart.CancelableDoActivity.task" />
+    <member name="F:Nemerle.Statechart.CancelableDoActivity.cancel_source" />
+    <member name="F:Nemerle.Statechart.CancelableDoActivity.action" />
+    <member name="F:Nemerle.Statechart.CancelableDoActivity.continuation" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.#ctor(System.Action{System.Threading.CancellationToken})" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.#ctor(System.Action{System.Threading.CancellationToken},System.Action{System.Threading.Tasks.Task})" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.Run" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.Start" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.StartContinued" />
+    <member name="M:Nemerle.Statechart.CancelableDoActivity.Stop" />
+    <member name="T:Nemerle.Statechart.StateMachine`1" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.#ctor" />
+    <member name="F:Nemerle.Statechart.StateMachine`1.cur_state" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.Initial" />
+    <member name="F:Nemerle.Statechart.StateMachine`1.completion" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.get_IsTerminated" />
+    <member name="P:Nemerle.Statechart.StateMachine`1.IsTerminated" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.DispatchEvent(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.Dispatch(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.ToString" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.TrySwitch(`0)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.OnSwitch" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.OnEventComplete" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.Switch(`0)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.Terminate" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.OnTerminated" />
+    <member name="F:Nemerle.Statechart.StateMachine`1._N__N_event_field_of_Terminated_3571" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.add_Terminated(System.EventHandler)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.remove_Terminated(System.EventHandler)" />
+    <member name="E:Nemerle.Statechart.StateMachine`1.Terminated" />
+    <member name="F:Nemerle.Statechart.StateMachine`1._N__N_event_field_of_PropertyChanged_3572" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.add_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.remove_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler)" />
+    <member name="E:Nemerle.Statechart.StateMachine`1.PropertyChanged" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.OnPropertyChanged(System.String)" />
+    <member name="M:Nemerle.Statechart.StateMachine`1.get_CurState" />
+    <member name="P:Nemerle.Statechart.StateMachine`1.CurState" />
+    <member name="T:Nemerle.Statechart.HsmEvent" />
+    <member name="M:Nemerle.Statechart.HsmEvent.#ctor" />
+    <member name="M:Nemerle.Statechart.HsmEvent.get_Name" />
+    <member name="P:Nemerle.Statechart.HsmEvent.Name" />
+    <member name="M:Nemerle.Statechart.HsmEvent.get_FullName" />
+    <member name="P:Nemerle.Statechart.HsmEvent.FullName" />
+    <member name="T:Nemerle.Statechart.TimeEvent" />
+    <member name="M:Nemerle.Statechart.TimeEvent.#ctor" />
+    <member name="T:Nemerle.Statechart.IActiveStateMachine" />
+    <member name="M:Nemerle.Statechart.IActiveStateMachine.PostEvent(Nemerle.Statechart.HsmEvent)" />
+    <member name="T:Nemerle.Statechart.HsmState" />
+    <member name="M:Nemerle.Statechart.HsmState.#ctor" />
+    <member name="T:Nemerle.Statechart.ITestStateMachine" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.Initiate" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.PostEvent(System.String)" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.PostEvent(System.String,System.Object,System.Object,System.Object)" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.PostEvent(System.String,System.Object[])" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.PostEvent(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.IsInState(System.String)" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.add_ActionExecuted(System.Action{System.String})" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.remove_ActionExecuted(System.Action{System.String})" />
+    <member name="E:Nemerle.Statechart.ITestStateMachine.ActionExecuted" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.add_TransitionCompleted(System.EventHandler)" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.remove_TransitionCompleted(System.EventHandler)" />
+    <member name="E:Nemerle.Statechart.ITestStateMachine.TransitionCompleted" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.Terminate" />
+    <member name="M:Nemerle.Statechart.ITestStateMachine.get_Events" />
+    <member name="P:Nemerle.Statechart.ITestStateMachine.Events" />
+    <member name="T:Nemerle.Statechart.FsmMessenger">
+      <summary>
+        <para>Description of Messenger.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Statechart.FsmMessenger.#cctor" />
+    <member name="M:Nemerle.Statechart.FsmMessenger.#ctor" />
+    <member name="F:Nemerle.Statechart.FsmMessenger.map" />
+    <member name="M:Nemerle.Statechart.FsmMessenger.Subscribe(Nemerle.Statechart.IActiveStateMachine)" />
+    <member name="M:Nemerle.Statechart.FsmMessenger.Unsubscribe(Nemerle.Statechart.IActiveStateMachine)" />
+    <member name="F:Nemerle.Statechart.FsmMessenger.Instance" />
+    <member name="M:Nemerle.Statechart.FsmMessenger.Post(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.FsmMessenger.PostOthers(Nemerle.Statechart.HsmEvent,Nemerle.Statechart.IActiveStateMachine)" />
+  </members>
+</doc>

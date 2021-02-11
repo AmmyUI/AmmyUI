@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\Stage4\ncc.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.CommandlineCompiler.MainClass" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass._N_eq_9485(System.String,System.String)" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass._N_runInAppropriateProcess_9427(System.String)" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.#cctor" />
+    <member name="F:Nemerle.CommandlineCompiler.MainClass.stack_kilos" />
+    <member name="F:Nemerle.CommandlineCompiler.MainClass.Manager" />
+    <member name="F:Nemerle.CommandlineCompiler.MainClass.Options" />
+    <member name="F:Nemerle.CommandlineCompiler.MainClass.Platform" />
+    <member name="F:Nemerle.CommandlineCompiler.MainClass.IsUnix" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.Main" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.needs_bigger_stack" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.main_with_catching" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.bomb(System.Exception,System.String)" />
+    <member name="M:Nemerle.CommandlineCompiler.MainClass.parse_command_line" />
+  </members>
+</doc>

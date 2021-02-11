@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>c:\!\nemerle\bin\Release\net-4.0\PowerPack\\fsmtest_release.xml</name>
+  </assembly>
+  <members>
+    <member name="T:Nemerle.Statechart.FsmTester" />
+    <member name="F:Nemerle.Statechart.FsmTester.fsm" />
+    <member name="F:Nemerle.Statechart.FsmTester.queue" />
+    <member name="M:Nemerle.Statechart.FsmTester.get_queue_result" />
+    <member name="P:Nemerle.Statechart.FsmTester.queue_result" />
+    <member name="F:Nemerle.Statechart.FsmTester._N_SuppressPrint_3769" />
+    <member name="M:Nemerle.Statechart.FsmTester.get_SuppressPrint" />
+    <member name="M:Nemerle.Statechart.FsmTester.set_SuppressPrint(System.Boolean)" />
+    <member name="P:Nemerle.Statechart.FsmTester.SuppressPrint" />
+    <member name="F:Nemerle.Statechart.FsmTester._N__N_event_field_of_OkTest_3719" />
+    <member name="M:Nemerle.Statechart.FsmTester.add_OkTest(System.Action)" />
+    <member name="M:Nemerle.Statechart.FsmTester.remove_OkTest(System.Action)" />
+    <member name="E:Nemerle.Statechart.FsmTester.OkTest" />
+    <member name="F:Nemerle.Statechart.FsmTester._N__N_event_field_of_Failed_3720" />
+    <member name="M:Nemerle.Statechart.FsmTester.add_Failed(System.Action)" />
+    <member name="M:Nemerle.Statechart.FsmTester.remove_Failed(System.Action)" />
+    <member name="E:Nemerle.Statechart.FsmTester.Failed" />
+    <member name="F:Nemerle.Statechart.FsmTester._N__N_event_field_of_Print_3721" />
+    <member name="M:Nemerle.Statechart.FsmTester.add_Print(System.Action{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.remove_Print(System.Action{System.String})" />
+    <member name="E:Nemerle.Statechart.FsmTester.Print" />
+    <member name="F:Nemerle.Statechart.FsmTester._N__N_event_field_of_Send_3722" />
+    <member name="M:Nemerle.Statechart.FsmTester.add_Send(System.Action{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.remove_Send(System.Action{System.String})" />
+    <member name="E:Nemerle.Statechart.FsmTester.Send" />
+    <member name="M:Nemerle.Statechart.FsmTester.GetTester(Nemerle.Statechart.ITestStateMachine)" />
+    <member name="M:Nemerle.Statechart.FsmTester.WriteCombined(System.String)" />
+    <member name="M:Nemerle.Statechart.FsmTester.ConsoleTestInit(System.Boolean)" />
+    <member name="F:Nemerle.Statechart.FsmTester.wait_signal" />
+    <member name="F:Nemerle.Statechart.FsmTester._N_Throw_3813" />
+    <member name="M:Nemerle.Statechart.FsmTester.get_Throw" />
+    <member name="M:Nemerle.Statechart.FsmTester.set_Throw(System.Boolean)" />
+    <member name="P:Nemerle.Statechart.FsmTester.Throw" />
+    <member name="F:Nemerle.Statechart.FsmTester.wait_state" />
+    <member name="F:Nemerle.Statechart.FsmTester.max_respond" />
+    <member name="F:Nemerle.Statechart.FsmTester.result_action" />
+    <member name="M:Nemerle.Statechart.FsmTester.CompleteResult" />
+    <member name="M:Nemerle.Statechart.FsmTester.OnOkTest" />
+    <member name="M:Nemerle.Statechart.FsmTester.OnFailed" />
+    <member name="M:Nemerle.Statechart.FsmTester.#ctor(Nemerle.Statechart.ITestStateMachine)" />
+    <member name="M:Nemerle.Statechart.FsmTester.WaitForState(System.String,System.Int32)" />
+    <member name="M:Nemerle.Statechart.FsmTester.EntryImpl(System.Collections.Generic.IEnumerable{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.ExitImpl(System.Collections.Generic.IEnumerable{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.ActionsImpl(System.Collections.Generic.IEnumerable{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Entry(System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Exit(System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Actions(System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.prepare" />
+    <member name="M:Nemerle.Statechart.FsmTester.TestWait(Nemerle.Builtins.FunctionVoid,System.String,System.Int32,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.CheckResult(System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Builtins.FunctionVoid,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.TestComplete(Nemerle.Builtins.FunctionVoid,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEventNotWait(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEventNotWait(System.String)" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEvent(Nemerle.Statechart.HsmEvent)" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEvent(System.String)" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEvent(System.String,System.Object[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.SendEventImpl(System.String,System.Object[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(System.String,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Statechart.HsmEvent,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Statechart.HsmEvent,System.String)" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(System.String,System.String,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Statechart.HsmEvent,System.String,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.TestWait(System.String,System.Int32,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.TestWait(System.String,System.Int32,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.TestNotWait(System.String,System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.WaitForComplete(System.Int32)" />
+    <member name="M:Nemerle.Statechart.FsmTester.CheckAfterComplete(System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(System.String,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(System.String,System.String,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(System.String,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Statechart.HsmEvent,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Test(Nemerle.Statechart.HsmEvent,Nemerle.Core.list{System.String},Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.InitiateAndWait" />
+    <member name="M:Nemerle.Statechart.FsmTester.Initiate(Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Initiate(System.String,Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Initiate(System.String,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.Initiate(System.String,System.Int32,Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.FsmTester.Initiate(System.String,System.Int32,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmTester.get_Fsm" />
+    <member name="P:Nemerle.Statechart.FsmTester.Fsm" />
+    <member name="T:Nemerle.Statechart.Tests.FsmTestGen">
+      <summary>
+        <para>Description of GenTest.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.CreateEventWithParams(Nemerle.Statechart.EventInfo,Nemerle.Core.list{System.String},System.String)" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.create_param(System.String,Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.get_event_variant2(Nemerle.Statechart.ActionType,System.String,Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.is_exit_act_entry_pattern(Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.have_actions(Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.GenerateTestMethods(Nemerle.Statechart.ActionType,Nemerle.Statechart.Result)" />
+    <member name="F:Nemerle.Statechart.Tests.FsmTestGen.fsm_name" />
+    <member name="F:Nemerle.Statechart.Tests.FsmTestGen.history" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.#ctor(System.String,Nemerle.Core.list{Nemerle.Builtins.Tuple{Nemerle.Statechart.ActionType,Nemerle.Statechart.Result}})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.gen_out(Nemerle.Statechart.ActionType,Nemerle.Statechart.Result,Nemerle.Core.list{System.String})" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.GenerateOutput(System.String)" />
+    <member name="M:Nemerle.Statechart.Tests.FsmTestGen.GenerateTestMethods(System.String)" />
+    <member name="T:Nemerle.Statechart.ActionType" />
+    <member name="M:Nemerle.Statechart.ActionType.#ctor" />
+    <member name="M:Nemerle.Statechart.ActionType._N_GetVariantCode" />
+    <member name="M:Nemerle.Statechart.ActionType._N_GetVariantCodeSafe(Nemerle.Statechart.ActionType)" />
+    <member name="M:Nemerle.Statechart.ActionType._N_GetVariantCodeObject(System.Object)" />
+    <member name="T:Nemerle.Statechart.ActionType.Initiate" />
+    <member name="T:Nemerle.Statechart.ActionType.SendEvent" />
+    <member name="T:Nemerle.Statechart.ActionType.SetProperty" />
+    <member name="T:Nemerle.Statechart.ActionType.Terminate" />
+    <member name="T:Nemerle.Statechart.ActionType.Error" />
+    <member name="T:Nemerle.Statechart.ErrorType" />
+    <member name="M:Nemerle.Statechart.ErrorType.#ctor" />
+    <member name="M:Nemerle.Statechart.ErrorType.get_Message" />
+    <member name="P:Nemerle.Statechart.ErrorType.Message" />
+    <member name="M:Nemerle.Statechart.ErrorType._N_GetVariantCode" />
+    <member name="M:Nemerle.Statechart.ErrorType._N_GetVariantCodeSafe(Nemerle.Statechart.ErrorType)" />
+    <member name="M:Nemerle.Statechart.ErrorType._N_GetVariantCodeObject(System.Object)" />
+    <member name="T:Nemerle.Statechart.ErrorType.NoError" />
+    <member name="T:Nemerle.Statechart.ErrorType.UnknownCommand" />
+    <member name="T:Nemerle.Statechart.ErrorType.UnknownEvent" />
+    <member name="T:Nemerle.Statechart.ErrorType.EventNeedParams" />
+    <member name="T:Nemerle.Statechart.ErrorType.InvalidParameter" />
+    <member name="T:Nemerle.Statechart.ErrorType.UnknownProperty" />
+    <member name="T:Nemerle.Statechart.Result" />
+    <member name="F:Nemerle.Statechart.Result.state" />
+    <member name="F:Nemerle.Statechart.Result.act" />
+    <member name="M:Nemerle.Statechart.Result.#ctor(System.String,Nemerle.Core.list{System.String})" />
+    <member name="T:Nemerle.Statechart.FsmInterpreter">
+      <summary>
+        <para>Description of FsmTestGen.
+ </para>
+      </summary>
+
+</member>
+    <member name="M:Nemerle.Statechart.FsmInterpreter.GenConsoleTest(System.String)" />
+    <member name="F:Nemerle.Statechart.FsmInterpreter.tester" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.#ctor(Nemerle.Statechart.FsmTester)" />
+    <member name="F:Nemerle.Statechart.FsmInterpreter._N_exit_string_4386" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.get_exit_string" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.set_exit_string(System.String)" />
+    <member name="P:Nemerle.Statechart.FsmInterpreter.exit_string" />
+    <member name="F:Nemerle.Statechart.FsmInterpreter.canceled" />
+    <member name="F:Nemerle.Statechart.FsmInterpreter.history" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.get_fsm" />
+    <member name="P:Nemerle.Statechart.FsmInterpreter.fsm" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.get_type_name" />
+    <member name="P:Nemerle.Statechart.FsmInterpreter.type_name" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.SetProperty(System.String,System.Object,System.String)" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.GetPropertyValue(System.String)" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.AddHistory(Nemerle.Statechart.ActionType)" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.PrintStatus" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.SendEventParams(Nemerle.Statechart.EventInfo,System.String[])" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.Interact(System.String)" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.StartConsole" />
+    <member name="M:Nemerle.Statechart.FsmInterpreter.get_History" />
+    <member name="P:Nemerle.Statechart.FsmInterpreter.History" />
+    <member name="T:Nemerle.Statechart.Tests.Program" />
+    <member name="M:Nemerle.Statechart.Tests.Program.Run(Nemerle.Statechart.ITestStateMachine,System.String)" />
+    <member name="M:Nemerle.Statechart.Tests.Program.Start(System.String,System.String,System.String)" />
+    <member name="M:Nemerle.Statechart.Tests.Program.Main(System.String[])" />
+  </members>
+</doc>
